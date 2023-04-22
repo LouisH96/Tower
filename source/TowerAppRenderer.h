@@ -4,6 +4,11 @@
 
 namespace MyEngine
 {
+	namespace Framework
+	{
+		struct AppServices;
+	}
+
 	namespace Game
 	{
 		class Camera;
@@ -22,6 +27,7 @@ namespace MyEngine
 	}
 	namespace Rendering
 	{
+		class R_LambertCam_Tex_Transform;
 		class FpsDisplay;
 		class Gpu;
 		class Canvas;
@@ -31,14 +37,15 @@ namespace MyEngine
 class TowerAppRenderer
 {
 public:
-	TowerAppRenderer(App::Wrappers::Win32::Window& window, Rendering::Gpu& gpu, Rendering::Canvas& canvas,
-		App::FpsControl& fpsControl, Game::Camera& camera);
+	TowerAppRenderer(const Framework::AppServices& appServices);
 	~TowerAppRenderer() = default;
 	void Release() const;
 	void Render();
 
 private:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
+	using TransformRenderer = Rendering::R_LambertCam_Tex_Transform;
+
 	App::Wrappers::Win32::Window& m_Window;
 	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
@@ -47,8 +54,14 @@ private:
 
 	Rendering::RendererFactory::UnlitRenderer* m_pUnlitRenderer{};
 	SimpleRenderer* m_pSimpleRenderer{};
+	TransformRenderer* m_pTransformRenderer{};
+
+	Rendering::Mesh* m_pBowMesh{};
+	Rendering::Texture* m_pBowTexture{};
+	Game::Transform* m_pBowTransform{};
 
 	void CreateCube() const;
 	void CreateArrows() const;
+	void CreateBow();
 };
 

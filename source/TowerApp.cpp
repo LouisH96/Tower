@@ -1,21 +1,19 @@
 #include "pch.h"
 #include "TowerApp.h"
-#include <Rendering/FpsDisplay.h>
-#include <App/FpsControl.h>
+#include <Framework/BasicAppFrame.h>
 
-TowerApp::TowerApp(App::Wrappers::Win32::Window& window, Rendering::Gpu& gpu, Rendering::Canvas& canvas,
-	Game::Camera& camera, App::FpsControl& fpsControl)
-	: m_Window{ window }
-	, m_Gpu{ gpu }
-	, m_Canvas{ canvas }
-	, m_Renderer{ window, gpu, canvas, fpsControl ,camera }
+TowerApp::TowerApp(const Framework::AppServices& appData)
+	: m_Window{ appData.Window }
+	, m_Gpu{ appData.Gpu }
+	, m_Canvas{ appData.Canvas }
+	, m_Renderer{ appData }
 {
 	std::cout << "Constructor\n";
 }
 
 void TowerApp::Release()
 {
-	std::cout << "Release\n";
+	m_Renderer.Release();
 }
 
 void TowerApp::Update()

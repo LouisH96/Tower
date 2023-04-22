@@ -3,6 +3,11 @@
 
 namespace MyEngine
 {
+	namespace Framework
+	{
+		struct AppServices;
+	}
+
 	namespace Game
 	{
 		class Camera;
@@ -29,8 +34,7 @@ namespace MyEngine
 class TowerApp
 {
 public:
-	TowerApp(App::Wrappers::Win32::Window& window, Rendering::Gpu& gpu, Rendering::Canvas& canvas,
-		Game::Camera& camera, App::FpsControl& fpsControl);
+	explicit TowerApp(const Framework::AppServices& appData);
 	void Release();
 	void Update();
 
