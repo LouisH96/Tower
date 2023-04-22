@@ -46,7 +46,7 @@ void TowerAppRenderer::Release() const
 
 void TowerAppRenderer::Render()
 {
-	m_pBowTransform->Position.z += 0.001f;
+	m_pBowTransform->Position.z += 1.f * Game::GameGlobals::GetDeltaTime();
 
 	m_Canvas.BeginPaint();
 	m_pTransformRenderer->Render();
