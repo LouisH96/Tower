@@ -1,4 +1,6 @@
 #pragma once
+#include <Game/Camera/Camera.h>
+
 #include "TowerAppRenderer.h"
 
 namespace MyEngine
@@ -6,11 +8,6 @@ namespace MyEngine
 	namespace Framework
 	{
 		struct AppServices;
-	}
-
-	namespace Game
-	{
-		class Camera;
 	}
 
 	namespace App
@@ -34,7 +31,7 @@ namespace MyEngine
 class TowerApp
 {
 public:
-	explicit TowerApp(const Framework::AppServices& appData);
+	explicit TowerApp(const Framework::CoreServices& services);
 	void Release();
 	void Update();
 	void Render();
@@ -43,6 +40,7 @@ private:
 	App::Wrappers::Win32::Window& m_Window;
 	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
-	TowerAppRenderer m_Renderer;
+	Game::Camera m_Camera;
+	TowerAppRenderer* m_pRenderer{};
 };
 

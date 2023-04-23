@@ -13,23 +13,29 @@
 #include <Io/Fbx/FbxClass.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
 #include <Game/Transform.h>
+#include <Framework/CoreServices.h>
 
-TowerAppRenderer::TowerAppRenderer(const Framework::AppServices& appServices)
-	: m_Window{ appServices.Window }
-	, m_Gpu{ appServices.Gpu }
-	, m_Canvas{ appServices.Canvas }
-	, m_FpsDisplay{ appServices.Gpu, appServices.Canvas, appServices.Window}
-	, m_Camera{ appServices.Camera }
-	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(appServices.Gpu, appServices.Camera, false) }
-	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(appServices.Gpu, appServices.Camera))
-	, m_pTransformRenderer(new TransformRenderer(appServices.Gpu, appServices.Camera))
+TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services, Game::Camera& camera)
+	: m_Window{ services.GetWindow()}
+	, m_Gpu{ services.GetGpu() }
+	, m_Canvas{ services.GetCanvas() }
+	, m_FpsDisplay{ services.GetGpu(), services.GetCanvas(), services.GetWindow()}
+	, m_Camera{ camera }
+	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(services.GetGpu(), camera, false) }
+	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(services.GetGpu(), camera))
+	, m_pTransformRenderer(new TransformRenderer(services.GetGpu(), camera))
 {
 	DebugRenderer::Init(m_Gpu, m_Camera);
-	appServices.FpsControl.SetFpsDisplay(m_FpsDisplay);
+	services.GetFpsControl().SetFpsDisplay(m_FpsDisplay);
 
 	//CreateCube();
 	CreateArrows();
 	CreateBow();
+}
+
+TowerAppRenderer::~TowerAppRenderer()
+{
+	Release();
 }
 
 void TowerAppRenderer::Release() const

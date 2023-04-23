@@ -6,12 +6,13 @@ namespace MyEngine
 {
 	namespace Framework
 	{
-		struct AppServices;
+		class CoreServices;
 	}
 
 	namespace Game
 	{
 		class Camera;
+		class FocusPointCamera;
 	}
 
 	namespace App
@@ -37,8 +38,8 @@ namespace MyEngine
 class TowerAppRenderer
 {
 public:
-	TowerAppRenderer(const Framework::AppServices& appServices);
-	~TowerAppRenderer() = default;
+	TowerAppRenderer(const Framework::CoreServices& services, Game::Camera& camera);
+	~TowerAppRenderer();
 	void Release() const;
 	void Render();
 

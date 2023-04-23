@@ -1,26 +1,31 @@
 #include "pch.h"
 #include "TowerApp.h"
 #include <Framework/BasicAppFrame.h>
+#include <Game/Camera/Camera.h>
+#include <Framework/CoreServices.h>
 
-TowerApp::TowerApp(const Framework::AppServices& appData)
-	: m_Window{ appData.Window }
-	, m_Gpu{ appData.Gpu }
-	, m_Canvas{ appData.Canvas }
-	, m_Renderer{ appData }
+TowerApp::TowerApp(const Framework::CoreServices& services)
+	: m_Window{ services.GetWindow() }
+	, m_Gpu{ services.GetGpu() }
+	, m_Canvas{ services.GetCanvas() }
+	, m_Camera{ Math::Int2{services.GetWindow().GetClientWidth(), services.GetWindow().GetClientHeight()} }
 {
-	std::cout << "Constructor\n";
+	m_pRenderer = new TowerAppRenderer(services, m_Camera);
+
+	m_Camera.GetTransform().Position.z -= 1;
 }
 
 void TowerApp::Release()
 {
-	m_Renderer.Release();
+	delete m_pRenderer;
 }
 
 void TowerApp::Update()
 {
+
 }
 
 void TowerApp::Render()
 {
-	m_Renderer.Render();
+	m_pRenderer->Render();
 }
