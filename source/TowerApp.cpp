@@ -1,36 +1,29 @@
 #include "pch.h"
 #include "TowerApp.h"
 #include <Framework/BasicAppFrame.h>
-#include <Game/Camera/Camera.h>
 #include <Framework/CoreServices.h>
 
 TowerApp::TowerApp(const Framework::CoreServices& services)
 	: m_Window{ services.GetWindow() }
 	, m_Gpu{ services.GetGpu() }
 	, m_Canvas{ services.GetCanvas() }
-	, m_Camera{ Math::Int2{services.GetWindow().GetClientWidth(), services.GetWindow().GetClientHeight()} }
+	, m_CameraController{ services.GetCamera(), services.GetWindow().GetKeyboard(), services.GetWindow().GetMouse() }
+	, m_Renderer{ services }
 {
-	m_pRenderer = new TowerAppRenderer(services);
-
-	//m_Camera.GetTransform().Position.z -= 1;
+	m_CameraController.SetPosition({ 0,0,-2 });
 }
 
 void TowerApp::Release()
 {
-	delete m_pRenderer;
+	m_Renderer.Release();
 }
 
 void TowerApp::Update()
 {
-
+	m_CameraController.Update();
 }
 
 void TowerApp::Render()
 {
-	using namespace DirectX;
-	const Math::Float3 cameraPosition{ 0,0,-1.5 };
-	const XMMATRIX view{ XMMatrixTranslation(0,0,-cameraPosition.z) };
-	const XMMATRIX viewProjection{ view * m_Camera.GetXmProjectionMatrix() };
-
-	m_pRenderer->Render(cameraPosition, viewProjection);
+	m_Renderer.Render(m_CameraController.GetCameraPosition(), m_CameraController.GetViewProjectionMatrix());
 }

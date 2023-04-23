@@ -1,6 +1,5 @@
 #pragma once
-#include <Game/Camera/Camera.h>
-
+#include <Game/Camera/FpsCameraController.h>
 #include "TowerAppRenderer.h"
 
 namespace MyEngine
@@ -9,7 +8,6 @@ namespace MyEngine
 	{
 		struct AppServices;
 	}
-
 	namespace App
 	{
 		class FpsControl;
@@ -40,7 +38,6 @@ private:
 	App::Wrappers::Win32::Window& m_Window;
 	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
-	Game::Camera m_Camera;
-	TowerAppRenderer* m_pRenderer{};
+	Game::FpsCameraController m_CameraController;
+	TowerAppRenderer m_Renderer;
 };
-

@@ -6,5 +6,7 @@
 
 int main()
 {
-	Framework::Frame_NoCam<TowerApp>::Run(L"Tower");
+	App::Wrappers::Win32::Window::Options options{};
+	options.CursorFpsMode = true;
+	Framework::Frame_NoCam<TowerApp>::Run(L"Tower", options);
 }

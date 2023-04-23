@@ -32,11 +32,6 @@ TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 	CreateBow();
 }
 
-TowerAppRenderer::~TowerAppRenderer()
-{
-	Release();
-}
-
 void TowerAppRenderer::Release() const
 {
 	delete m_pBowTransform;

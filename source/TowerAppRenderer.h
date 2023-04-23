@@ -39,7 +39,7 @@ class TowerAppRenderer
 {
 public:
 	TowerAppRenderer(const Framework::CoreServices& services);
-	~TowerAppRenderer();
+	~TowerAppRenderer() = default;
 	void Release() const;
 	void Render(const Math::Float3& cameraPosition, const DirectX::XMMATRIX& viewProjection);
 
