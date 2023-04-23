@@ -15,17 +15,16 @@
 #include <Game/Transform.h>
 #include <Framework/CoreServices.h>
 
-TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services, Game::Camera& camera)
+TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 	: m_Window{ services.GetWindow()}
 	, m_Gpu{ services.GetGpu() }
 	, m_Canvas{ services.GetCanvas() }
 	, m_FpsDisplay{ services.GetGpu(), services.GetCanvas(), services.GetWindow()}
-	, m_Camera{ camera }
-	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(services.GetGpu(), camera, false) }
-	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(services.GetGpu(), camera))
-	, m_pTransformRenderer(new TransformRenderer(services.GetGpu(), camera))
+	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(services.GetGpu(), false) }
+	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(services.GetGpu()))
+	, m_pTransformRenderer(new TransformRenderer(services.GetGpu()))
 {
-	DebugRenderer::Init(m_Gpu, m_Camera);
+	DebugRenderer::Init(m_Gpu);
 	services.GetFpsControl().SetFpsDisplay(m_FpsDisplay);
 
 	//CreateCube();
@@ -50,15 +49,15 @@ void TowerAppRenderer::Release() const
 	DebugRenderer::Release();
 }
 
-void TowerAppRenderer::Render()
+void TowerAppRenderer::Render(const Math::Float3& cameraPosition, const DirectX::XMMATRIX& viewProjection)
 {
 	//m_pBowTransform->Position.z += 1.f * Game::GameGlobals::GetDeltaTime();
 
 	m_Canvas.BeginPaint();
-	m_pTransformRenderer->Render();
-	m_pSimpleRenderer->Render();
-	m_pUnlitRenderer->Render();
-	DebugRenderer::Render();
+	m_pTransformRenderer->Render(cameraPosition, viewProjection);
+	m_pSimpleRenderer->Render(cameraPosition, viewProjection);
+	m_pUnlitRenderer->Render(cameraPosition, viewProjection);
+	DebugRenderer::Render(cameraPosition, viewProjection);
 	m_FpsDisplay.Render();
 	m_Canvas.Present();
 }

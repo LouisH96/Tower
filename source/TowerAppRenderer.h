@@ -38,10 +38,10 @@ namespace MyEngine
 class TowerAppRenderer
 {
 public:
-	TowerAppRenderer(const Framework::CoreServices& services, Game::Camera& camera);
+	TowerAppRenderer(const Framework::CoreServices& services);
 	~TowerAppRenderer();
 	void Release() const;
-	void Render();
+	void Render(const Math::Float3& cameraPosition, const DirectX::XMMATRIX& viewProjection);
 
 private:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
@@ -51,7 +51,6 @@ private:
 	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
 	Rendering::FpsDisplay m_FpsDisplay;
-	Game::Camera& m_Camera;
 
 	Rendering::RendererFactory::UnlitRenderer* m_pUnlitRenderer{};
 	SimpleRenderer* m_pSimpleRenderer{};
