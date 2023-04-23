@@ -18,5 +18,9 @@ void TowerApp::Release()
 
 void TowerApp::Update()
 {
+}
+
+void TowerApp::Render()
+{
 	m_Renderer.Render();
 }

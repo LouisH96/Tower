@@ -46,7 +46,7 @@ void TowerAppRenderer::Release() const
 
 void TowerAppRenderer::Render()
 {
-	m_pBowTransform->Position.z += 1.f * Game::GameGlobals::GetDeltaTime();
+	//m_pBowTransform->Position.z += 1.f * Game::GameGlobals::GetDeltaTime();
 
 	m_Canvas.BeginPaint();
 	m_pTransformRenderer->Render();
@@ -89,7 +89,7 @@ void TowerAppRenderer::CreateArrows() const
 void TowerAppRenderer::CreateBow()
 {
 	//MESH
-	const std::wstring meshPath{ Framework::Resources::GetLocalResourcePath(L"SM_Prop_Sled_02.fbx") };
+	const std::wstring meshPath{ Framework::Resources::GetLocalResourcePath(L"Rigged_Bow_Testing.fbx") };
 	Io::Fbx::FbxClass fbxModel{ meshPath };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
@@ -100,12 +100,12 @@ void TowerAppRenderer::CreateBow()
 	m_pBowMesh = Rendering::Mesh::Create(m_Gpu, vertices);
 
 	//TEXTURE
-	const std::wstring texturePath{ Framework::Resources::GetLocalResourcePath(L"PolygonSnow_Texture_01_A.png") };
+	const std::wstring texturePath{ Framework::Resources::GetLocalResourcePath(L"Texture_01.png") };
 	m_pBowTexture = new Rendering::Texture(m_Gpu, texturePath);
 
 	//TRANSFORM
 	m_pBowTransform = new Game::Transform();
 
-	//ADD ENTRY²
+	//ADD ENTRY
 	m_pTransformRenderer->AddEntry(*m_pBowMesh, *m_pBowTexture, *m_pBowTransform);
 }

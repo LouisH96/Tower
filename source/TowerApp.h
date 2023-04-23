@@ -37,6 +37,7 @@ public:
 	explicit TowerApp(const Framework::AppServices& appData);
 	void Release();
 	void Update();
+	void Render();
 
 private:
 	App::Wrappers::Win32::Window& m_Window;
