@@ -14,67 +14,52 @@
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
 #include <Game/Transform.h>
 #include <Framework/CoreServices.h>
+#include <Game/Camera/FpsCameraController.h>
+
+using namespace DirectX;
+using namespace Rendering;
 
 TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
-	: m_Window{ services.GetWindow()}
+	: m_Window{ services.GetWindow() }
 	, m_Gpu{ services.GetGpu() }
 	, m_Canvas{ services.GetCanvas() }
-	, m_FpsDisplay{ services.GetGpu(), services.GetCanvas(), services.GetWindow()}
+	, m_FpsDisplay{ services.GetGpu(), services.GetCanvas(), services.GetWindow() }
 	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(services.GetGpu(), false) }
 	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(services.GetGpu()))
-	, m_pTransformRenderer(new TransformRenderer(services.GetGpu()))
+	, m_BlendState(services.GetGpu())
+	, m_RasterizerState{ services.GetGpu() }
+	, m_Sampler{ services.GetGpu() }
+	, m_Shader{ services.GetGpu(), Framework::Resources::GetGlobalShaderPath(L"LambertCam_Tex_Trans.hlsl") }
+	, m_InputLayout{ services.GetGpu(), V_PosColNorm::ELEMENTS, V_PosColNorm::NR_ELEMENTS }
+	, m_CameraConstantBuffer{ services.GetGpu() }
+	, m_Bow{ services.GetGpu() }
+	, m_ModelConstantBuffer{ m_Gpu }
 {
 	DebugRenderer::Init(m_Gpu);
 	services.GetFpsControl().SetFpsDisplay(m_FpsDisplay);
 
-	//CreateCube();
 	CreateArrows();
-	CreateBow();
 }
 
 void TowerAppRenderer::Release() const
 {
-	delete m_pBowTransform;
-	delete m_pBowTexture;
-	delete m_pBowMesh;
-
-	delete m_pTransformRenderer;
 	delete m_pSimpleRenderer;
 	delete m_pUnlitRenderer;
 	DebugRenderer::Release();
 }
 
-void TowerAppRenderer::Render(const Math::Float3& cameraPosition, const DirectX::XMMATRIX& viewProjection)
+void TowerAppRenderer::Render(const Game::FpsCameraController& cameraController)
 {
-	//m_pBowTransform->Position.z += 1.f * Game::GameGlobals::GetDeltaTime();
+	const Float3& cameraPosition{ cameraController.GetCameraPosition() };
+	const XMMATRIX viewProjection{ cameraController.GetViewProjectionMatrix() };
 
 	m_Canvas.BeginPaint();
-	m_pTransformRenderer->Render(cameraPosition, viewProjection);
+	BeginCustomRender(cameraController);
 	m_pSimpleRenderer->Render(cameraPosition, viewProjection);
 	m_pUnlitRenderer->Render(cameraPosition, viewProjection);
 	DebugRenderer::Render(cameraPosition, viewProjection);
 	m_FpsDisplay.Render();
 	m_Canvas.Present();
-}
-
-void TowerAppRenderer::CreateCube() const
-{
-	using namespace Math;
-	Array<Float3> positions{};
-	Array<Float3> normals{};
-	Array<int> indices{};
-	const Cube cube{ {0,0,0},1.f };
-	Generation::Shapes::GenerateCubeBuffers(cube, positions, normals, indices);
-	Array<Rendering::RendererFactory::UnlitRenderer::VertexType> vertices{ positions.GetSize() };
-	for (int i = 0; i < vertices.GetSize(); i++)
-	{
-		Float3 color;
-		if (i / 8 == 0) color = { 1,0,0 };
-		else if (i / 8 == 1) color = { 0,1,0 };
-		else color = { 0,0,1 };
-		vertices[i] = { {positions[i].x, positions[i].y, positions[i].z }, color };
-	}
-	m_pUnlitRenderer->AddMesh(vertices, indices);
 }
 
 void TowerAppRenderer::CreateArrows() const
@@ -83,29 +68,20 @@ void TowerAppRenderer::CreateArrows() const
 	Array<int> pivotIndices{};
 	Generation::ArrowGenerator::CreatePivotArrows(pivotVertices, pivotIndices, 16, { 0,0,0 });
 	m_pSimpleRenderer->AddMesh(pivotVertices, pivotIndices);
-
 }
 
-void TowerAppRenderer::CreateBow()
+void TowerAppRenderer::BeginCustomRender(const Game::FpsCameraController& cameraController)
 {
-	//MESH
-	const std::wstring meshPath{ Framework::Resources::GetLocalResourcePath(L"Rigged_Bow_Testing.fbx") };
-	Io::Fbx::FbxClass fbxModel{ meshPath };
-	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
+	m_Sampler.ActivatePs(m_Gpu);
+	m_RasterizerState.Activate(m_Gpu);
+	m_InputLayout.Activate(m_Gpu);
+	m_BlendState.Activate(m_Gpu);
+	m_Shader.Activate();
 
-	Array<TransformRenderer::Vertex> vertices{ geom.Points.GetSize()};
-	for (int i = 0; i < geom.Points.GetSize(); i++)
-		vertices[i] = TransformRenderer::Vertex{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
-
-	m_pBowMesh = Rendering::Mesh::Create(m_Gpu, vertices);
-
-	//TEXTURE
-	const std::wstring texturePath{ Framework::Resources::GetLocalResourcePath(L"Texture_01.png") };
-	m_pBowTexture = new Rendering::Texture(m_Gpu, texturePath);
-
-	//TRANSFORM
-	m_pBowTransform = new Game::Transform();
-
-	//ADD ENTRY
-	m_pTransformRenderer->AddEntry(*m_pBowMesh, *m_pBowTexture, *m_pBowTransform);
+	const TowerAppRenderData data
+	{
+		cameraController.GetCameraPosition(),
+		cameraController.GetProjectionMatrix()
+	};
+	m_Bow.Render(*this, data);
 }

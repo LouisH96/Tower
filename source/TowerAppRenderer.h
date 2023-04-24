@@ -2,6 +2,8 @@
 #include <Rendering/FpsDisplay.h>
 #include <Rendering/Renderers/RendererFactory.h>
 
+#include "Bow.h"
+
 namespace MyEngine
 {
 	namespace Framework
@@ -11,6 +13,7 @@ namespace MyEngine
 
 	namespace Game
 	{
+		class FpsCameraController;
 		class Camera;
 		class FocusPointCamera;
 	}
@@ -35,17 +38,27 @@ namespace MyEngine
 	}
 }
 
+struct TowerAppRenderData
+{
+	Math::Float3 CameraPosition;
+	DirectX::XMMATRIX CameraProjection;
+};
+
 class TowerAppRenderer
 {
 public:
+
 	TowerAppRenderer(const Framework::CoreServices& services);
 	~TowerAppRenderer() = default;
 	void Release() const;
-	void Render(const Math::Float3& cameraPosition, const DirectX::XMMATRIX& viewProjection);
+	void Render(const Game::FpsCameraController& cameraController);
+
+	Rendering::ConstantBuffer<Rendering::CB_CamMatPos>& GetCameraConstantBuffer() { return m_CameraConstantBuffer; }
+	Rendering::ConstantBuffer<Rendering::CB_ModelBuffer>& GetModelConstantBuffer() { return m_ModelConstantBuffer; }
+	Rendering::Gpu& GetGpu() const { return m_Gpu; }
 
 private:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
-	using TransformRenderer = Rendering::R_LambertCam_Tex_Transform;
 
 	App::Wrappers::Win32::Window& m_Window;
 	Rendering::Gpu& m_Gpu;
@@ -54,14 +67,20 @@ private:
 
 	Rendering::RendererFactory::UnlitRenderer* m_pUnlitRenderer{};
 	SimpleRenderer* m_pSimpleRenderer{};
-	TransformRenderer* m_pTransformRenderer{};
 
-	Rendering::Mesh* m_pBowMesh{};
-	Rendering::Texture* m_pBowTexture{};
-	Game::Transform* m_pBowTransform{};
+	Bow m_Bow;
 
-	void CreateCube() const;
+	//Custom rendering
+	Rendering::BlendState m_BlendState;
+	Rendering::RasterizerState m_RasterizerState;
+	Rendering::SamplerState m_Sampler;
+	Rendering::InputLayout m_InputLayout;
+	Rendering::Shader m_Shader;
+	Rendering::ConstantBuffer<Rendering::CB_CamMatPos> m_CameraConstantBuffer;
+	Rendering::ConstantBuffer<Rendering::CB_ModelBuffer> m_ModelConstantBuffer;
+
 	void CreateArrows() const;
-	void CreateBow();
+
+	void BeginCustomRender(const Game::FpsCameraController& cameraController);
 };
 

@@ -25,5 +25,5 @@ void TowerApp::Update()
 
 void TowerApp::Render()
 {
-	m_Renderer.Render(m_CameraController.GetCameraPosition(), m_CameraController.GetViewProjectionMatrix());
+	m_Renderer.Render(m_CameraController);
 }
