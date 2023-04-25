@@ -7,6 +7,8 @@
 #include <Rendering/State/Texture.h>
 #include <Rendering/Structs/VertexTypes.h>
 #include "TowerAppRenderer.h"
+#include <Game/Globals.h>
+#include <App/Wrappers/Win32/Mouse.h>
 
 Bow::Bow(Rendering::Gpu& gpu)
 {
@@ -44,17 +46,35 @@ Bow::Bow(Rendering::Gpu& gpu)
 
 Bow::~Bow()
 {
+	for (int i = 0; i < m_BowData.size(); i++)
+		delete m_BowData[i].pTransform;
 	delete m_pArrowMesh;
 	delete m_pBowMesh;
 	delete m_pTexture;
 }
 
-void Bow::Update(const DirectX::XMMATRIX& cameraWorld)
+void Bow::Update(const DirectX::XMMATRIX& cameraWorld, Rendering::R_LambertCam_Tex_Transform& renderer)
 {
-	m_WorldMatrix = m_LocalMatrix * cameraWorld;
+	m_WorldMatrix = cameraWorld * m_LocalMatrix;
 
 	if (Globals::pMouse->IsLeftBtnReleased())
-		Logger::Print("Shoot");
+	{
+		m_BowData.push_back(BowData{
+				new Game::Transform(m_WorldMatrix),
+				Math::Float3{m_WorldMatrix.r[2] }.Normalized()
+			});
+		const BowData& bowData{ m_BowData[m_BowData.size() - 1] };
+		renderer.AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
+	}
+	m_WorldMatrix = m_LocalMatrix * cameraWorld;
+
+	/*constexpr float maxSpeed = .1;
+	constexpr float gravity = -9.81;
+	for (int i = 0; i < m_BowData.size(); i++)
+	{
+		m_BowTransforms[i]->Position.z += maxSpeed * Globals::DeltaTime;
+		m_BowTransforms[i]->Position.y += gravity * Globals::DeltaTime;
+	}*/
 }
 
 void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)

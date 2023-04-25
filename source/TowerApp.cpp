@@ -29,7 +29,7 @@ void TowerApp::Update()
 	}
 
 	m_CameraController.Update();
-	m_Bow.Update(m_CameraController.GetWorldMatrix());
+	m_Bow.Update(m_CameraController.GetWorldMatrix(), m_Renderer.GetTransformRenderer());
 }
 
 void TowerApp::Render()
