@@ -11,8 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyEngine", "D:\projects\sof
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{5A06C5F8-7A29-4FC3-82C2-5CFFE218EB2C}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\..\..\VirtualWorld\resources\Shaders\lambertCamDir.hlsl = ..\..\..\..\..\..\VirtualWorld\resources\Shaders\lambertCamDir.hlsl
-		..\..\..\..\..\..\VirtualWorld\resources\Shaders\lambertCamDir_texture.hlsl = ..\..\..\..\..\..\VirtualWorld\resources\Shaders\lambertCamDir_texture.hlsl
+		..\..\..\..\..\..\VirtualWorld\resources\Shaders\LambertCam_Tex.hlsl = ..\..\..\..\..\..\VirtualWorld\resources\Shaders\LambertCam_Tex.hlsl
+		..\..\..\..\..\..\VirtualWorld\resources\Shaders\LambertCam_Tex_Trans.hlsl = ..\..\..\..\..\..\VirtualWorld\resources\Shaders\LambertCam_Tex_Trans.hlsl
 	EndProjectSection
 EndProject
 Global

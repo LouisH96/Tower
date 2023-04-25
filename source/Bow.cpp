@@ -14,8 +14,7 @@ Bow::Bow(Rendering::Gpu& gpu)
 	using namespace Rendering;
 	using namespace DirectX;
 
-	m_World = XMMatrixTranslation(-.5, 0, 1.2);
-	m_InverseTranspose = XMMatrixInverse(nullptr, XMMatrixTranspose(m_World));
+	m_LocalMatrix = XMMatrixTranslation(-.5, 0, 1.2);
 
 	//BOW-MESH
 	const std::wstring meshPath{ Framework::Resources::GetLocalResourcePath(L"Rigged_Bow_Testing.fbx") };
@@ -51,27 +50,12 @@ Bow::~Bow()
 	delete m_pTexture;
 }
 
-void Bow::Render(TowerAppRenderer& renderer, const TowerAppRenderData& data)
+void Bow::Update(const DirectX::XMMATRIX& cameraWorld)
 {
-	renderer.GetCameraConstantBuffer().Update(renderer.GetGpu(), Rendering::CB_CamMatPos{ data.CameraPosition, GetWorld() * data.CameraProjection });
-	renderer.GetCameraConstantBuffer().Activate(renderer.GetGpu());
+	m_WorldMatrix = m_LocalMatrix * cameraWorld;
+}
 
-	renderer.GetModelConstantBuffer().Update(renderer.GetGpu(), Rendering::CB_ModelBuffer{ GetInverseTranspose() });
-	renderer.GetModelConstantBuffer().Activate(renderer.GetGpu(), 1);
-
-	m_pTexture->Activate(renderer.GetGpu());
-	m_pBowMesh->Activate(renderer.GetGpu());
-	m_pBowMesh->Draw(renderer.GetGpu());
-
-	m_pArrowMesh->Activate(renderer.GetGpu());
-	m_pArrowMesh->Draw(renderer.GetGpu());
-
-
-	m_World = DirectX::XMMatrixTranslation(.5, 0, 1.2);
-	m_InverseTranspose = XMMatrixInverse(nullptr, XMMatrixTranspose(m_World));
-	renderer.GetCameraConstantBuffer().Update(renderer.GetGpu(), Rendering::CB_CamMatPos{ data.CameraPosition, GetWorld() * data.CameraProjection });
-	renderer.GetModelConstantBuffer().Update(renderer.GetGpu(), Rendering::CB_ModelBuffer{ GetInverseTranspose() });
-	m_pArrowMesh->Draw(renderer.GetGpu());
-	m_World = DirectX::XMMatrixTranslation(-.5, 0, 1.2);
-	m_InverseTranspose = XMMatrixInverse(nullptr, XMMatrixTranspose(m_World));
+void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
+{
+	renderer.AddEntry(*m_pBowMesh, *m_pTexture, m_WorldMatrix);
 }

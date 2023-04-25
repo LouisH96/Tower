@@ -38,24 +38,18 @@ namespace MyEngine
 	}
 }
 
-struct TowerAppRenderData
-{
-	Math::Float3 CameraPosition;
-	DirectX::XMMATRIX CameraProjection;
-};
-
 class TowerAppRenderer
 {
 public:
+	using TransformRenderer = Rendering::R_LambertCam_Tex_Transform;
 
 	TowerAppRenderer(const Framework::CoreServices& services);
 	~TowerAppRenderer() = default;
 	void Release() const;
 	void Render(const Game::FpsCameraController& cameraController);
 
-	Rendering::ConstantBuffer<Rendering::CB_CamMatPos>& GetCameraConstantBuffer() { return m_CameraConstantBuffer; }
-	Rendering::ConstantBuffer<Rendering::CB_ModelBuffer>& GetModelConstantBuffer() { return m_ModelConstantBuffer; }
 	Rendering::Gpu& GetGpu() const { return m_Gpu; }
+	TransformRenderer& GetTransformRenderer() const { return *m_pTransformRenderer; }
 
 private:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
@@ -67,20 +61,8 @@ private:
 
 	Rendering::RendererFactory::UnlitRenderer* m_pUnlitRenderer{};
 	SimpleRenderer* m_pSimpleRenderer{};
-
-	Bow m_Bow;
-
-	//Custom rendering
-	Rendering::BlendState m_BlendState;
-	Rendering::RasterizerState m_RasterizerState;
-	Rendering::SamplerState m_Sampler;
-	Rendering::InputLayout m_InputLayout;
-	Rendering::Shader m_Shader;
-	Rendering::ConstantBuffer<Rendering::CB_CamMatPos> m_CameraConstantBuffer;
-	Rendering::ConstantBuffer<Rendering::CB_ModelBuffer> m_ModelConstantBuffer;
+	TransformRenderer* m_pTransformRenderer{};
 
 	void CreateArrows() const;
-
-	void BeginCustomRender(const Game::FpsCameraController& cameraController);
 };
 

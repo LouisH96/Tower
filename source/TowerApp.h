@@ -40,4 +40,6 @@ private:
 	Rendering::Canvas& m_Canvas;
 	Game::FpsCameraController m_CameraController;
 	TowerAppRenderer m_Renderer;
+
+	Bow m_Bow;
 };

@@ -1,4 +1,7 @@
 #pragma once
+#include <Game/Transform.h>
+#include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
+
 class TowerAppRenderer;
 struct TowerAppRenderData;
 
@@ -18,16 +21,14 @@ public:
 	Bow(Rendering::Gpu& gpu);
 	~Bow();
 
-	void Render(TowerAppRenderer& renderer, const TowerAppRenderData& data);
+	void Update(const DirectX::XMMATRIX& cameraWorld);
 
-	Rendering::Mesh& GetBowMesh() const { return *m_pBowMesh; }
-	Rendering::Texture& GetTexture() const { return *m_pTexture; }
-	const DirectX::XMMATRIX& GetWorld() const { return m_World; }
-	const DirectX::XMMATRIX& GetInverseTranspose() const { return m_InverseTranspose; }
+	void Register(Rendering::R_LambertCam_Tex_Transform& renderer);
 
 private:
-	DirectX::XMMATRIX m_World{};
-	DirectX::XMMATRIX m_InverseTranspose{};
+	DirectX::XMMATRIX m_LocalMatrix{};
+	DirectX::XMMATRIX m_WorldMatrix{};
+
 	Rendering::Texture* m_pTexture{};
 	Rendering::Mesh* m_pBowMesh{};
 	Rendering::Mesh* m_pArrowMesh{};

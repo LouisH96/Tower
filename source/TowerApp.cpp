@@ -9,8 +9,10 @@ TowerApp::TowerApp(const Framework::CoreServices& services)
 	, m_Canvas{ services.GetCanvas() }
 	, m_CameraController{ services.GetCamera(), services.GetWindow().GetKeyboard(), services.GetWindow().GetMouse() }
 	, m_Renderer{ services }
+	, m_Bow{ services.GetGpu() }
 {
-	m_CameraController.SetPosition({ 0,0,-2 });
+	m_CameraController.SetPosition({ 0,1,0 });
+	m_Bow.Register(m_Renderer.GetTransformRenderer());
 }
 
 void TowerApp::Release()
@@ -20,7 +22,14 @@ void TowerApp::Release()
 
 void TowerApp::Update()
 {
+	if(m_Window.GetKeyboard().IsDown_('\x1b'))
+	{
+		m_Window.SetIsDestroyed();
+		return;
+	}
+
 	m_CameraController.Update();
+	m_Bow.Update(m_CameraController.GetWorldMatrix());
 }
 
 void TowerApp::Render()
