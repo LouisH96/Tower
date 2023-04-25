@@ -22,7 +22,7 @@ void TowerApp::Release()
 
 void TowerApp::Update()
 {
-	if(m_Window.GetKeyboard().IsDown_('\x1b'))
+	if(Globals::pKeyboard->IsDown_('\x1b'))
 	{
 		m_Window.SetIsDestroyed();
 		return;

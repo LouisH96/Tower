@@ -6,7 +6,6 @@
 #include <Rendering/State/Mesh.h>
 #include <Rendering/State/Texture.h>
 #include <Rendering/Structs/VertexTypes.h>
-
 #include "TowerAppRenderer.h"
 
 Bow::Bow(Rendering::Gpu& gpu)
@@ -53,6 +52,9 @@ Bow::~Bow()
 void Bow::Update(const DirectX::XMMATRIX& cameraWorld)
 {
 	m_WorldMatrix = m_LocalMatrix * cameraWorld;
+
+	if (Globals::pMouse->IsLeftBtnReleased())
+		Logger::Print("Shoot");
 }
 
 void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
