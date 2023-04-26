@@ -22,11 +22,14 @@ void TowerApp::Release()
 
 void TowerApp::Update()
 {
-	if(Globals::pKeyboard->IsDown_('\x1b'))
+	if (Globals::pKeyboard->IsDown_('\x1b'))
 	{
 		m_Window.SetIsDestroyed();
 		return;
 	}
+
+	const Math::Float2 movement{ Globals::pKeyboard->GetWasdInput(Globals::DeltaTime) };
+	m_CameraController.MoveRelative({ movement.x, 0, movement.y });
 
 	m_CameraController.Update();
 	m_Bow.Update(m_CameraController.GetWorldMatrix(), m_Renderer.GetTransformRenderer());
