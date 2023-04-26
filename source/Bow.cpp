@@ -15,7 +15,7 @@ Bow::Bow(Rendering::Gpu& gpu)
 	using namespace Rendering;
 	using namespace DirectX;
 
-	m_LocalMatrix = XMMatrixTranslation(-.5, 0, 1.2);
+	m_LocalMatrix = XMMatrixTranslation(.5, 0, 1.2);
 
 	//BOW-MESH
 	const std::wstring meshPath{ Framework::Resources::GetLocalResourcePath(L"Rigged_Bow_Testing.fbx") };
@@ -55,26 +55,33 @@ Bow::~Bow()
 
 void Bow::Update(const DirectX::XMMATRIX& cameraWorld, Rendering::R_LambertCam_Tex_Transform& renderer)
 {
-	m_WorldMatrix = cameraWorld * m_LocalMatrix;
+	using namespace DirectX;
+
+	m_WorldMatrix = m_LocalMatrix * cameraWorld;
 
 	if (Globals::pMouse->IsLeftBtnReleased())
 	{
 		m_BowData.push_back(BowData{
 				new Game::Transform(m_WorldMatrix),
-				Math::Float3{m_WorldMatrix.r[2] }.Normalized()
+				Math::Float3{m_WorldMatrix.r[2] }.Normalized()*6
 			});
 		const BowData& bowData{ m_BowData[m_BowData.size() - 1] };
 		renderer.AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
 	}
-	m_WorldMatrix = m_LocalMatrix * cameraWorld;
 
-	/*constexpr float maxSpeed = .1;
+	constexpr float maxSpeed = .1;
 	constexpr float gravity = -9.81;
 	for (int i = 0; i < m_BowData.size(); i++)
 	{
-		m_BowTransforms[i]->Position.z += maxSpeed * Globals::DeltaTime;
-		m_BowTransforms[i]->Position.y += gravity * Globals::DeltaTime;
-	}*/
+		m_BowData[i].Velocity.y += gravity * Globals::DeltaTime;
+		m_BowData[i].pTransform->Position += m_BowData[i].Velocity * Globals::DeltaTime;
+
+		XMVECTOR center{ 0,0,0,1 };
+		XMVECTOR lookDir{ XMLoadFloat3(reinterpret_cast<const XMFLOAT3*>(&m_BowData[i].Velocity)) };
+		XMMATRIX rotationMatrix = XMMatrixLookAtLH(center, lookDir, { 0,-1,0,0 }) * m_WorldMatrix;
+		XMVECTOR rotationQuaternion = XMQuaternionRotationMatrix(rotationMatrix);
+		m_BowData[i].pTransform->Rotation = { rotationQuaternion };
+	}
 }
 
 void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
