@@ -35,6 +35,7 @@ Bow::Bow(Rendering::Gpu& gpu)
 	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath };
 	Io::Fbx::FbxClass::Geometry& arrowGeom = arrowFbxModel.GetGeometries()[0];
 
+
 	Array<V_PosNorUv> arrowVertices{ arrowGeom.Points.GetSize() };
 	for (int i = 0; i < arrowGeom.Points.GetSize(); i++)
 		arrowVertices[i] = V_PosNorUv{ arrowGeom.Points[i] * 0.01f, arrowGeom.Normals[i], arrowGeom.Uvs[i] };

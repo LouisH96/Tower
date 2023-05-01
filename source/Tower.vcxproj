@@ -100,12 +100,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="GameObjects\Terrain.cpp" />
     <ClCompile Include="TowerApp.cpp" />
     <ClCompile Include="TowerAppRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h" />
     <ClInclude Include="BowRenderer.h" />
+    <ClInclude Include="GameObjects\Terrain.h" />
     <ClInclude Include="TowerApp.h" />
     <ClInclude Include="TowerAppRenderer.h" />
   </ItemGroup>

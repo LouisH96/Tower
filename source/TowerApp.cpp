@@ -10,9 +10,11 @@ TowerApp::TowerApp(const Framework::CoreServices& services)
 	, m_CameraController{ services.GetCamera(), services.GetWindow().GetKeyboard(), services.GetWindow().GetMouse() }
 	, m_Renderer{ services }
 	, m_Bow{ services.GetGpu() }
+	, m_Terrain{ services.GetGpu() }
 {
 	m_CameraController.SetPosition({ 0,1,0 });
 	m_Bow.Register(m_Renderer.GetTransformRenderer());
+	m_Terrain.Register(m_Renderer);
 }
 
 void TowerApp::Release()
@@ -28,7 +30,7 @@ void TowerApp::Update()
 		return;
 	}
 
-	const Math::Float2 movement{ Globals::pKeyboard->GetWasdInput(Globals::DeltaTime) };
+	const Math::Float2 movement{ Globals::pKeyboard->GetWasdInput(Globals::DeltaTime*5) };
 	m_CameraController.MoveRelative({ movement.x, 0, movement.y });
 
 	m_CameraController.Update();

@@ -31,6 +31,8 @@ namespace MyEngine
 	}
 	namespace Rendering
 	{
+		class R_LambertLight_Tex;
+		class R_LambertCam_Tex;
 		class R_LambertCam_Tex_Transform;
 		class FpsDisplay;
 		class Gpu;
@@ -42,6 +44,7 @@ class TowerAppRenderer
 {
 public:
 	using TransformRenderer = Rendering::R_LambertCam_Tex_Transform;
+	using TerrainRenderer = Rendering::R_LambertLight_Tex;
 
 	TowerAppRenderer(const Framework::CoreServices& services);
 	~TowerAppRenderer() = default;
@@ -50,6 +53,7 @@ public:
 
 	Rendering::Gpu& GetGpu() const { return m_Gpu; }
 	TransformRenderer& GetTransformRenderer() const { return *m_pTransformRenderer; }
+	TerrainRenderer& GetTerrainRenderer() const { return *m_pTerrainRenderer; }
 
 private:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
@@ -62,6 +66,7 @@ private:
 	Rendering::RendererFactory::UnlitRenderer* m_pUnlitRenderer{};
 	SimpleRenderer* m_pSimpleRenderer{};
 	TransformRenderer* m_pTransformRenderer{};
+	TerrainRenderer* m_pTerrainRenderer{};
 
 	void CreateArrows() const;
 };

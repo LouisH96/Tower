@@ -8,8 +8,10 @@
 #include <Math/Cube.h>
 #include <Generation/Shapes/ArrowGenerator.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
+#include <Rendering/Renderers/R_LambertCam_Tex.h>
 #include <Framework/CoreServices.h>
 #include <Game/Camera/FpsCameraController.h>
+#include <Rendering/Renderers/R_LambertLight_Tex.h>
 
 using namespace Math;
 using namespace DirectX;
@@ -23,6 +25,7 @@ TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(services.GetGpu(), false) }
 	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(services.GetGpu()))
 	, m_pTransformRenderer{ new R_LambertCam_Tex_Transform(m_Gpu) }
+	, m_pTerrainRenderer{new R_LambertLight_Tex(m_Gpu)}
 {
 	DebugRenderer::Init(m_Gpu);
 	services.GetFpsControl().SetFpsDisplay(m_FpsDisplay);
@@ -32,6 +35,7 @@ TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 
 void TowerAppRenderer::Release() const
 {
+	delete m_pTerrainRenderer;
 	delete m_pTransformRenderer;
 	delete m_pSimpleRenderer;
 	delete m_pUnlitRenderer;
@@ -44,6 +48,7 @@ void TowerAppRenderer::Render(const Game::FpsCameraController& cameraController)
 	const XMMATRIX viewProjection{ cameraController.GetViewProjectionMatrix() };
 
 	m_Canvas.BeginPaint();
+	m_pTerrainRenderer->Render(cameraPosition, viewProjection);
 	m_pTransformRenderer->Render(cameraPosition, viewProjection);
 	m_pSimpleRenderer->Render(cameraPosition, viewProjection);
 	m_pUnlitRenderer->Render(cameraPosition, viewProjection);

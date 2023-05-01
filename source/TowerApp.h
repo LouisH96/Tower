@@ -1,6 +1,7 @@
 #pragma once
 #include <Game/Camera/FpsCameraController.h>
 #include "TowerAppRenderer.h"
+#include "GameObjects/Terrain.h"
 
 namespace MyEngine
 {
@@ -42,4 +43,5 @@ private:
 	TowerAppRenderer m_Renderer;
 
 	Bow m_Bow;
+	Terrain m_Terrain;
 };
