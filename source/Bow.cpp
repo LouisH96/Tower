@@ -9,13 +9,15 @@
 #include "TowerAppRenderer.h"
 #include <Game/Globals.h>
 #include <App/Wrappers/Win32/Mouse.h>
+#include <Math/Quaternion.h>
 
 Bow::Bow(Rendering::Gpu& gpu)
 {
 	using namespace Rendering;
 	using namespace DirectX;
+	using namespace Math;
 
-	m_LocalMatrix = XMMatrixTranslation(.5, 0, 1.2);
+	m_LocalTransform.Position = Float3{ .5f, 0, 1.2f };
 
 	//BOW-MESH
 	const std::wstring meshPath{ Framework::Resources::GetLocalResourcePath(L"Rigged_Bow_Testing.fbx") };
@@ -53,17 +55,16 @@ Bow::~Bow()
 	delete m_pTexture;
 }
 
-void Bow::Update(const DirectX::XMMATRIX& cameraWorld, Rendering::R_LambertCam_Tex_Transform& renderer)
+void Bow::Update(const Game::Transform& cameraTransform, Rendering::R_LambertCam_Tex_Transform& renderer)
 {
 	using namespace DirectX;
 
-	m_WorldMatrix = m_LocalMatrix * cameraWorld;
+	m_WorldTransform = cameraTransform.MakeChildTransform(m_LocalTransform);
 
 	if (Globals::pMouse->IsLeftBtnReleased())
 	{
 		m_BowData.push_back(BowData{
-				new Game::Transform(m_WorldMatrix),
-				Math::Float3{m_WorldMatrix.r[2] }.Normalized()*6
+			new Game::Transform(m_WorldTransform), m_WorldTransform.Rotation.GetForward() * 10
 			});
 		const BowData& bowData{ m_BowData[m_BowData.size() - 1] };
 		renderer.AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
@@ -75,16 +76,11 @@ void Bow::Update(const DirectX::XMMATRIX& cameraWorld, Rendering::R_LambertCam_T
 	{
 		m_BowData[i].Velocity.y += gravity * Globals::DeltaTime;
 		m_BowData[i].pTransform->Position += m_BowData[i].Velocity * Globals::DeltaTime;
-
-		XMVECTOR center{ 0,0,0,1 };
-		XMVECTOR lookDir{ XMLoadFloat3(reinterpret_cast<const XMFLOAT3*>(&m_BowData[i].Velocity)) };
-		XMMATRIX rotationMatrix = XMMatrixLookAtLH(center, lookDir, { 0,-1,0,0 }) * m_WorldMatrix;
-		XMVECTOR rotationQuaternion = XMQuaternionRotationMatrix(rotationMatrix);
-		m_BowData[i].pTransform->Rotation = { rotationQuaternion };
+		m_BowData[i].pTransform->Rotation = Math::Quaternion::FromForward(m_BowData[i].Velocity.Normalized());
 	}
 }
 
 void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
 {
-	renderer.AddEntry(*m_pBowMesh, *m_pTexture, m_WorldMatrix);
+	renderer.AddEntry(*m_pBowMesh, *m_pTexture, m_WorldTransform);
 }

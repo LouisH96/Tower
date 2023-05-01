@@ -32,7 +32,7 @@ void TowerApp::Update()
 	m_CameraController.MoveRelative({ movement.x, 0, movement.y });
 
 	m_CameraController.Update();
-	m_Bow.Update(m_CameraController.GetWorldMatrix(), m_Renderer.GetTransformRenderer());
+	m_Bow.Update(m_CameraController.GetTransform(), m_Renderer.GetTransformRenderer());
 }
 
 void TowerApp::Render()
