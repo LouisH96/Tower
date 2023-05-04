@@ -4,13 +4,13 @@
 #include <Framework/CoreServices.h>
 
 TowerApp::TowerApp(const Framework::CoreServices& services)
-	: m_Window{ services.GetWindow() }
-	, m_Gpu{ services.GetGpu() }
-	, m_Canvas{ services.GetCanvas() }
-	, m_CameraController{ services.GetCamera(), services.GetWindow().GetKeyboard(), services.GetWindow().GetMouse() }
+	: m_Window{ services.Window }
+	, m_Gpu{ services.Gpu }
+	, m_Canvas{ services.Canvas }
+	, m_CameraController{ services.Camera, services.Window.GetKeyboard(), services.Window.GetMouse() }
 	, m_Renderer{ services }
-	, m_Bow{ services.GetGpu() }
-	, m_Terrain{ services.GetGpu() }
+	, m_Bow{ services.Gpu }
+	, m_Terrain{ services.Gpu }
 {
 	m_CameraController.SetPosition({ 0,1,0 });
 	m_Bow.Register(m_Renderer.GetTransformRenderer());

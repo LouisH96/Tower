@@ -18,17 +18,17 @@ using namespace DirectX;
 using namespace Rendering;
 
 TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
-	: m_Window{ services.GetWindow() }
-	, m_Gpu{ services.GetGpu() }
-	, m_Canvas{ services.GetCanvas() }
-	, m_FpsDisplay{ services.GetGpu(), services.GetCanvas(), services.GetWindow() }
-	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(services.GetGpu(), false) }
-	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(services.GetGpu()))
+	: m_Window{ services.Window }
+	, m_Gpu{ services.Gpu }
+	, m_Canvas{ services.Canvas }
+	, m_FpsDisplay{ services.Gpu, services.Canvas, services.Window }
+	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(services.Gpu, false) }
+	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(services.Gpu))
 	, m_pTransformRenderer{ new R_LambertCam_Tex_Transform(m_Gpu) }
 	, m_pTerrainRenderer{new R_LambertLight_Tex(m_Gpu)}
 {
 	DebugRenderer::Init(m_Gpu);
-	services.GetFpsControl().SetFpsDisplay(m_FpsDisplay);
+	services.FpsControl.SetFpsDisplay(m_FpsDisplay);
 
 	CreateArrows();
 }
