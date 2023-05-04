@@ -12,12 +12,9 @@ namespace MyEngine
 	namespace App
 	{
 		class FpsControl;
-		namespace Wrappers
+		namespace Win32
 		{
-			namespace Win32
-			{
-				class Window;
-			}
+			class Window;
 		}
 	}
 	namespace Rendering
@@ -36,7 +33,7 @@ public:
 	void Render();
 
 private:
-	App::Wrappers::Win32::Window& m_Window;
+	App::Win32::Window& m_Window;
 	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
 	Game::FpsCameraController m_CameraController;

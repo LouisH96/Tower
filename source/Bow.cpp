@@ -8,7 +8,7 @@
 #include <Rendering/Structs/VertexTypes.h>
 #include "TowerAppRenderer.h"
 #include <Game/Globals.h>
-#include <App/Wrappers/Win32/Mouse.h>
+#include <App/Win32/Mouse.h>
 #include <Math/Quaternion.h>
 
 Bow::Bow(Rendering::Gpu& gpu)
