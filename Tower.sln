@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\resources\Shaders\LambertCam_Tex.hlsl = ..\..\..\resources\Shaders\LambertCam_Tex.hlsl
 		..\..\..\resources\Shaders\LambertCam_Tex_Trans.hlsl = ..\..\..\resources\Shaders\LambertCam_Tex_Trans.hlsl
+		..\..\..\resources\Shaders\LambertLight_Col.hlsl = ..\..\..\resources\Shaders\LambertLight_Col.hlsl
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyEngine", "..\..\..\MyEngine\Code\MyEngine\code\MyEngine\MyEngine.vcxproj", "{A022E896-D2D1-4445-960F-440E17870DA2}"

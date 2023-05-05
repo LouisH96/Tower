@@ -36,4 +36,7 @@ public:
 private:
 	Rendering::Texture* m_pTexture{};
 	Rendering::Mesh* m_pMesh{};
+
+	void FromMesh(const Rendering::Gpu& gpu);
+	void FromHeightMap(const Rendering::Gpu& gpu);
 };

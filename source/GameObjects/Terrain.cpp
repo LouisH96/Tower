@@ -9,10 +9,29 @@
 
 #include "../TowerAppRenderer.h"
 #include <Rendering/Renderers/R_LambertLight_Tex.h>
+#include "../HeightMap.h"
 
 Terrain::Terrain(Rendering::Gpu& gpu)
 {
-	//BOW-MESH
+	//FromMesh(gpu);
+	FromHeightMap(gpu);
+}
+
+Terrain::~Terrain()
+{
+	delete m_pTexture;
+	delete m_pMesh;
+}
+
+void Terrain::Register(const TowerAppRenderer& renderer) const
+{
+	//renderer.GetTerrainRenderer().AddEntry(*m_pMesh, *m_pTexture);
+	renderer.GetTerrainRenderer().AddEntry(*m_pMesh);
+}
+
+void Terrain::FromMesh(const Rendering::Gpu& gpu)
+{
+	//MESH
 	const std::wstring meshPath{ Framework::Resources::GetLocalResourcePath(L"SM_Env_Ground_Farm_Flat_01.fbx") };
 	Io::Fbx::FbxClass fbxModel{ meshPath };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
@@ -28,13 +47,15 @@ Terrain::Terrain(Rendering::Gpu& gpu)
 	m_pTexture = new Rendering::Texture(gpu, texturePath);
 }
 
-Terrain::~Terrain()
+void Terrain::FromHeightMap(const Rendering::Gpu& gpu)
 {
-	delete m_pTexture;
-	delete m_pMesh;
-}
+	Array<Rendering::V_PosNorCol> vertices{ 0 };
+	Array<int> indices{ 0 };
+	HeightMap heightMap{ {30,30}, 0, {30,30}};
+	heightMap.ApplyWave(5, .1);
+	heightMap.ApplyWaveX(10, .15);
+	heightMap.ApplyWaveY(7, .15);
+	heightMap.ToVertices(vertices, indices);
 
-void Terrain::Register(const TowerAppRenderer& renderer) const
-{
-	renderer.GetTerrainRenderer().AddEntry(*m_pMesh, *m_pTexture);
+	m_pMesh = Rendering::Mesh::Create(gpu, vertices, indices);
 }

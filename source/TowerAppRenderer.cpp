@@ -22,10 +22,10 @@ TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 	, m_Gpu{ services.Gpu }
 	, m_Canvas{ services.Canvas }
 	, m_FpsDisplay{ services.Gpu, services.Canvas, services.Window }
-	, m_pUnlitRenderer{ Rendering::RendererFactory::CreateUnlitRenderer(services.Gpu, false) }
-	, m_pSimpleRenderer(Rendering::RendererFactory::CreateSimpleRenderer(services.Gpu))
+	, m_pUnlitRenderer{RendererFactory::CreateUnlitRenderer(services.Gpu, false) }
+	, m_pSimpleRenderer(RendererFactory::CreateSimpleRenderer(services.Gpu))
 	, m_pTransformRenderer{ new R_LambertCam_Tex_Transform(m_Gpu) }
-	, m_pTerrainRenderer{new R_LambertLight_Tex(m_Gpu)}
+	, m_pTerrainRenderer{new TerrainRenderer(m_Gpu, false)}
 {
 	DebugRenderer::Init(m_Gpu);
 	services.FpsControl.SetFpsDisplay(m_FpsDisplay);
@@ -44,7 +44,7 @@ void TowerAppRenderer::Release() const
 
 void TowerAppRenderer::Render(const Game::FpsCameraController& cameraController)
 {
-	const Math::Float3& cameraPosition{ cameraController.GetCameraPosition() };
+	const Float3& cameraPosition{ cameraController.GetCameraPosition() };
 	const XMMATRIX viewProjection{ cameraController.GetViewProjectionMatrix() };
 
 	m_Canvas.BeginPaint();
@@ -59,7 +59,7 @@ void TowerAppRenderer::Render(const Game::FpsCameraController& cameraController)
 
 void TowerAppRenderer::CreateArrows() const
 {
-	Array<Rendering::V_PosColNorm> pivotVertices{};
+	Array<V_PosColNorm> pivotVertices{};
 	Array<int> pivotIndices{};
 	Generation::ArrowGenerator::CreatePivotArrows(pivotVertices, pivotIndices, 16, { 0,0,0 });
 	m_pSimpleRenderer->AddMesh(pivotVertices, pivotIndices);

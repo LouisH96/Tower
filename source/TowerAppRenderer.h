@@ -3,6 +3,7 @@
 #include <Rendering/Renderers/RendererFactory.h>
 
 #include "Bow.h"
+#include "Rendering/Renderers/R_LambertLight_Col.h"
 
 namespace MyEngine
 {
@@ -41,7 +42,7 @@ class TowerAppRenderer
 {
 public:
 	using TransformRenderer = Rendering::R_LambertCam_Tex_Transform;
-	using TerrainRenderer = Rendering::R_LambertLight_Tex;
+	using TerrainRenderer = Rendering::R_LambertLight_Col;
 
 	TowerAppRenderer(const Framework::CoreServices& services);
 	~TowerAppRenderer() = default;
