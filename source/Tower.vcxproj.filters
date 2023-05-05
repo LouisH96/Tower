@@ -7,11 +7,13 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="TowerApp.cpp" />
     <ClCompile Include="TowerAppRenderer.cpp" />
+    <ClCompile Include="GameObjects\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h" />
     <ClInclude Include="BowRenderer.h" />
     <ClInclude Include="TowerApp.h" />
     <ClInclude Include="TowerAppRenderer.h" />
+    <ClInclude Include="GameObjects\Terrain.h" />
   </ItemGroup>
 </Project>
