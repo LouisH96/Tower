@@ -1,7 +1,7 @@
 #pragma once
 #include <Game/Camera/FpsCameraController.h>
 #include "TowerAppRenderer.h"
-#include "GameObjects/Terrain.h"
+#include "Environment/Terrain.h"
 
 namespace MyEngine
 {

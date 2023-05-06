@@ -2,7 +2,7 @@
 #include <Game/Transform.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
 
-#include "GameObjects/Terrain.h"
+#include "Environment/Terrain.h"
 
 class TowerAppRenderer;
 struct TowerAppRenderData;

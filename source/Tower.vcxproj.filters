@@ -7,15 +7,15 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="TowerApp.cpp" />
     <ClCompile Include="TowerAppRenderer.cpp" />
-    <ClCompile Include="GameObjects\Terrain.cpp" />
-    <ClCompile Include="HeightMap.cpp" />
+    <ClCompile Include="Environment\Terrain.cpp" />
+    <ClCompile Include="Environment\HeightMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h" />
     <ClInclude Include="BowRenderer.h" />
     <ClInclude Include="TowerApp.h" />
     <ClInclude Include="TowerAppRenderer.h" />
-    <ClInclude Include="GameObjects\Terrain.h" />
-    <ClInclude Include="HeightMap.h" />
+    <ClInclude Include="Environment\Terrain.h" />
+    <ClInclude Include="Environment\HeightMap.h" />
   </ItemGroup>
 </Project>
