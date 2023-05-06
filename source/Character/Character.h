@@ -1,7 +1,9 @@
 #pragma once
-#include "Bow.h"
+#include "../Weapons/Bow.h"
 #include <Game/Camera/FpsCameraController.h>
 #include <Framework/CoreServices.h>
+
+class Terrain;
 
 class Character
 {

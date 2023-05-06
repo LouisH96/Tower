@@ -1,7 +1,11 @@
 #include "pch.h"
 #include "TowerApp.h"
+
 #include <Framework/BasicAppFrame.h>
 #include <Framework/CoreServices.h>
+
+#include "Character/Character.h"
+#include "Environment/Tower.h"
 
 using namespace Math;
 
@@ -18,7 +22,6 @@ TowerApp::TowerApp(const Framework::CoreServices& services)
 	m_pTerrain = new Terrain(services.Gpu, m_Renderer, {}, terrainSize);
 	m_pTower = new Tower(services, m_Renderer, towerPosition, towerRoofSize, towerHeight);
 	m_pCharacter = new Character(services, towerPosition + Float3::FromXz(towerRoofSize * .5) + Float3{ 0,towerHeight, 0 });
-
 
 	m_pCharacter->Register(*m_pTerrain);
 	m_pCharacter->Register(m_Renderer);

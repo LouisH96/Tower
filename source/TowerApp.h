@@ -1,10 +1,10 @@
 #pragma once
 #include <Game/Camera/FpsCameraController.h>
 
-#include "Character.h"
 #include "TowerAppRenderer.h"
 #include "Environment/Terrain.h"
-#include "Environment/Tower.h"
+
+class Character;
 
 namespace MyEngine
 {

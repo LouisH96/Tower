@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "Character.h"
 
-#include "TowerAppRenderer.h"
-#include "Environment/Tower.h"
+#include "../TowerAppRenderer.h"
+#include "../Environment/Tower.h"
+#include "../Environment/Terrain.h"
 #include "Framework/CoreServices.h"
 #include "Physics/CollisionDetection.h"
 

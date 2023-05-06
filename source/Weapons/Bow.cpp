@@ -1,17 +1,16 @@
 #include "pch.h"
 #include "Bow.h"
 
+#include <App/Win32/Mouse.h>s
 #include <Framework/Resources.h>
+#include <Game/Globals.h>
 #include <Io/Fbx/FbxClass.h>
+#include <Math/Quaternion.h>
 #include <Rendering/State/Mesh.h>
 #include <Rendering/State/Texture.h>
 #include <Rendering/Structs/VertexTypes.h>
-#include "TowerAppRenderer.h"
-#include <Game/Globals.h>
-#include <App/Win32/Mouse.h>s
-#include <Math/Quaternion.h>
-
-#include "Environment/Tower.h"
+#include "../TowerAppRenderer.h"
+#include "../Environment/Tower.h"
 
 Bow::Bow(Rendering::Gpu& gpu)
 {

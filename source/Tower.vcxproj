@@ -93,9 +93,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bow.cpp" />
-    <ClCompile Include="BowRenderer.cpp" />
-    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Weapons\Bow.cpp" />
+    <ClCompile Include="Weapons\BowRenderer.cpp" />
+    <ClCompile Include="Character\Character.cpp" />
     <ClCompile Include="Environment\HeightMap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -108,9 +108,9 @@
     <ClCompile Include="TowerAppRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bow.h" />
-    <ClInclude Include="BowRenderer.h" />
-    <ClInclude Include="Character.h" />
+    <ClInclude Include="Weapons\Bow.h" />
+    <ClInclude Include="Weapons\BowRenderer.h" />
+    <ClInclude Include="Character\Character.h" />
     <ClInclude Include="Environment\Terrain.h" />
     <ClInclude Include="Environment\HeightMap.h" />
     <ClInclude Include="Environment\Tower.h" />

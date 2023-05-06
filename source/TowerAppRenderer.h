@@ -2,7 +2,7 @@
 #include <Rendering/FpsDisplay.h>
 #include <Rendering/Renderers/RendererFactory.h>
 
-#include "Bow.h"
+#include "Weapons/Bow.h"
 #include "Rendering/Renderers/R_LambertLight_Col.h"
 
 namespace MyEngine
