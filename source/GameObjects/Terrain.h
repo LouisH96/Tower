@@ -32,11 +32,14 @@ public:
 	Terrain& operator=(Terrain&& other) noexcept = delete;
 
 	void Register(const TowerAppRenderer& renderer) const;
+	bool IsColliding(const Math::Float3& begin, const Math::Float3& end) const;
 
 private:
-	Rendering::Texture* m_pTexture{};
 	Rendering::Mesh* m_pMesh{};
 
-	void FromMesh(const Rendering::Gpu& gpu);
+	Array<Math::Float3> m_Points;
+	Array<Math::Float3> m_TriangleNormals;
+	Array<int> m_Indices;
+
 	void FromHeightMap(const Rendering::Gpu& gpu);
 };

@@ -8,7 +8,7 @@
 #include <Rendering/Structs/VertexTypes.h>
 #include "TowerAppRenderer.h"
 #include <Game/Globals.h>
-#include <App/Win32/Mouse.h>
+#include <App/Win32/Mouse.h>s
 #include <Math/Quaternion.h>
 
 Bow::Bow(Rendering::Gpu& gpu)
@@ -50,8 +50,8 @@ Bow::Bow(Rendering::Gpu& gpu)
 
 Bow::~Bow()
 {
-	for (int i = 0; i < m_BowData.size(); i++)
-		delete m_BowData[i].pTransform;
+	for (int i = 0; i < m_ArrowData.size(); i++)
+		delete m_ArrowData[i].pTransform;
 	delete m_pArrowMesh;
 	delete m_pBowMesh;
 	delete m_pTexture;
@@ -65,24 +65,40 @@ void Bow::Update(const Game::Transform& cameraTransform, Rendering::R_LambertCam
 
 	if (Globals::pMouse->IsLeftBtnReleased())
 	{
-		m_BowData.push_back(BowData{
+		m_ArrowData.push_back(ArrowData{
 			new Game::Transform(m_WorldTransform), m_WorldTransform.Rotation.GetForward() * 10
 			});
-		const BowData& bowData{ m_BowData[m_BowData.size() - 1] };
+		const ArrowData& bowData{ m_ArrowData[m_ArrowData.size() - 1] };
 		renderer.AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
 	}
 
-	constexpr float maxSpeed = .1;
-	constexpr float gravity = -9.81;
-	for (int i = 0; i < m_BowData.size(); i++)
-	{
-		m_BowData[i].Velocity.y += gravity * Globals::DeltaTime;
-		m_BowData[i].pTransform->Position += m_BowData[i].Velocity * Globals::DeltaTime;
-		m_BowData[i].pTransform->Rotation = Math::Quaternion::FromForward(m_BowData[i].Velocity.Normalized());
-	}
+	for (int i = 0; i < m_ArrowData.size(); i++)
+		UpdateArrow(m_ArrowData[i]);
 }
 
 void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
 {
 	renderer.AddEntry(*m_pBowMesh, *m_pTexture, m_WorldTransform);
+}
+
+void Bow::SetTerrain(const Terrain& terrain)
+{
+	m_pTerrain = &terrain;
+}
+
+void Bow::UpdateArrow(ArrowData& arrowData) const
+{
+	constexpr float maxSpeed = .1;
+	constexpr float gravity = -9.81;
+
+	if (arrowData.pTransform->Position.y <= -1) return;
+	if (arrowData.Velocity.x == INFINITY) return;
+
+	const Math::Float3 oldPos{ arrowData.pTransform->Position };
+	arrowData.Velocity.y += gravity * Globals::DeltaTime;
+	arrowData.pTransform->Position += arrowData.Velocity * Globals::DeltaTime;
+	arrowData.pTransform->Rotation = Math::Quaternion::FromForward(arrowData.Velocity.Normalized());
+
+	if (m_pTerrain->IsColliding(oldPos, arrowData.pTransform->Position))
+		arrowData.Velocity.x = INFINITY;
 }

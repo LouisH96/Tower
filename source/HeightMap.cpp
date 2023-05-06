@@ -77,7 +77,7 @@ void HeightMap::Divide(float scale)
 		m_Grid.Get(i) /= scale;
 }
 
-void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& indices) const
+void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::Float3>& triangleNormals, Array<int>& indices) const
 {
 	vertices = { m_Grid.GetNrElements() };
 
@@ -95,6 +95,8 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& 
 	}
 
 	//Normals
+	triangleNormals = { (m_Grid.GetNrCols() - 1) * (m_Grid.GetNrRows() - 1) * 2 };
+	int triangleIdx = 0;
 	idx = 0;
 	for (int iRow = 0; iRow < m_Grid.GetNrRows() - 1; iRow++)
 	{
@@ -115,6 +117,8 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& 
 
 			const Math::Float3 normal1{ diagonal.Cross(horizontal).Normalized() };
 			const Math::Float3 normal2{ vertical.Cross(diagonal).Normalized() };
+			triangleNormals[triangleIdx++] = normal1;
+			triangleNormals[triangleIdx++] = normal2;
 
 			vertices[idxBotLeft].Normal += normal1 + normal2;
 			vertices[idxBotRight].Normal += normal1;

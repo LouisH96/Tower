@@ -15,6 +15,8 @@ TowerApp::TowerApp(const Framework::CoreServices& services)
 	m_CameraController.SetPosition({ 0,1,0 });
 	m_Bow.Register(m_Renderer.GetTransformRenderer());
 	m_Terrain.Register(m_Renderer);
+
+	m_Bow.SetTerrain(m_Terrain);
 }
 
 void TowerApp::Release()

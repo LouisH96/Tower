@@ -2,6 +2,8 @@
 #include <Game/Transform.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
 
+#include "GameObjects/Terrain.h"
+
 class TowerAppRenderer;
 struct TowerAppRenderData;
 
@@ -24,9 +26,10 @@ public:
 	void Update(const Game::Transform& cameraTransform, Rendering::R_LambertCam_Tex_Transform& renderer);
 
 	void Register(Rendering::R_LambertCam_Tex_Transform& renderer);
+	void SetTerrain(const Terrain& terrain);
 
 private:
-	struct BowData
+	struct ArrowData
 	{
 		Game::Transform* pTransform;
 		Math::Float3 Velocity;
@@ -39,5 +42,9 @@ private:
 	Rendering::Mesh* m_pBowMesh{};
 	Rendering::Mesh* m_pArrowMesh{};
 
-	std::vector<BowData> m_BowData{};
+	std::vector<ArrowData> m_ArrowData{};
+
+	const Terrain* m_pTerrain{};
+
+	void UpdateArrow(ArrowData& arrowData) const;
 };
