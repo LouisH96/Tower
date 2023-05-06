@@ -59,7 +59,8 @@ Bow::~Bow()
 
 void Bow::Update(const Game::Transform& cameraTransform, Rendering::R_LambertCam_Tex_Transform& renderer)
 {
-	using namespace DirectX;
+	if (Globals::pMouse->GetScroll() != 0)
+		m_LocalTransform.Rotation.RotateBy({ 1,0,0 }, Globals::pMouse->GetScroll() * 3 * Math::Constants::TO_RAD);
 
 	m_WorldTransform = cameraTransform.MakeChildTransform(m_LocalTransform);
 
@@ -92,7 +93,7 @@ void Bow::UpdateArrow(ArrowData& arrowData) const
 	constexpr float gravity = -9.81;
 
 	if (arrowData.pTransform->Position.y <= -1) return;
-	if (arrowData.Velocity.x == INFINITY) return;
+	if (arrowData.Velocity.x == 2000) return;
 
 	const Math::Float3 oldPos{ arrowData.pTransform->Position };
 	arrowData.Velocity.y += gravity * Globals::DeltaTime;
@@ -100,5 +101,5 @@ void Bow::UpdateArrow(ArrowData& arrowData) const
 	arrowData.pTransform->Rotation = Math::Quaternion::FromForward(arrowData.Velocity.Normalized());
 
 	if (m_pTerrain->IsColliding(oldPos, arrowData.pTransform->Position))
-		arrowData.Velocity.x = INFINITY;
+		arrowData.Velocity.x = 2000;
 }
