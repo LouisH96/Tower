@@ -9,7 +9,7 @@
 
 #include "../TowerAppRenderer.h"
 #include <Rendering/Renderers/R_LambertLight_Tex.h>
-#include "../HeightMap.h"
+#include "HeightMap.h"
 #include "Physics/CollisionDetection.h"
 
 Terrain::Terrain(Rendering::Gpu& gpu)
