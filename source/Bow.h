@@ -4,6 +4,7 @@
 
 #include "Environment/Terrain.h"
 
+class Tower;
 class TowerAppRenderer;
 struct TowerAppRenderData;
 
@@ -26,7 +27,8 @@ public:
 	void Update(const Game::Transform& cameraTransform);
 
 	void Register(Rendering::R_LambertCam_Tex_Transform& renderer);
-	void SetTerrain(const Terrain& terrain);
+	void Register(const Terrain& terrain);
+	void Register(const Tower& tower);
 
 private:
 	struct ArrowData
@@ -46,6 +48,7 @@ private:
 	std::vector<ArrowData> m_ArrowData{};
 
 	const Terrain* m_pTerrain{};
+	const Tower* m_pTower{};
 
 	void UpdateArrow(ArrowData& arrowData) const;
 };

@@ -17,8 +17,13 @@ Character::Character(const Framework::CoreServices& services)
 
 void Character::Register(const Terrain& terrain)
 {
-	m_Bow.SetTerrain(terrain);
+	m_Bow.Register(terrain);
 	m_pTerrain = &terrain;
+}
+
+void Character::Register(const Tower& tower)
+{
+	m_Bow.Register(tower);
 }
 
 void Character::Register(const TowerAppRenderer& renderer)

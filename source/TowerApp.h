@@ -4,6 +4,7 @@
 #include "Character.h"
 #include "TowerAppRenderer.h"
 #include "Environment/Terrain.h"
+#include "Environment/Tower.h"
 
 namespace MyEngine
 {
@@ -38,4 +39,5 @@ private:
 
 	Character m_Character;
 	Terrain m_Terrain;
+	Tower m_Tower;
 };

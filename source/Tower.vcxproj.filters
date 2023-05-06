@@ -10,6 +10,7 @@
     <ClCompile Include="Environment\Terrain.cpp" />
     <ClCompile Include="Environment\HeightMap.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Environment\Tower.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h" />
@@ -19,5 +20,6 @@
     <ClInclude Include="Environment\Terrain.h" />
     <ClInclude Include="Environment\HeightMap.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Environment\Tower.h" />
   </ItemGroup>
 </Project>

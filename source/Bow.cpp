@@ -11,6 +11,8 @@
 #include <App/Win32/Mouse.h>s
 #include <Math/Quaternion.h>
 
+#include "Environment/Tower.h"
+
 Bow::Bow(Rendering::Gpu& gpu)
 {
 	using namespace Rendering;
@@ -83,9 +85,14 @@ void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
 	renderer.AddEntry(*m_pBowMesh, *m_pTexture, m_WorldTransform);
 }
 
-void Bow::SetTerrain(const Terrain& terrain)
+void Bow::Register(const Terrain& terrain)
 {
 	m_pTerrain = &terrain;
+}
+
+void Bow::Register(const Tower& tower)
+{
+	m_pTower = &tower;
 }
 
 void Bow::UpdateArrow(ArrowData& arrowData) const
@@ -101,6 +108,7 @@ void Bow::UpdateArrow(ArrowData& arrowData) const
 	arrowData.pTransform->Position += arrowData.Velocity * Globals::DeltaTime;
 	arrowData.pTransform->Rotation = Math::Quaternion::FromForward(arrowData.Velocity.Normalized());
 
-	if (m_pTerrain->IsColliding(oldPos, arrowData.pTransform->Position))
+	if (m_pTerrain->IsColliding(oldPos, arrowData.pTransform->Position) 
+		|| m_pTower->IsColliding(oldPos, arrowData.pTransform->Position))
 		arrowData.Velocity.x = 2000;
 }

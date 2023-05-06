@@ -103,6 +103,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Environment\Terrain.cpp" />
+    <ClCompile Include="Environment\Tower.cpp" />
     <ClCompile Include="TowerApp.cpp" />
     <ClCompile Include="TowerAppRenderer.cpp" />
   </ItemGroup>
@@ -112,6 +113,7 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Environment\Terrain.h" />
     <ClInclude Include="Environment\HeightMap.h" />
+    <ClInclude Include="Environment\Tower.h" />
     <ClInclude Include="TowerApp.h" />
     <ClInclude Include="TowerAppRenderer.h" />
   </ItemGroup>

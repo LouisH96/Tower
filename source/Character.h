@@ -9,6 +9,7 @@ public:
 	explicit Character(const Framework::CoreServices& services);
 
 	void Register(const Terrain& terrain);
+	void Register(const Tower& tower);
 	void Register(const TowerAppRenderer& renderer);
 
 	void Update();

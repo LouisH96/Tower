@@ -10,10 +10,13 @@ TowerApp::TowerApp(const Framework::CoreServices& services)
 	, m_Renderer{ services }
 	, m_Character{ services }
 	, m_Terrain{ services.Gpu }
+	, m_Tower{ services }
 {
 	m_Terrain.Register(m_Renderer);
+	m_Tower.Register(m_Renderer);
 	m_Character.Register(m_Terrain);
 	m_Character.Register(m_Renderer);
+	m_Character.Register(m_Tower);
 }
 
 void TowerApp::Release()
