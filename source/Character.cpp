@@ -2,6 +2,7 @@
 #include "Character.h"
 
 #include "TowerAppRenderer.h"
+#include "Environment/Tower.h"
 #include "Framework/CoreServices.h"
 #include "Physics/CollisionDetection.h"
 
@@ -24,6 +25,7 @@ void Character::Register(const Terrain& terrain)
 void Character::Register(const Tower& tower)
 {
 	m_Bow.Register(tower);
+	m_pTower = &tower;
 }
 
 void Character::Register(const TowerAppRenderer& renderer)
@@ -33,18 +35,25 @@ void Character::Register(const TowerAppRenderer& renderer)
 
 void Character::Update()
 {
+	const Float3 oldPos{ m_CameraController.GetCameraPosition() };
 	const Float2 movement{ Globals::pKeyboard->GetWasdInput(Globals::DeltaTime * 5) };
 	m_CameraController.MoveRelative({ movement.x, -9.81f * Globals::DeltaTime, movement.y });
+	const Float3 newPos{ m_CameraController.GetCameraPosition() };
 
 	//ground collision
 	constexpr float height{ 1.8f };
-	const Float3 head{ m_CameraController.GetCameraPosition() };
+	const Float3 head{ newPos };
 	const Float3 feet{ head - Float3{0, height, 0} };
 	CollisionDetection::Collision collision{};
 	if (m_pTerrain->IsColliding(head, feet, collision))
 		m_CameraController.SetPositionY(collision.position.y + height);
 	else if (feet.y < -1)
 		m_CameraController.SetPositionY(-1 + height);
+
+	//tower collision
+	const Float3 headForward{ head + m_CameraController.GetXzForward3() * .5f };
+	if (m_pTower->IsColliding(head, headForward))
+		m_CameraController.SetPositionXz(oldPos.Xz());
 
 	//cam & bow
 	m_CameraController.Update();
