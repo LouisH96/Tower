@@ -57,7 +57,7 @@ Bow::~Bow()
 	delete m_pTexture;
 }
 
-void Bow::Update(const Game::Transform& cameraTransform, Rendering::R_LambertCam_Tex_Transform& renderer)
+void Bow::Update(const Game::Transform& cameraTransform)
 {
 	if (Globals::pMouse->GetScroll() != 0)
 		m_LocalTransform.Rotation.RotateBy({ 1,0,0 }, Globals::pMouse->GetScroll() * 3 * Math::Constants::TO_RAD);
@@ -70,7 +70,7 @@ void Bow::Update(const Game::Transform& cameraTransform, Rendering::R_LambertCam
 			new Game::Transform(m_WorldTransform), m_WorldTransform.Rotation.GetForward() * 10
 			});
 		const ArrowData& bowData{ m_ArrowData[m_ArrowData.size() - 1] };
-		renderer.AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
+		m_pRenderer->AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
 	}
 
 	for (int i = 0; i < m_ArrowData.size(); i++)
@@ -79,6 +79,7 @@ void Bow::Update(const Game::Transform& cameraTransform, Rendering::R_LambertCam
 
 void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
 {
+	m_pRenderer = &renderer;
 	renderer.AddEntry(*m_pBowMesh, *m_pTexture, m_WorldTransform);
 }
 

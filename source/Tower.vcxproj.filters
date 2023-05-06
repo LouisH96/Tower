@@ -9,6 +9,7 @@
     <ClCompile Include="TowerAppRenderer.cpp" />
     <ClCompile Include="Environment\Terrain.cpp" />
     <ClCompile Include="Environment\HeightMap.cpp" />
+    <ClCompile Include="Character.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h" />
@@ -17,5 +18,6 @@
     <ClInclude Include="TowerAppRenderer.h" />
     <ClInclude Include="Environment\Terrain.h" />
     <ClInclude Include="Environment\HeightMap.h" />
+    <ClInclude Include="Character.h" />
   </ItemGroup>
 </Project>

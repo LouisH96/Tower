@@ -23,7 +23,7 @@ public:
 	Bow(Rendering::Gpu& gpu);
 	~Bow();
 
-	void Update(const Game::Transform& cameraTransform, Rendering::R_LambertCam_Tex_Transform& renderer);
+	void Update(const Game::Transform& cameraTransform);
 
 	void Register(Rendering::R_LambertCam_Tex_Transform& renderer);
 	void SetTerrain(const Terrain& terrain);
@@ -37,7 +37,8 @@ private:
 
 	Game::Transform m_LocalTransform{};
 	Game::Transform m_WorldTransform{};
-	
+
+	Rendering::R_LambertCam_Tex_Transform* m_pRenderer{};
 	Rendering::Texture* m_pTexture{};
 	Rendering::Mesh* m_pBowMesh{};
 	Rendering::Mesh* m_pArrowMesh{};

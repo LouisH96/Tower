@@ -1,14 +1,12 @@
 #pragma once
 #include <Game/Camera/FpsCameraController.h>
+
+#include "Character.h"
 #include "TowerAppRenderer.h"
 #include "Environment/Terrain.h"
 
 namespace MyEngine
 {
-	namespace Framework
-	{
-		struct AppServices;
-	}
 	namespace App
 	{
 		class FpsControl;
@@ -36,9 +34,8 @@ private:
 	App::Win32::Window& m_Window;
 	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
-	Game::FpsCameraController m_CameraController;
 	TowerAppRenderer m_Renderer;
 
-	Bow m_Bow;
+	Character m_Character;
 	Terrain m_Terrain;
 };
