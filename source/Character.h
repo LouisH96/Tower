@@ -18,5 +18,6 @@ public:
 private:
 	Game::FpsCameraController m_CameraController;
 	Bow m_Bow;
+	const Terrain* m_pTerrain{};
 };
 

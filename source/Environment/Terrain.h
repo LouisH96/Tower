@@ -1,4 +1,5 @@
 #pragma once
+#include "Physics/CollisionDetection.h"
 
 namespace MyEngine
 {
@@ -33,6 +34,7 @@ public:
 
 	void Register(const TowerAppRenderer& renderer) const;
 	bool IsColliding(const Math::Float3& begin, const Math::Float3& end) const;
+	bool IsColliding(const Math::Float3& begin, const Math::Float3& end, Physics::CollisionDetection::Collision& collision) const;
 
 private:
 	Rendering::Mesh* m_pMesh{};

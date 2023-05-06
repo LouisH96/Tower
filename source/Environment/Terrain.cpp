@@ -33,6 +33,12 @@ bool Terrain::IsColliding(const Math::Float3& begin, const Math::Float3& end) co
 	return Physics::CollisionDetection::Detect(begin, end, m_Points, m_TriangleNormals, m_Indices, collision);
 }
 
+bool Terrain::IsColliding(const Math::Float3& begin, const Math::Float3& end,
+	Physics::CollisionDetection::Collision& collision) const
+{
+	return Physics::CollisionDetection::Detect(begin, end, m_Points, m_TriangleNormals, m_Indices, collision);
+}
+
 void Terrain::FromHeightMap(const Rendering::Gpu& gpu)
 {
 	Array<Rendering::V_PosNorCol> vertices{ 0 };
