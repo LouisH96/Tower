@@ -14,7 +14,7 @@ public:
 	void Scale(float scale);
 	void Divide(float scale);
 
-	void ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::Float3>& triangleNormals, Array<int>& indices) const;
+	void ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::Float3>& triangleNormals, Array<int>& indices, const Math::Float3& origin) const;
 	Math::Float2 GetCellSize() const;
 
 private:

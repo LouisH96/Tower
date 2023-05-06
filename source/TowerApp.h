@@ -37,7 +37,7 @@ private:
 	Rendering::Canvas& m_Canvas;
 	TowerAppRenderer m_Renderer;
 
-	Character m_Character;
-	Terrain m_Terrain;
-	Tower m_Tower;
+	Character* m_pCharacter;
+	Terrain* m_pTerrain;
+	Tower* m_pTower;
 };

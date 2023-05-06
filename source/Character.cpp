@@ -9,11 +9,11 @@
 using namespace Math;
 using namespace Physics;
 
-Character::Character(const Framework::CoreServices& services)
+Character::Character(const Framework::CoreServices& services, const Math::Float3& position)
 	: m_CameraController{ services.Camera, services.Window.GetKeyboard(), services.Window.GetMouse() }
 	, m_Bow{ services.Gpu }
 {
-	m_CameraController.SetPosition({ 0,1,0 });
+	m_CameraController.SetPosition(position);
 }
 
 void Character::Register(const Terrain& terrain)
@@ -44,7 +44,7 @@ void Character::Update()
 	const Float3 head{ newPos };
 	const Float3 feet{ head - Float3{0, height, 0} };
 	CollisionDetection::Collision collision{};
-	if (m_pTerrain->IsColliding(head, feet, collision))
+	if (m_pTower->IsColliding(head, feet, collision) || m_pTerrain->IsColliding(head, feet, collision))
 		m_CameraController.SetPositionY(collision.position.y + height);
 	else if (feet.y < -1)
 		m_CameraController.SetPositionY(-1 + height);

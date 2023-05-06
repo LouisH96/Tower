@@ -6,7 +6,7 @@
 class Character
 {
 public:
-	explicit Character(const Framework::CoreServices& services);
+	explicit Character(const Framework::CoreServices& services, const Math::Float3& position);
 
 	void Register(const Terrain& terrain);
 	void Register(const Tower& tower);

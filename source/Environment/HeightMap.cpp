@@ -77,7 +77,7 @@ void HeightMap::Divide(float scale)
 		m_Grid.Get(i) /= scale;
 }
 
-void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::Float3>& triangleNormals, Array<int>& indices) const
+void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::Float3>& triangleNormals, Array<int>& indices, const Math::Float3& origin) const
 {
 	vertices = { m_Grid.GetNrElements() };
 
@@ -88,7 +88,7 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::
 	{
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
-			vertices[idx].Pos = Math::Float3{ iCol * cellSize.x, m_Grid.Get(idx), iRow * cellSize.y };
+			vertices[idx].Pos = origin + Math::Float3{ iCol * cellSize.x, m_Grid.Get(idx), iRow * cellSize.y };
 			vertices[idx].Color = Math::Float3{ 242 / 255.f,209 / 255.f,107 / 255.f };
 			idx++;
 		}
