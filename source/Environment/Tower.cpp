@@ -38,7 +38,7 @@ bool Tower::IsColliding(const Float3& begin, const Float3& end,
 
 void Tower::Generate(const Gpu& gpu)
 {
-	const Float3 outerSize{ 3,5,3 };
+	const Float3 outerSize{ 6,8,6 };
 	const Float3 position{ 10,0,10 }; //left-bot
 	const Float3 color{ Float3::RgbNormalize(248,240,164) };
 
