@@ -17,7 +17,7 @@ TowerApp::TowerApp(const Framework::CoreServices& services)
 	constexpr float towerHeight{ 8 };
 	m_pTerrain = new Terrain(services.Gpu, m_Renderer, {}, terrainSize);
 	m_pTower = new Tower(services, m_Renderer, towerPosition, towerRoofSize, towerHeight);
-	m_pCharacter = new Character(services, towerPosition + Float3::FromXz(towerRoofSize * .75) + Float3{ 0,towerHeight + 15, 0 });
+	m_pCharacter = new Character(services, towerPosition + Float3::FromXz(towerRoofSize * .5) + Float3{ 0,towerHeight, 0 });
 
 
 	m_pCharacter->Register(*m_pTerrain);
