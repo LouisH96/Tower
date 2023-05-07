@@ -11,6 +11,8 @@
     <ClCompile Include="Environment\HeightMap.cpp" />
     <ClCompile Include="Character\Character.cpp" />
     <ClCompile Include="Environment\Tower.cpp" />
+    <ClCompile Include="Character\Enemy.cpp" />
+    <ClCompile Include="Character\EnemySystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Weapons\Bow.h" />
@@ -21,5 +23,7 @@
     <ClInclude Include="Environment\HeightMap.h" />
     <ClInclude Include="Character\Character.h" />
     <ClInclude Include="Environment\Tower.h" />
+    <ClInclude Include="Character\Enemy.h" />
+    <ClInclude Include="Character\EnemySystem.h" />
   </ItemGroup>
 </Project>

@@ -14,8 +14,9 @@
 
 
 Terrain::Terrain(Rendering::Gpu& gpu, const TowerAppRenderer& renderer, const Math::Float3& position, const Math::Float2& size)
+	: m_Size{ size }
 {
-	FromHeightMap(gpu, position, size);
+	FromHeightMap(gpu, position);
 	renderer.GetTerrainRenderer().AddEntry(*m_pMesh);
 }
 
@@ -36,13 +37,13 @@ bool Terrain::IsColliding(const Math::Float3& begin, const Math::Float3& end,
 	return Physics::CollisionDetection::Detect(begin, end, m_Points, m_TriangleNormals, m_Indices, collision);
 }
 
-void Terrain::FromHeightMap(const Rendering::Gpu& gpu, const Math::Float3& position, const Math::Float2& size)
+void Terrain::FromHeightMap(const Rendering::Gpu& gpu, const Math::Float3& position)
 {
 	Array<Rendering::V_PosNorCol> vertices{ 0 };
-	HeightMap heightMap{ {30,30}, 0, size};
+	HeightMap heightMap{ {30,30}, 0, m_Size };
 	heightMap.ApplyWave(5, .1);
-	heightMap.ApplyWaveX(10, .25);
-	heightMap.ApplyWaveY(7, .15);
+	heightMap.ApplyWaveX(10, 2.25);
+	heightMap.ApplyWaveY(7, 1.15);
 	heightMap.ToVertices(vertices, m_TriangleNormals, m_Indices, position);
 	m_pMesh = Rendering::Mesh::Create(gpu, vertices, m_Indices);
 

@@ -4,6 +4,7 @@
 #include "TowerAppRenderer.h"
 #include "Environment/Terrain.h"
 
+class EnemySystem;
 class Character;
 
 namespace MyEngine
@@ -40,4 +41,5 @@ private:
 	Character* m_pCharacter;
 	Terrain* m_pTerrain;
 	Tower* m_pTower;
+	EnemySystem* m_pEnemySystem;
 };
