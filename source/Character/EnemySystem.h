@@ -1,6 +1,7 @@
 #pragma once
 #include "Enemy.h"
 
+struct TowerAppServices;
 class Tower;
 
 namespace MyEngine
@@ -32,7 +33,7 @@ public:
 		const Math::Float2& target, const Terrain& terrain);
 	~EnemySystem();
 
-	void Update();
+	void Update(const TowerAppServices& services);
 
 private:
 	Rendering::R_LambertCam_Tex_Transform& m_Renderer;

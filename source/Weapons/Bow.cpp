@@ -11,6 +11,7 @@
 #include <Rendering/Structs/VertexTypes.h>
 #include "../TowerAppRenderer.h"
 #include "../Environment/Tower.h"
+#include "../Services/TowerAppServices.h"
 
 Bow::Bow(Rendering::Gpu& gpu)
 {
@@ -58,7 +59,7 @@ Bow::~Bow()
 	delete m_pTexture;
 }
 
-void Bow::Update(const Game::Transform& cameraTransform)
+void Bow::Update(const TowerAppServices& services, const Game::Transform& cameraTransform)
 {
 	if (Globals::pMouse->GetScroll() != 0)
 		m_LocalTransform.Rotation.RotateBy({ 1,0,0 }, Globals::pMouse->GetScroll() * 3 * Math::Constants::TO_RAD);
@@ -75,7 +76,7 @@ void Bow::Update(const Game::Transform& cameraTransform)
 	}
 
 	for (int i = 0; i < m_ArrowData.size(); i++)
-		UpdateArrow(m_ArrowData[i]);
+		UpdateArrow(services, m_ArrowData[i]);
 }
 
 void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
@@ -94,7 +95,7 @@ void Bow::Register(const Tower& tower)
 	m_pTower = &tower;
 }
 
-void Bow::UpdateArrow(ArrowData& arrowData) const
+void Bow::UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) const
 {
 	constexpr float maxSpeed = .1;
 	constexpr float gravity = -9.81;
@@ -107,7 +108,7 @@ void Bow::UpdateArrow(ArrowData& arrowData) const
 	arrowData.pTransform->Position += arrowData.Velocity * Globals::DeltaTime;
 	arrowData.pTransform->Rotation = Math::Quaternion::FromForward(arrowData.Velocity.Normalized());
 
-	if (m_pTerrain->IsColliding(oldPos, arrowData.pTransform->Position) 
-		|| m_pTower->IsColliding(oldPos, arrowData.pTransform->Position))
+	if (services.Collision.Tower.IsColliding(oldPos, arrowData.pTransform->Position) 
+		|| services.Collision.Terrain.IsColliding(oldPos, arrowData.pTransform->Position))
 		arrowData.Velocity.x = 2000;
 }

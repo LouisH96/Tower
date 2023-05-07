@@ -24,7 +24,7 @@ public:
 	Bow(Rendering::Gpu& gpu);
 	~Bow();
 
-	void Update(const Game::Transform& cameraTransform);
+	void Update(const TowerAppServices& services, const Game::Transform& cameraTransform);
 
 	void Register(Rendering::R_LambertCam_Tex_Transform& renderer);
 	void Register(const Terrain& terrain);
@@ -50,5 +50,5 @@ private:
 	const Terrain* m_pTerrain{};
 	const Tower* m_pTower{};
 
-	void UpdateArrow(ArrowData& arrowData) const;
+	void UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) const;
 };

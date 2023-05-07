@@ -95,6 +95,8 @@
   <ItemGroup>
     <ClCompile Include="Character\Enemy.cpp" />
     <ClCompile Include="Character\EnemySystem.cpp" />
+    <ClCompile Include="Services\CollisionService.cpp" />
+    <ClCompile Include="Services\TowerAppServices.cpp" />
     <ClCompile Include="Weapons\Bow.cpp" />
     <ClCompile Include="Weapons\BowRenderer.cpp" />
     <ClCompile Include="Character\Character.cpp" />
@@ -112,6 +114,8 @@
   <ItemGroup>
     <ClInclude Include="Character\Enemy.h" />
     <ClInclude Include="Character\EnemySystem.h" />
+    <ClInclude Include="Services\CollisionService.h" />
+    <ClInclude Include="Services\TowerAppServices.h" />
     <ClInclude Include="Weapons\Bow.h" />
     <ClInclude Include="Weapons\BowRenderer.h" />
     <ClInclude Include="Character\Character.h" />

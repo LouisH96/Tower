@@ -3,6 +3,7 @@
 
 #include "Physics/CollisionDetection.h"
 #include "../Environment/Terrain.h"
+#include "../Services/TowerAppServices.h"
 
 using namespace Math;
 
@@ -11,7 +12,9 @@ Enemy::Enemy(const Math::Float3& initPos)
 {
 }
 
-void Enemy::Update(const Terrain& terrain, const Math::Float2& target, float maxMovement)
+void Enemy::Update(
+	const TowerAppServices& services, 
+	const Math::Float2& target, float maxMovement)
 {
 	constexpr float minTargetDistanceSq = 6 * 6;
 
@@ -29,6 +32,6 @@ void Enemy::Update(const Terrain& terrain, const Math::Float2& target, float max
 	head.y += 2;
 
 	Physics::CollisionDetection::Collision collision{};
-	if (terrain.IsColliding(head, feet, collision))
+	if (services.Collision.Terrain.IsColliding(head, feet, collision))
 		m_World.Position.y = collision.position.y;
 }

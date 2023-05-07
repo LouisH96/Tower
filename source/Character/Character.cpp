@@ -4,6 +4,7 @@
 #include "../TowerAppRenderer.h"
 #include "../Environment/Tower.h"
 #include "../Environment/Terrain.h"
+#include "../Services/TowerAppServices.h"
 #include "Framework/CoreServices.h"
 #include "Physics/CollisionDetection.h"
 
@@ -34,7 +35,7 @@ void Character::Register(const TowerAppRenderer& renderer)
 	m_Bow.Register(renderer.GetTransformRenderer());
 }
 
-void Character::Update()
+void Character::Update(const TowerAppServices& services)
 {
 	const Float3 oldHead{ m_CameraController.GetCameraPosition() };
 	const Float2 movement{ Globals::pKeyboard->GetWasdInput(Globals::DeltaTime * 5) };
@@ -46,12 +47,13 @@ void Character::Update()
 	const Float3 head{ oldHead };
 	const Float3 feet{ newPos - Float3{0, height, 0} };
 	CollisionDetection::Collision collision{};
-	if (m_pTower->IsColliding(head, feet, collision) || m_pTerrain->IsColliding(head, feet, collision))
+	if (services.Collision.Tower.IsColliding(head, feet, collision)
+		|| services.Collision.Terrain.IsColliding(head, feet, collision))
 		m_CameraController.SetPositionY(collision.position.y + height);
 	else if (feet.y < -1)
 		m_CameraController.SetPositionY(-1 + height);
 
 	//cam & bow
 	m_CameraController.Update();
-	m_Bow.Update(m_CameraController.GetTransform());
+	m_Bow.Update(services, m_CameraController.GetTransform());
 }

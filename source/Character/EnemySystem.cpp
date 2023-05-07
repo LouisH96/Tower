@@ -54,8 +54,8 @@ EnemySystem::~EnemySystem()
 	delete m_pMesh;
 }
 
-void EnemySystem::Update()
+void EnemySystem::Update(const TowerAppServices& services)
 {
 	for (int i = 0; i < m_Enemies.GetSize(); i++)
-		m_Enemies[i].Update(m_Terrain, m_Target, 1 * Globals::DeltaTime);
+		m_Enemies[i].Update(services, m_Target, 1 * Globals::DeltaTime);
 }

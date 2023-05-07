@@ -2,6 +2,8 @@
 #include "Physics/CollisionDetection.h"
 #include "Rendering/Structs/VertexTypes.h"
 
+struct MeshCollidable;
+struct TowerAppServices;
 class TowerAppRenderer;
 
 namespace MyEngine
@@ -24,24 +26,19 @@ class Tower
 {
 public:
 	explicit Tower(
-		const Framework::CoreServices& services, const TowerAppRenderer& renderer,
+		TowerAppServices& services,
 		const Math::Float3& position, const Math::Float2& roofSize, float height);
 	~Tower();
 
-	bool IsColliding(const Math::Float3& begin, const Math::Float3& end) const;
-	bool IsColliding(const Math::Float3& begin, const Math::Float3& end, Physics::CollisionDetection::Collision& collision) const;
-
 private:
 	Rendering::Mesh* m_pMesh{};
-	Array<Math::Float3> m_Points;
-	Array<Math::Float3> m_TriangleNormals;
-	Array<int> m_Indices;
 
-	void Generate(const Rendering::Gpu& gpu, 
+	void Generate(const Rendering::Gpu& gpu, MeshCollidable& collidable,
 		const Math::Float3& position, const Math::Float2& roofSize,
 		float towerHeight);
 
 	void AddPlane(
+		MeshCollidable& collidable,
 		const Math::Float3& right, const Math::Float3& up, const Math::Float3& rightUp,
 		const Math::Float3& origin,
 		const Math::Float3& color,
@@ -54,6 +51,7 @@ private:
 	 * \param depth normalized
 	 */
 	void AddRamp(
+		MeshCollidable& collidable,
 		const Math::Float3& width, const Math::Float3& depth,
 		float rampWidth, float rampHeight, float rampDepth,
 		const Math::Float3& position,

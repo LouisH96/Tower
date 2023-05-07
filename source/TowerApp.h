@@ -2,7 +2,7 @@
 #include <Game/Camera/FpsCameraController.h>
 
 #include "TowerAppRenderer.h"
-#include "Environment/Terrain.h"
+#include "Services/TowerAppServices.h"
 
 class EnemySystem;
 class Character;
@@ -27,7 +27,7 @@ namespace MyEngine
 class TowerApp
 {
 public:
-	explicit TowerApp(const Framework::CoreServices& services);
+	explicit TowerApp(const Framework::CoreServices& coreServices);
 	void Release();
 	void Update();
 	void Render();
@@ -36,7 +36,7 @@ private:
 	App::Win32::Window& m_Window;
 	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
-	TowerAppRenderer m_Renderer;
+	TowerAppServices m_Services;
 
 	Character* m_pCharacter;
 	Terrain* m_pTerrain;

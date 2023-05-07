@@ -14,7 +14,7 @@ public:
 	void Register(const Tower& tower);
 	void Register(const TowerAppRenderer& renderer);
 
-	void Update();
+	void Update(const TowerAppServices& services);
 
 	const Game::FpsCameraController& GetCameraController() const { return m_CameraController; }
 
