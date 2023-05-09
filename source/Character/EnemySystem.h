@@ -28,7 +28,7 @@ class EnemySystem
 {
 public:
 	EnemySystem(
-		const Framework::CoreServices& services, const TowerAppRenderer& renderer,
+		TowerAppServices& services, 
 		int nrEnemies, 
 		const Math::Float2& target, const Terrain& terrain);
 	~EnemySystem();

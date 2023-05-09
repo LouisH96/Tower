@@ -2,6 +2,7 @@
 #include "EnemySystem.h"
 
 #include "../TowerAppRenderer.h"
+#include "../Services/TowerAppServices.h"
 #include "Framework/CoreServices.h"
 #include "Framework/Resources.h"
 #include "Io/Fbx/FbxClass.h"
@@ -10,10 +11,10 @@ using namespace Rendering;
 using namespace Math;
 
 EnemySystem::EnemySystem(
-	const Framework::CoreServices& services, const TowerAppRenderer& renderer,
+	TowerAppServices& services,
 	int nrEnemies,
 	const Float2& target, const Terrain& terrain)
-	: m_Renderer{ renderer.GetTransformRenderer() }
+	: m_Renderer{ services.Renderer.GetTransformRenderer() }
 	, m_Enemies{ nrEnemies }
 	, m_Terrain{ terrain }
 	, m_Target{ target }
@@ -27,11 +28,11 @@ EnemySystem::EnemySystem(
 	for (int i = 0; i < geom.Points.GetSize(); i++)
 		vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
 
-	m_pMesh = Mesh::Create(services.Gpu, vertices);
+	m_pMesh = Mesh::Create(services.Core.Gpu, vertices);
 
 	//TEXTURE
 	const std::wstring texturePath{ Framework::Resources::GetLocalResourcePath(L"FantasyRivals_Texture_01_A.png") };
-	m_pTexture = new Texture(services.Gpu, texturePath);
+	m_pTexture = new Texture(services.Core.Gpu, texturePath);
 
 	//ENEMIES
 	for (int i = 0; i < m_Enemies.GetSize(); i++)
@@ -46,6 +47,15 @@ EnemySystem::EnemySystem(
 		m_Renderer.AddEntry(*m_pMesh, *m_pTexture, m_Enemies[i].GetTransform());
 	}
 
+	//COLLIDABLES
+	EnemiesCollidable& collidable{ services.Collision.Enemies };
+	collidable.pEnemies = &m_Enemies;
+	collidable.Points = { vertices.GetSize() };
+	collidable.TriangleNormals = { vertices.GetSize() / 3 };
+	for (int i = 0; i < vertices.GetSize(); i++)
+		collidable.Points[i] = vertices[i].Pos;
+	for (int iVertex = 0, iTriangle = 0; iVertex < vertices.GetSize(); iVertex += 3, iTriangle++)
+		collidable.TriangleNormals[iTriangle] = vertices[iVertex].Normal;
 }
 
 EnemySystem::~EnemySystem()
@@ -57,5 +67,8 @@ EnemySystem::~EnemySystem()
 void EnemySystem::Update(const TowerAppServices& services)
 {
 	for (int i = 0; i < m_Enemies.GetSize(); i++)
+	{
 		m_Enemies[i].Update(services, m_Target, 1 * Globals::DeltaTime);
+		m_Enemies[i].UpdateArrows();
+	}
 }

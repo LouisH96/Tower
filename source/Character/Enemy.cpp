@@ -35,3 +35,19 @@ void Enemy::Update(
 	if (services.Collision.Terrain.IsColliding(head, feet, collision))
 		m_World.Position.y = collision.position.y;
 }
+
+void Enemy::UpdateArrows() const
+{
+	for (int i = 0; i < m_Arrows.size(); i++)
+		*m_Arrows[i].pWorld = Game::Transform::LocalToWorld(m_Arrows[i].Local, m_World);
+}
+
+void Enemy::AddArrow(Game::Transform& worldArrowTransform)
+{
+	m_Arrows.push_back(
+	{
+		&worldArrowTransform,
+		worldArrowTransform
+	});
+	m_Arrows[m_Arrows.size() - 1].Local.SetRelativeTo(m_World);
+}

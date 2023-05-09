@@ -33,7 +33,7 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	m_pCharacter->Register(*m_pTower);
 
 	//Enemy-System
-	m_pEnemySystem = new EnemySystem(coreServices, m_Services.Renderer, 10, towerPosition, *m_pTerrain);
+	m_pEnemySystem = new EnemySystem(m_Services, 10, towerPosition, *m_pTerrain);
 }
 
 void TowerApp::Release()

@@ -1,5 +1,6 @@
 #pragma once
 #include "Physics/CollisionDetection.h"
+#include "../Character/Enemy.h"
 
 struct MeshCollidable
 {
@@ -19,9 +20,25 @@ struct MeshCollidable
 	Array<int> Indices;
 };
 
+struct EnemiesCollidable
+{
+	Enemy* IsColliding(const Math::Float3& begin, const Math::Float3& end) const;
+
+	Array<Enemy>* pEnemies{};
+
+	Array<Math::Float3> Points;
+	Array<Math::Float3> TriangleNormals;
+
+private:
+	bool IsColliding(const Math::Float3& begin, const Math::Float3& end, const Enemy& enemy) const;
+	static bool HasOverlap(float aMin, float aMax, float bMin, float bMax);
+};
+
+
 struct CollisionService
 {
 	MeshCollidable Tower;
 	MeshCollidable Terrain;
+	EnemiesCollidable Enemies;
 };
 

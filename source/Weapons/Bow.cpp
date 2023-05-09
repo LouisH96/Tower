@@ -64,7 +64,7 @@ void Bow::Update(const TowerAppServices& services, const Game::Transform& camera
 	if (Globals::pMouse->GetScroll() != 0)
 		m_LocalTransform.Rotation.RotateBy({ 1,0,0 }, Globals::pMouse->GetScroll() * 3 * Math::Constants::TO_RAD);
 
-	m_WorldTransform = cameraTransform.MakeChildTransform(m_LocalTransform);
+	m_WorldTransform = Game::Transform::LocalToWorld(m_LocalTransform, cameraTransform);
 
 	if (Globals::pMouse->IsLeftBtnReleased())
 	{
@@ -110,5 +110,16 @@ void Bow::UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) co
 
 	if (services.Collision.Tower.IsColliding(oldPos, arrowData.pTransform->Position) 
 		|| services.Collision.Terrain.IsColliding(oldPos, arrowData.pTransform->Position))
+	{
 		arrowData.Velocity.x = 2000;
+	}
+	else
+	{
+		Enemy* pHitEnemy{ services.Collision.Enemies.IsColliding(oldPos, arrowData.pTransform->Position) };
+		if (pHitEnemy)
+		{
+			pHitEnemy->AddArrow(*arrowData.pTransform);
+			arrowData.Velocity.x = 2000;
+		}
+	}
 }
