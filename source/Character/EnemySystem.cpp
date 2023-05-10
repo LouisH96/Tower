@@ -66,9 +66,14 @@ EnemySystem::~EnemySystem()
 
 void EnemySystem::Update(const TowerAppServices& services)
 {
-	for (int i = 0; i < m_Enemies.GetSize(); i++)
+	for (int i = 0; i < m_Enemies.GetSize();i++)
 	{
 		m_Enemies[i].Update(services, m_Target, 1 * Globals::DeltaTime);
 		m_Enemies[i].UpdateArrows();
 	}
+}
+
+void EnemySystem::OnCollision(Game::Transform& arrowTransform, Enemy& enemy)
+{
+	enemy.HitByArrow(arrowTransform);
 }

@@ -17,10 +17,10 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	, m_Canvas{ coreServices.Canvas }
 	, m_Services{ coreServices, {coreServices}, {} }
 {
-	const Math::Float2 terrainSize{ 150,150 };
-	const Math::Float2 towerPosition{ terrainSize / 2 };
-	const Math::Float3 towerPosition3{ Float3::FromXz(terrainSize / 2) };
-	const Math::Float2 towerRoofSize{ 10,6 };
+	const Float2 terrainSize{ 150,150 };
+	const Float2 towerPosition{ terrainSize / 2 };
+	const Float3 towerPosition3{ Float3::FromXz(terrainSize / 2) };
+	const Float2 towerRoofSize{ 10,6 };
 	constexpr float towerHeight{ 8 };
 	m_pTerrain = new Terrain(m_Services, {}, terrainSize);
 	m_pTower = new Tower(m_Services, towerPosition3, towerRoofSize, towerHeight);
@@ -34,6 +34,7 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 
 	//Enemy-System
 	m_pEnemySystem = new EnemySystem(m_Services, 10, towerPosition, *m_pTerrain);
+	m_Services.pEnemySystem = m_pEnemySystem;
 }
 
 void TowerApp::Release()

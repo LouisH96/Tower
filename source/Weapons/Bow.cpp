@@ -10,6 +10,7 @@
 #include <Rendering/State/Texture.h>
 #include <Rendering/Structs/VertexTypes.h>
 #include "../TowerAppRenderer.h"
+#include "../Character/EnemySystem.h"
 #include "../Environment/Tower.h"
 #include "../Services/TowerAppServices.h"
 
@@ -69,7 +70,7 @@ void Bow::Update(const TowerAppServices& services, const Game::Transform& camera
 	if (Globals::pMouse->IsLeftBtnReleased())
 	{
 		m_ArrowData.push_back(ArrowData{
-			new Game::Transform(m_WorldTransform), m_WorldTransform.Rotation.GetForward() * 10
+			new Game::Transform(m_WorldTransform), m_WorldTransform.Rotation.GetForward() * 20
 			});
 		const ArrowData& bowData{ m_ArrowData[m_ArrowData.size() - 1] };
 		m_pRenderer->AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
@@ -118,7 +119,7 @@ void Bow::UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) co
 		Enemy* pHitEnemy{ services.Collision.Enemies.IsColliding(oldPos, arrowData.pTransform->Position) };
 		if (pHitEnemy)
 		{
-			pHitEnemy->AddArrow(*arrowData.pTransform);
+			services.pEnemySystem->OnCollision(*arrowData.pTransform, *pHitEnemy);
 			arrowData.Velocity.x = 2000;
 		}
 	}

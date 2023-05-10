@@ -35,12 +35,15 @@ public:
 
 	void Update(const TowerAppServices& services);
 
+	void OnCollision(Game::Transform& arrowTransform, Enemy& enemy);
+
 private:
 	Rendering::R_LambertCam_Tex_Transform& m_Renderer;
 	Rendering::Texture* m_pTexture{};
 	Rendering::Mesh* m_pMesh{};
 
 	Array<Enemy> m_Enemies;
+
 	const Terrain& m_Terrain;
-	const Math::Float2 m_Target;
+	const Float2 m_Target;
 };
