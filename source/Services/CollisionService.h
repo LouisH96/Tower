@@ -14,6 +14,7 @@ struct MeshCollidable
 
 	bool IsColliding(const Math::Float3& begin, const Math::Float3& end) const;
 	bool IsColliding(const Math::Float3& begin, const Math::Float3& end, Physics::CollisionDetection::Collision& collision) const;
+	bool IsColliding(const Sphere& sphere, Float3& sphereToHitPlane) const;
 
 	Array<Math::Float3> Points;
 	Array<Math::Float3> TriangleNormals;

@@ -15,6 +15,11 @@ bool MeshCollidable::IsColliding(const Math::Float3& begin, const Math::Float3& 
 	return Physics::CollisionDetection::Detect(begin, end, Points, TriangleNormals, Indices, collision);
 }
 
+bool MeshCollidable::IsColliding(const Sphere& sphere, Float3& sphereToHitPlane) const
+{
+	return Physics::CollisionDetection::Detect(sphere, Points, TriangleNormals, Indices, sphereToHitPlane);
+}
+
 Enemy* EnemiesCollidable::IsColliding(const Math::Float3& begin, const Math::Float3& end) const
 {
 	for (int i = 0; i < pEnemies->GetSize(); i++)

@@ -53,6 +53,10 @@ void Character::Update(const TowerAppServices& services)
 	else if (feet.y < -1)
 		m_CameraController.SetPositionY(-1 + height);
 
+	Float3 overlap;
+	if(services.Collision.Tower.IsColliding(Sphere{newPos, .1f}, overlap))
+		m_CameraController.SetPosition(m_CameraController.GetCameraPosition() - overlap);
+
 	//cam & bow
 	m_CameraController.Update();
 	m_Bow.Update(services, m_CameraController.GetTransform());
