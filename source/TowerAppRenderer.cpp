@@ -4,7 +4,7 @@
 #include <App/FpsControl.h>
 #include <Rendering/FpsDisplay.h>
 #include <Rendering/Canvas.h>
-#include <Debug/DebugRenderer.h>
+#include <Debug/Rendering/DebugRenderer.h>
 #include <Math/Cube.h>
 #include <Generation/Shapes/ArrowGenerator.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
