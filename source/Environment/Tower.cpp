@@ -30,7 +30,7 @@ void Tower::Generate(const Rendering::Gpu& gpu, MeshCollidable& collidable,
 {
 	constexpr float rampWidth{ 2 };
 	const float rampHeight{ towerHeight / 4 };
-	const Float3 color{ Float3::RgbNormalize(248,240,164) };
+	const Float3 color{ Float3::Color(248,240,164) };
 
 	constexpr int nrPlanes{ 5 + 4 * 4 };
 	Array<V_PosNorCol> vertices{ 4 * nrPlanes }; //4 per side
