@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Bow.h"
 
-#include <App/Win32/Mouse.h>s
+#include <App/Win32/Mouse.h>
 #include <Framework/Resources.h>
 #include <Game/Globals.h>
 #include <Io/Fbx/FbxClass.h>
@@ -9,7 +9,7 @@
 #include <Rendering/State/Mesh.h>
 #include <Rendering/State/Texture.h>
 #include <Rendering/Structs/VertexTypes.h>
-#include "../TowerAppRenderer.h"
+
 #include "../Character/EnemySystem.h"
 #include "../Environment/Tower.h"
 #include "../Services/TowerAppServices.h"
@@ -60,17 +60,17 @@ Bow::~Bow()
 	delete m_pTexture;
 }
 
-void Bow::Update(const TowerAppServices& services, const Game::Transform& cameraTransform)
+void Bow::Update(const TowerAppServices& services, const Transform& cameraTransform)
 {
 	if (Globals::pMouse->GetScroll() != 0)
-		m_LocalTransform.Rotation.RotateBy({ 1,0,0 }, Globals::pMouse->GetScroll() * 3 * Math::Constants::TO_RAD);
+		m_LocalTransform.Rotation.RotateBy({ 1,0,0 }, Globals::pMouse->GetScroll() * 3 * Constants::TO_RAD);
 
-	m_WorldTransform = Game::Transform::LocalToWorld(m_LocalTransform, cameraTransform);
+	m_WorldTransform = Transform::LocalToWorld(m_LocalTransform, cameraTransform);
 
 	if (Globals::pMouse->IsLeftBtnReleased())
 	{
 		m_ArrowData.push_back(ArrowData{
-			new Game::Transform(m_WorldTransform), m_WorldTransform.Rotation.GetForward() * 20
+			new Transform(m_WorldTransform), m_WorldTransform.Rotation.GetForward() * 20
 			});
 		const ArrowData& bowData{ m_ArrowData[m_ArrowData.size() - 1] };
 		m_pRenderer->AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
@@ -98,8 +98,7 @@ void Bow::Register(const Tower& tower)
 
 void Bow::UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) const
 {
-	constexpr float maxSpeed = .1;
-	constexpr float gravity = -9.81;
+	constexpr float gravity = -9.81f;
 
 	if (arrowData.pTransform->Position.y <= -1) return;
 	if (arrowData.Velocity.x == 2000) return;
