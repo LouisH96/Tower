@@ -13,7 +13,6 @@ using namespace Physics;
 
 Character::Character(const Framework::CoreServices& services, const Math::Float3& position)
 	: m_CameraController{ services.Camera, services.Window.GetKeyboard(), services.Window.GetMouse() }
-	, m_Bow{ services.Gpu }
 {
 	m_CameraController.SetPosition(position);
 }

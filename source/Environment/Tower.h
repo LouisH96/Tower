@@ -1,5 +1,4 @@
 #pragma once
-#include "Physics/CollisionDetection.h"
 #include "Rendering/Structs/VertexTypes.h"
 
 struct MeshCollidable;
@@ -12,10 +11,6 @@ namespace MyEngine
 	{
 		class CoreServices;
 	}
-}
-
-namespace MyEngine
-{
 	namespace Rendering
 	{
 		class Mesh;
@@ -27,21 +22,21 @@ class Tower
 public:
 	explicit Tower(
 		TowerAppServices& services,
-		const Math::Float3& position, const Math::Float2& roofSize, float height);
+		const Float3& position, const Float2& roofSize, float height);
 	~Tower();
 
 private:
 	Rendering::Mesh* m_pMesh{};
 
-	void Generate(const Rendering::Gpu& gpu, MeshCollidable& collidable,
-		const Math::Float3& position, const Math::Float2& roofSize,
+	void Generate(MeshCollidable& collidable,
+		const Float3& position, const Float2& roofSize,
 		float towerHeight);
 
 	void AddPlane(
 		MeshCollidable& collidable,
-		const Math::Float3& right, const Math::Float3& up, const Math::Float3& rightUp,
-		const Math::Float3& origin,
-		const Math::Float3& color,
+		const Float3& right, const Float3& up, const Float3& rightUp,
+		const Float3& origin,
+		const Float3& color,
 		Array<Rendering::V_PosNorCol>& vertices, int& verticesIdx,
 		int& indicesIdx,
 		int& triangleNormalIdx);
@@ -52,10 +47,10 @@ private:
 	 */
 	void AddRamp(
 		MeshCollidable& collidable,
-		const Math::Float3& width, const Math::Float3& depth,
+		const Float3& width, const Float3& depth,
 		float rampWidth, float rampHeight, float rampDepth,
-		const Math::Float3& position,
-		const Math::Float3& color,
+		const Float3& position,
+		const Float3& color,
 		Array<Rendering::V_PosNorCol>& vertices, int& verticesIdx,
 		int& indicesIdx, int& triangleNormalIdx);
 };

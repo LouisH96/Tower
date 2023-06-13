@@ -21,10 +21,10 @@ namespace MyEngine
 class Bow
 {
 public:
-	Bow(Rendering::Gpu& gpu);
+	Bow();
 	~Bow();
 
-	void Update(const TowerAppServices& services, const Game::Transform& cameraTransform);
+	void Update(const TowerAppServices& services, const Transform& cameraTransform);
 
 	void Register(Rendering::R_LambertCam_Tex_Transform& renderer);
 	void Register(const Terrain& terrain);
@@ -33,12 +33,12 @@ public:
 private:
 	struct ArrowData
 	{
-		Game::Transform* pTransform;
-		Math::Float3 Velocity;
+		Transform* pTransform;
+		Float3 Velocity;
 	};
 
-	Game::Transform m_LocalTransform{};
-	Game::Transform m_WorldTransform{};
+	Transform m_LocalTransform{};
+	Transform m_WorldTransform{};
 
 	Rendering::R_LambertCam_Tex_Transform* m_pRenderer{};
 	Rendering::Texture* m_pTexture{};

@@ -13,7 +13,6 @@ using namespace Math;
 
 TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	: m_Window{ coreServices.Window }
-	, m_Gpu{ coreServices.Gpu }
 	, m_Canvas{ coreServices.Canvas }
 	, m_Services{ coreServices, {coreServices}, {} }
 {

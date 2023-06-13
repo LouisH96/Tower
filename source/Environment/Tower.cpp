@@ -3,7 +3,6 @@
 
 #include "../TowerAppRenderer.h"
 #include "../Services/TowerAppServices.h"
-#include "Framework/CoreServices.h"
 #include "Rendering/State/Mesh.h"
 #include "Rendering/Structs/VertexTypes.h"
 
@@ -12,9 +11,9 @@ using namespace Rendering;
 
 Tower::Tower(
 	TowerAppServices& services,
-	const Math::Float3& position, const Math::Float2& roofSize, float height)
+	const Float3& position, const Float2& roofSize, float height)
 {
-	Generate(services.Core.Gpu, services.Collision.Tower,
+	Generate(services.Collision.Tower,
 		position, roofSize, height);
 	services.Renderer.GetTerrainRenderer().AddEntry(*m_pMesh);
 }
@@ -24,8 +23,8 @@ Tower::~Tower()
 	delete m_pMesh;
 }
 
-void Tower::Generate(const Rendering::Gpu& gpu, MeshCollidable& collidable,
-	const Math::Float3& position, const Math::Float2& roofSize,
+void Tower::Generate(MeshCollidable& collidable,
+	const Float3& position, const Float2& roofSize,
 	float towerHeight)
 {
 	constexpr float rampWidth{ 2 };
@@ -125,7 +124,7 @@ void Tower::AddPlane(
 	const Float3& right, const Float3& up, const Float3& rightUp,
 	const Float3& origin,
 	const Float3& color,
-	Array<Rendering::V_PosNorCol>& vertices, int& verticesIdx,
+	Array<V_PosNorCol>& vertices, int& verticesIdx,
 	int& indicesIdx, int& triangleNormalIdx)
 {
 	const Float3 normal{ up.Cross(right).Normalized() };
@@ -161,9 +160,9 @@ void Tower::AddPlane(
 
 void Tower::AddRamp(
 	MeshCollidable& collidable,
-	const Math::Float3& width, const Math::Float3& depth,
+	const Float3& width, const Float3& depth,
 	float rampWidth, float rampHeight, float rampDepth,
-	const Math::Float3& position, const Math::Float3& color, Array<Rendering::V_PosNorCol>& vertices, int& verticesIdx,
+	const Float3& position, const Float3& color, Array<V_PosNorCol>& vertices, int& verticesIdx,
 	int& indicesIdx, int& triangleNormalIdx)
 {
 	//ramp

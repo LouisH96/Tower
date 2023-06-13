@@ -34,7 +34,6 @@ public:
 
 private:
 	App::Win32::Window& m_Window;
-	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
 	TowerAppServices m_Services;
 

@@ -14,7 +14,7 @@
 #include "../Environment/Tower.h"
 #include "../Services/TowerAppServices.h"
 
-Bow::Bow(Rendering::Gpu& gpu)
+Bow::Bow()
 {
 	using namespace Rendering;
 	using namespace DirectX;
