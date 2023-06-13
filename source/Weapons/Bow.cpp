@@ -32,7 +32,7 @@ Bow::Bow(Rendering::Gpu& gpu)
 	for (int i = 0; i < geom.Points.GetSize(); i++)
 		vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
 
-	m_pBowMesh = Mesh::Create(gpu, vertices);
+	m_pBowMesh = Mesh::Create(vertices);
 
 	//ARROW-MESH
 	const std::wstring arrowMeshPath{ Framework::Resources::GetLocalResourcePath(L"SM_Arrow_01.fbx") };
@@ -44,11 +44,11 @@ Bow::Bow(Rendering::Gpu& gpu)
 	for (int i = 0; i < arrowGeom.Points.GetSize(); i++)
 		arrowVertices[i] = V_PosNorUv{ arrowGeom.Points[i] * 0.01f, arrowGeom.Normals[i], arrowGeom.Uvs[i] };
 
-	m_pArrowMesh = Mesh::Create(gpu, arrowVertices);
+	m_pArrowMesh = Mesh::Create(arrowVertices);
 
 	//TEXTURE
 	const std::wstring texturePath{ Framework::Resources::GetLocalResourcePath(L"Texture_01.png") };
-	m_pTexture = new Texture(gpu, texturePath);
+	m_pTexture = new Texture(texturePath);
 }
 
 Bow::~Bow()

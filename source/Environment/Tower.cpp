@@ -117,7 +117,7 @@ void Tower::Generate(const Rendering::Gpu& gpu, MeshCollidable& collidable,
 	rightUp = right + up;
 	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, vertices, iVertex, iIndex, iTriangle);
 	//MESH
-	m_pMesh = Mesh::Create(gpu, vertices, collidable.Indices);
+	m_pMesh = Mesh::Create(vertices, collidable.Indices);
 }
 
 void Tower::AddPlane(

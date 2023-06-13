@@ -32,7 +32,7 @@ void Terrain::FromHeightMap(TowerAppServices& services, const Math::Float3& posi
 	heightMap.ApplyWaveY(7, 1.05);
 	heightMap.ApplyWaveY(30, .25);
 	heightMap.ToVertices(vertices, collidable.TriangleNormals, collidable.Indices, position);
-	m_pMesh = Rendering::Mesh::Create(services.Core.Gpu, vertices, collidable.Indices);
+	m_pMesh = Rendering::Mesh::Create(vertices, collidable.Indices);
 
 	collidable.Points = { vertices.GetSize() };
 	for (int i = 0; i < collidable.Points.GetSize(); i++)
