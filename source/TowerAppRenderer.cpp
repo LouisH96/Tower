@@ -2,16 +2,13 @@
 #include "TowerAppRenderer.h"
 
 #include <App/FpsControl.h>
-#include <Rendering/FpsDisplay.h>
-#include <Rendering/Canvas.h>
 #include <Debug/Rendering/DebugRenderer.h>
-#include <Math/Cube.h>
-#include <Generation/Shapes/ArrowGenerator.h>
-#include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
-#include <Rendering/Renderers/R_LambertCam_Tex.h>
 #include <Framework/CoreServices.h>
 #include <Game/Camera/FpsCameraController.h>
-#include <Rendering/Renderers/R_LambertLight_Tex.h>
+#include <Generation/Shapes/ArrowGenerator.h>
+#include <Rendering/Canvas.h>
+#include <Rendering/FpsDisplay.h>
+#include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
 
 using namespace Math;
 using namespace DirectX;
@@ -19,15 +16,14 @@ using namespace Rendering;
 
 TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 	: m_Window{ services.Window }
-	, m_Gpu{ services.Gpu }
 	, m_Canvas{ services.Canvas }
-	, m_FpsDisplay{ services.Gpu, services.Canvas, services.Window }
+	, m_FpsDisplay{ services.Canvas, services.Window }
 	, m_pUnlitRenderer{RendererFactory::CreateUnlitRenderer(services.Gpu, false) }
 	, m_pSimpleRenderer(RendererFactory::CreateSimpleRenderer(services.Gpu))
-	, m_pTransformRenderer{ new R_LambertCam_Tex_Transform(m_Gpu) }
-	, m_pTerrainRenderer{new TerrainRenderer(m_Gpu, false)}
+	, m_pTransformRenderer{ new R_LambertCam_Tex_Transform(*Globals::pGpu) }
+	, m_pTerrainRenderer{new TerrainRenderer(*Globals::pGpu, false)}
 {
-	DebugRenderer::Init(m_Gpu);
+	DebugRenderer::Init(*Globals::pGpu);
 	services.FpsControl.SetFpsDisplay(m_FpsDisplay);
 
 	CreateArrows();

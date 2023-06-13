@@ -49,7 +49,6 @@ public:
 	void Release() const;
 	void Render(const Game::FpsCameraController& cameraController);
 
-	Rendering::Gpu& GetGpu() const { return m_Gpu; }
 	TransformRenderer& GetTransformRenderer() const { return *m_pTransformRenderer; }
 	TerrainRenderer& GetTerrainRenderer() const { return *m_pTerrainRenderer; }
 
@@ -57,7 +56,6 @@ private:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
 
 	App::Win32::Window& m_Window;
-	Rendering::Gpu& m_Gpu;
 	Rendering::Canvas& m_Canvas;
 	Rendering::FpsDisplay m_FpsDisplay;
 
