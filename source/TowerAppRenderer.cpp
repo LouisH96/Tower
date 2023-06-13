@@ -18,10 +18,10 @@ TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 	: m_Window{ services.Window }
 	, m_Canvas{ services.Canvas }
 	, m_FpsDisplay{ services.Canvas, services.Window }
-	, m_pUnlitRenderer{RendererFactory::CreateUnlitRenderer(services.Gpu, false) }
-	, m_pSimpleRenderer(RendererFactory::CreateSimpleRenderer(services.Gpu))
-	, m_pTransformRenderer{ new R_LambertCam_Tex_Transform(*Globals::pGpu) }
-	, m_pTerrainRenderer{new TerrainRenderer(*Globals::pGpu, false)}
+	, m_pUnlitRenderer{RendererFactory::CreateUnlitRenderer(false) }
+	, m_pSimpleRenderer(RendererFactory::CreateSimpleRenderer())
+	, m_pTransformRenderer{ new R_LambertCam_Tex_Transform() }
+	, m_pTerrainRenderer{new TerrainRenderer(false)}
 {
 	DebugRenderer::Init(*Globals::pGpu);
 	services.FpsControl.SetFpsDisplay(m_FpsDisplay);
