@@ -24,7 +24,7 @@ Bow::Bow()
 	m_LocalTransform.Rotation = Quaternion::FromAxis({ 1,0,0 }, -25 * Constants::TO_RAD);
 
 	//BOW-MESH
-	const std::wstring meshPath{ Framework::Resources::GetLocalResourcePath(L"Rigged_Bow_Testing.fbx") };
+	const std::wstring meshPath{ Framework::Resources::Local(L"Rigged_Bow_Testing.fbx") };
 	Io::Fbx::FbxClass fbxModel{ meshPath };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
@@ -35,7 +35,7 @@ Bow::Bow()
 	m_pBowMesh = Mesh::Create(vertices);
 
 	//ARROW-MESH
-	const std::wstring arrowMeshPath{ Framework::Resources::GetLocalResourcePath(L"SM_Arrow_01.fbx") };
+	const std::wstring arrowMeshPath{ Framework::Resources::Local(L"SM_Arrow_01.fbx") };
 	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath };
 	Io::Fbx::FbxClass::Geometry& arrowGeom = arrowFbxModel.GetGeometries()[0];
 
@@ -47,7 +47,7 @@ Bow::Bow()
 	m_pArrowMesh = Mesh::Create(arrowVertices);
 
 	//TEXTURE
-	const std::wstring texturePath{ Framework::Resources::GetLocalResourcePath(L"Texture_01.png") };
+	const std::wstring texturePath{ Framework::Resources::Local(L"Texture_01.png") };
 	m_pTexture = new Texture(texturePath);
 }
 
