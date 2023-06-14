@@ -60,6 +60,7 @@ void TowerApp::Update()
 
 	m_pCharacter->Update(m_Services);
 	m_pEnemySystem->Update(m_Services);
+	m_pDuneCreator->Update();
 }
 
 void TowerApp::Render()
