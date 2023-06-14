@@ -10,6 +10,8 @@
 #include <Rendering/FpsDisplay.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
 
+#include "Game/Camera/Camera.h"
+
 using namespace Math;
 using namespace DirectX;
 using namespace Rendering;
@@ -40,8 +42,8 @@ void TowerAppRenderer::Release() const
 
 void TowerAppRenderer::Render(const Game::FpsCameraController& cameraController)
 {
-	const Float3& cameraPosition{ cameraController.GetCameraPosition() };
-	const XMMATRIX viewProjection{ cameraController.GetViewProjectionMatrix() };
+	const Float3& cameraPosition{ cameraController.GetPosition() };
+	const Float4X4& viewProjection{ cameraController.GetCamera().GetViewProjection() };
 
 	m_Canvas.BeginPaint();
 	m_pTerrainRenderer->Render(cameraPosition, viewProjection);

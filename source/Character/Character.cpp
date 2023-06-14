@@ -12,7 +12,7 @@ using namespace Math;
 using namespace Physics;
 
 Character::Character(const Framework::CoreServices& services, const Math::Float3& position)
-	: m_CameraController{ services.Camera, services.Window.GetKeyboard(), services.Window.GetMouse() }
+	: m_CameraController{ services.Camera}
 {
 	m_CameraController.SetPosition(position);
 }
@@ -36,10 +36,10 @@ void Character::Register(const TowerAppRenderer& renderer)
 
 void Character::Update(const TowerAppServices& services)
 {
-	const Float3 oldHead{ m_CameraController.GetCameraPosition() };
+	const Float3 oldHead{ m_CameraController.GetPosition() };
 	const Float2 movement{ Globals::pKeyboard->GetWasdInput(Globals::DeltaTime * 5) };
 	m_CameraController.MoveRelative({ movement.x, -9.81f * Globals::DeltaTime, movement.y });
-	const Float3 newPos{ m_CameraController.GetCameraPosition() };
+	const Float3 newPos{ m_CameraController.GetPosition() };
 
 	//ground collision
 	constexpr float height{ 1.8f };
@@ -54,7 +54,7 @@ void Character::Update(const TowerAppServices& services)
 
 	Float3 overlap;
 	if(services.Collision.Tower.IsColliding(Sphere{newPos, .1f}, overlap))
-		m_CameraController.SetPosition(m_CameraController.GetCameraPosition() - overlap);
+		m_CameraController.SetPosition(m_CameraController.GetPosition() - overlap);
 
 	//cam & bow
 	m_CameraController.Update();
