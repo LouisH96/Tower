@@ -7,6 +7,7 @@
 #include "Character/Character.h"
 #include "Character/EnemySystem.h"
 #include "Environment/Tower.h"
+#include "Environment/Dunes/DuneCreator.h"
 #include "Services/TowerAppServices.h"
 
 using namespace Math;
@@ -34,10 +35,14 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	//Enemy-System
 	m_pEnemySystem = new EnemySystem(m_Services, 10, towerPosition, *m_pTerrain);
 	m_Services.pEnemySystem = m_pEnemySystem;
+
+	//Dune-Creator
+	m_pDuneCreator = new DuneCreator(m_Services.Renderer);
 }
 
 void TowerApp::Release()
 {
+	delete m_pDuneCreator;
 	delete m_pEnemySystem;
 	delete m_pTower;
 	delete m_pTerrain;

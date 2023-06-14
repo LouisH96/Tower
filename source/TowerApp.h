@@ -4,6 +4,7 @@
 #include "TowerAppRenderer.h"
 #include "Services/TowerAppServices.h"
 
+class DuneCreator;
 class EnemySystem;
 class Character;
 
@@ -41,4 +42,5 @@ private:
 	Terrain* m_pTerrain;
 	Tower* m_pTower;
 	EnemySystem* m_pEnemySystem;
+	DuneCreator* m_pDuneCreator;
 };

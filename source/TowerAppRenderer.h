@@ -29,6 +29,7 @@ namespace MyEngine
 	}
 	namespace Rendering
 	{
+		class Texture2DRenderer;
 		class R_LambertLight_Tex;
 		class R_LambertCam_Tex;
 		class R_LambertCam_Tex_Transform;
@@ -51,9 +52,11 @@ public:
 
 	TransformRenderer& GetTransformRenderer() const { return *m_pTransformRenderer; }
 	TerrainRenderer& GetTerrainRenderer() const { return *m_pTerrainRenderer; }
+	Rendering::Texture2DRenderer& GetTexture2DRenderer() const { return *m_pTexture2DRenderer; }
 
 private:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
+	using TextureRenderer = Rendering::TextureRenderer<Rendering::V_PosUv, Rendering::CB_CamMat>;
 
 	App::Win32::Window& m_Window;
 	Rendering::Canvas& m_Canvas;
@@ -63,6 +66,8 @@ private:
 	SimpleRenderer* m_pSimpleRenderer{};
 	TransformRenderer* m_pTransformRenderer{};
 	TerrainRenderer* m_pTerrainRenderer{};
+	TextureRenderer* m_pTextureRenderer{};
+	Rendering::Texture2DRenderer* m_pTexture2DRenderer{};
 
 	void CreateArrows() const;
 };
