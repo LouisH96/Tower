@@ -6,19 +6,32 @@ class HeightMap
 {
 public:
 	//---| Constructor/Destructor |---
-	explicit HeightMap(Math::Int2 nrElements, float initHeight, const Math::Float2& size);
+	explicit HeightMap(Int2 nrElements, float initHeight, const Float2& size);
 
-	void ApplyWaveX(float wavePeriod, float waveMagnitude);
-	void ApplyWaveY(float wavePeriod, float waveMagnitude);
-	void ApplyWave(float wavePeriod, float waveMagnitude);
+	void AddSinWaveX(float wavePeriod, float waveMagnitude);
+	void AddSinWaveY(float wavePeriod, float waveMagnitude);
+	void AddSinWave(float wavePeriod, float waveMagnitude);
+
+	void AddCubeWaveX(float period, float magnitude);
+	void AddCubeWaveY(float period, float magnitude);
+
+	void CubeDisplaceAlongX(float period, float magnitude);
+	void SinDisplaceAlongX(float period, float magnitude);
+	void SinDisplaceAlongY(float period, float magnitude);
+
 	void Scale(float scale);
 	void Divide(float scale);
 
-	void ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::Float3>& triangleNormals, Array<int>& indices, const Math::Float3& origin) const;
-	Math::Float2 GetCellSize() const;
+	void ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Float3>& triangleNormals, Array<int>& indices, const Float3& origin) const;
+	Float2 GetCellSize() const;
+	float GetCellWidth() const;
+	float GetCellHeight() const;
 
 private:
 	GridArray<float> m_Grid;
-	Math::Float2 m_Size;
+	Float2 m_Size;
+
+	float CubeFunction(float period, float magnitude, float t) const;
+	static float SinFunction(float period, float magnitude, float t);
 };
 

@@ -1,24 +1,11 @@
 #pragma once
-#include "Physics/CollisionDetection.h"
 
 struct TowerAppServices;
 
 namespace MyEngine
 {
-	namespace Game
-	{
-		class Transform;
-	}
-}
-
-class TowerAppRenderer;
-
-namespace MyEngine
-{
 	namespace Rendering
 	{
-		class Gpu;
-		class Texture;
 		class Mesh;
 	}
 }
@@ -26,7 +13,7 @@ namespace MyEngine
 class Terrain
 {
 public:
-	explicit Terrain(TowerAppServices& services, const Math::Float3& position, const Math::Float2& size);
+	explicit Terrain(TowerAppServices& services, const Float3& position, const Float2& size);
 	~Terrain();
 
 	Terrain(const Terrain& other) = delete;
@@ -34,11 +21,11 @@ public:
 	Terrain& operator=(const Terrain& other) = delete;
 	Terrain& operator=(Terrain&& other) noexcept = delete;
 
-	const Math::Float2& GetSize() const { return m_Size; }
+	const Float2& GetSize() const { return m_Size; }
 
 private:
 	Rendering::Mesh* m_pMesh{};
-	Math::Float2 m_Size;
+	Float2 m_Size;
 
-	void FromHeightMap(TowerAppServices& services, const Math::Float3& position);
+	void FromHeightMap(TowerAppServices& services, const Float3& position);
 };

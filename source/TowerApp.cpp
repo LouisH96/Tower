@@ -7,17 +7,14 @@
 #include "Character/Character.h"
 #include "Character/EnemySystem.h"
 #include "Environment/Tower.h"
-#include "Environment/Dunes/DuneCreator.h"
 #include "Services/TowerAppServices.h"
 
 using namespace Math;
 
 TowerApp::TowerApp(const Framework::CoreServices& coreServices)
-	: m_Window{ coreServices.Window }
-	, m_Canvas{ coreServices.Canvas }
-	, m_Services{ coreServices, {coreServices}, {} }
+	: m_Services{ coreServices, {coreServices}, {} }
 {
-	const Float2 terrainSize{ 150,150 };
+	const Float2 terrainSize{ 250,250 };
 	const Float2 towerPosition{ terrainSize / 2 };
 	const Float3 towerPosition3{ Float3::FromXz(terrainSize / 2) };
 	const Float2 towerRoofSize{ 10,6 };
@@ -25,7 +22,6 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	m_pTerrain = new Terrain(m_Services, {}, terrainSize);
 	m_pTower = new Tower(m_Services, towerPosition3, towerRoofSize, towerHeight);
 	const Float3 characterPosition{ towerPosition3 + Float3::FromXz(towerRoofSize * .5) + Float3{ 0,towerHeight, 0 } };
-	//const Float3 characterPosition{};
 	m_pCharacter = new Character(coreServices, characterPosition);
 
 	m_pCharacter->Register(*m_pTerrain);
@@ -35,14 +31,10 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	//Enemy-System
 	m_pEnemySystem = new EnemySystem(m_Services, 10, towerPosition, *m_pTerrain);
 	m_Services.pEnemySystem = m_pEnemySystem;
-
-	//Dune-Creator
-	m_pDuneCreator = new DuneCreator(m_Services.Renderer);
 }
 
 void TowerApp::Release()
 {
-	delete m_pDuneCreator;
 	delete m_pEnemySystem;
 	delete m_pTower;
 	delete m_pTerrain;
@@ -54,13 +46,12 @@ void TowerApp::Update()
 {
 	if (Globals::pKeyboard->IsDown_('\x1b'))
 	{
-		m_Window.SetIsDestroyed();
+		Globals::pWindow->SetIsDestroyed();
 		return;
 	}
 
 	m_pCharacter->Update(m_Services);
-	m_pEnemySystem->Update(m_Services);
-	m_pDuneCreator->Update();
+	//m_pEnemySystem->Update(m_Services);
 }
 
 void TowerApp::Render()

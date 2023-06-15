@@ -95,7 +95,6 @@
   <ItemGroup>
     <ClCompile Include="Character\Enemy.cpp" />
     <ClCompile Include="Character\EnemySystem.cpp" />
-    <ClCompile Include="Environment\Dunes\DuneCreator.cpp" />
     <ClCompile Include="Services\CollisionService.cpp" />
     <ClCompile Include="Services\TowerAppServices.cpp" />
     <ClCompile Include="Weapons\Bow.cpp" />
@@ -115,7 +114,6 @@
   <ItemGroup>
     <ClInclude Include="Character\Enemy.h" />
     <ClInclude Include="Character\EnemySystem.h" />
-    <ClInclude Include="Environment\Dunes\DuneCreator.h" />
     <ClInclude Include="Services\CollisionService.h" />
     <ClInclude Include="Services\TowerAppServices.h" />
     <ClInclude Include="Weapons\Bow.h" />

@@ -1,62 +1,42 @@
 #include "pch.h"
 #include "HeightMap.h"
 
-HeightMap::HeightMap(Math::Int2 nrElements, float initHeight, const Math::Float2& size)
+HeightMap::HeightMap(Int2 nrElements, float initHeight, const Float2& size)
 	: m_Grid{ nrElements, initHeight }
 	, m_Size{ size }
 {
 }
 
-void HeightMap::ApplyWaveX(float wavePeriod, float waveMagnitude)
+void HeightMap::AddSinWaveX(float wavePeriod, float waveMagnitude)
 {
-	const Math::Float2 cellSize{ GetCellSize() };
-	int idx = 0;
-	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
-	{
-		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
-		{
-			const float periodTime{ iCol * cellSize.x / wavePeriod };
-			const float angle{ periodTime * Math::Constants::PI2 };
-			const float height{ sinf(angle) * waveMagnitude };
-
-			m_Grid.Get(idx) += height;
-			idx++;
-		}
-	}
+	const Float2 cellSize{ GetCellSize() };
+	for (int iRow = 0, idx = 0; iRow < m_Grid.GetNrRows(); iRow++)
+		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++, idx++)
+			m_Grid.Get(idx) += SinFunction(wavePeriod, waveMagnitude, iCol * cellSize.x);
 }
 
-void HeightMap::ApplyWaveY(float wavePeriod, float waveMagnitude)
+void HeightMap::AddSinWaveY(float wavePeriod, float waveMagnitude)
 {
-	const Math::Float2 cellSize{ GetCellSize() };
-	int idx = 0;
-	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
-	{
-		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
-		{
-			const float periodTime{ iRow * cellSize.y / wavePeriod };
-			const float angle{ periodTime * Math::Constants::PI2 };
-			const float height{ sinf(angle) * waveMagnitude };
-
-			m_Grid.Get(idx) += height;
-			idx++;
-		}
-	}
+	const Float2 cellSize{ GetCellSize() };
+	for (int iRow = 0, idx = 0; iRow < m_Grid.GetNrRows(); iRow++)
+		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++, idx++)
+			m_Grid.Get(idx) += SinFunction(wavePeriod, waveMagnitude, iRow * cellSize.y);
 }
 
-void HeightMap::ApplyWave(float wavePeriod, float waveMagnitude)
+void HeightMap::AddSinWave(float wavePeriod, float waveMagnitude)
 {
-	const Math::Float2 cellSize{ GetCellSize() };
+	const Float2 cellSize{ GetCellSize() };
 	int idx = 0;
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
 			const float xPeriodTime{ iCol * cellSize.x / wavePeriod };
-			const float xAngle{ xPeriodTime * Math::Constants::PI2 };
+			const float xAngle{ xPeriodTime * Constants::PI2 };
 			const float xHeight{ sinf(xAngle) * waveMagnitude };
 
 			const float yPeriodTime{ iRow * cellSize.y / wavePeriod };
-			const float yAngle{ yPeriodTime * Math::Constants::PI2 };
+			const float yAngle{ yPeriodTime * Constants::PI2 };
 			const float yHeight{ sinf(yAngle) * waveMagnitude };
 
 			m_Grid.Get(idx) += (xHeight + yHeight) / 2;
@@ -77,19 +57,90 @@ void HeightMap::Divide(float scale)
 		m_Grid.Get(i) /= scale;
 }
 
-void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::Float3>& triangleNormals, Array<int>& indices, const Math::Float3& origin) const
+void HeightMap::AddCubeWaveX(float period, float magnitude)
+{
+	const float cellWidth{ GetCellWidth() };
+	for (int iRow = 0, idx = 0; iRow < m_Grid.GetNrRows(); iRow++)
+		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++, idx++)
+			m_Grid.Get(idx) += CubeFunction(period, magnitude, iCol * cellWidth);
+}
+
+void HeightMap::AddCubeWaveY(float period, float magnitude)
+{
+	const float cellHeight{ GetCellHeight() };
+	for (int iCol = 0, idx = 0; iCol < m_Grid.GetNrCols(); iCol++)
+		for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++, idx++)
+			m_Grid.Get({ iCol, iRow }) += CubeFunction(period, magnitude, iRow * cellHeight);
+}
+
+void HeightMap::CubeDisplaceAlongX(float period, float magnitude)
+{
+	const float cellHeight{ GetCellHeight() };
+	const float cellWidth{ GetCellWidth() };
+
+	const GridArray<float> copy{m_Grid};
+
+	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
+	{
+		const int displacement{ Float::Round(CubeFunction(period, magnitude, iRow * cellHeight) / cellWidth) };
+		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
+		{
+			int prevCol{ iCol - displacement };
+			if (prevCol < 0) prevCol += m_Grid.GetNrCols();
+			if (prevCol >= m_Grid.GetNrCols()) prevCol -= m_Grid.GetNrCols();
+			m_Grid.Set({ iCol, iRow }, copy.Get({ prevCol, iRow }));
+		}
+	}
+}
+
+void HeightMap::SinDisplaceAlongX(float period, float magnitude)
+{
+	const Float2 cellSize{ GetCellSize() };
+	const GridArray<float> copy{m_Grid};
+	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
+	{
+		const int displacement{ Float::Round(SinFunction(period, magnitude, iRow * cellSize.y) / cellSize.x) };
+		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
+		{
+			int prevCol{ iCol - displacement };
+			if (prevCol < 0) prevCol = 0;
+			if (prevCol >= m_Grid.GetNrCols()) prevCol = m_Grid.GetNrCols() - 1;
+			m_Grid.Set({ iCol, iRow }, copy.Get({ prevCol, iRow }));
+		}
+	}
+}
+
+void HeightMap::SinDisplaceAlongY(float period, float magnitude)
+{
+	const Float2 cellSize{ GetCellSize() };
+	const GridArray<float> copy{m_Grid};
+	for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
+	{
+		const int displacement{ Float::Round(SinFunction(period, magnitude, iCol * cellSize.x) / cellSize.y) };
+		for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
+		{
+			int prevRow{ iRow - displacement };
+			if (prevRow < 0) prevRow = 0;
+			if (prevRow >= m_Grid.GetNrRows()) prevRow = m_Grid.GetNrRows() - 1;
+			m_Grid.Set({ iCol, iRow }, copy.Get({ iCol, prevRow }));
+		}
+	}
+}
+
+void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Float3>& triangleNormals, Array<int>& indices, const
+	Float3& origin) const
 {
 	vertices = { m_Grid.GetNrElements() };
 
 	//Positions
-	const Math::Float2 cellSize{ GetCellSize() };
+	const Float2 cellSize{ GetCellSize() };
 	int idx = 0;
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
-			vertices[idx].Pos = origin + Math::Float3{ iCol * cellSize.x, m_Grid.Get(idx), iRow * cellSize.y };
-			vertices[idx].Color = Math::Float3{ 242 / 255.f,209 / 255.f,107 / 255.f };
+			vertices[idx].Pos = origin + Float3{ iCol* cellSize.x, m_Grid.Get(idx), iRow* cellSize.y };
+			vertices[idx].Color = Float3{ 242 / 255.f,209 / 255.f,107 / 255.f };
 			idx++;
 		}
 	}
@@ -106,17 +157,17 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::
 			const int idxBotRight = idx + 1;
 			const int idxTopLeft = idx + m_Grid.GetNrCols();
 			const int idxTopRight = idxTopLeft + 1;
-			const Math::Float3& botLeft{ vertices[idxBotLeft].Pos };
-			const Math::Float3& botRight{ vertices[idxBotRight].Pos };
-			const Math::Float3& topLeft{ vertices[idxTopLeft].Pos };
-			const Math::Float3& topRight{ vertices[idxTopRight].Pos };
+			const Float3& botLeft{ vertices[idxBotLeft].Pos };
+			const Float3& botRight{ vertices[idxBotRight].Pos };
+			const Float3& topLeft{ vertices[idxTopLeft].Pos };
+			const Float3& topRight{ vertices[idxTopRight].Pos };
 
-			const Math::Float3 diagonal{ topRight - botLeft };
-			const Math::Float3 horizontal{ botRight - botLeft };
-			const Math::Float3 vertical{ topLeft - botLeft };
+			const Float3 diagonal{ topRight - botLeft };
+			const Float3 horizontal{ botRight - botLeft };
+			const Float3 vertical{ topLeft - botLeft };
 
-			const Math::Float3 normal1{ diagonal.Cross(horizontal).Normalized() };
-			const Math::Float3 normal2{ vertical.Cross(diagonal).Normalized() };
+			const Float3 normal1{ diagonal.Cross(horizontal).Normalized() };
+			const Float3 normal2{ vertical.Cross(diagonal).Normalized() };
 			triangleNormals[triangleIdx++] = normal1;
 			triangleNormals[triangleIdx++] = normal2;
 
@@ -162,7 +213,36 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Math::
 	}
 }
 
-Math::Float2 HeightMap::GetCellSize() const
+Float2 HeightMap::GetCellSize() const
 {
-	return { m_Size.x / (m_Grid.GetNrCols() - 1), m_Size.y / (m_Grid.GetNrRows() - 1) };
+	return { GetCellWidth(), GetCellHeight() };
+}
+
+float HeightMap::GetCellWidth() const
+{
+	return m_Size.x / (m_Grid.GetNrCols() - 1);
+}
+
+float HeightMap::GetCellHeight() const
+{
+	return m_Size.y / (m_Grid.GetNrRows() - 1);
+}
+
+float HeightMap::CubeFunction(float period, float magnitude, float t) const
+{
+	constexpr float scaleX{ 4 }; //constant value is to choose pointiness
+	const float scaleY{ 1.f / (scaleX * scaleX * scaleX) * magnitude };
+	t /= period;
+	t = fmod(t, 2);
+	if (t > 1)
+		t = 1 - (t - 1);
+	t *= scaleX;
+	return scaleY * t * t * t;
+}
+
+float HeightMap::SinFunction(float period, float magnitude, float t)
+{
+	t /= period;
+	t *= Constants::PI2;
+	return sinf(t) * magnitude;
 }

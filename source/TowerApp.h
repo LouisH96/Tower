@@ -1,29 +1,9 @@
 #pragma once
-#include <Game/Camera/FpsCameraController.h>
-
 #include "TowerAppRenderer.h"
 #include "Services/TowerAppServices.h"
 
-class DuneCreator;
 class EnemySystem;
 class Character;
-
-namespace MyEngine
-{
-	namespace App
-	{
-		class FpsControl;
-		namespace Win32
-		{
-			class Window;
-		}
-	}
-	namespace Rendering
-	{
-		class Gpu;
-		class Canvas;
-	}
-}
 
 class TowerApp
 {
@@ -34,13 +14,10 @@ public:
 	void Render();
 
 private:
-	App::Win32::Window& m_Window;
-	Rendering::Canvas& m_Canvas;
 	TowerAppServices m_Services;
 
 	Character* m_pCharacter;
-	Terrain* m_pTerrain;
-	Tower* m_pTower;
-	EnemySystem* m_pEnemySystem;
-	DuneCreator* m_pDuneCreator;
+	Terrain* m_pTerrain{};
+	Tower* m_pTower{};
+	EnemySystem* m_pEnemySystem{};
 };

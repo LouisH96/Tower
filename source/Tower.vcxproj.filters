@@ -15,7 +15,6 @@
     <ClCompile Include="Character\EnemySystem.cpp" />
     <ClCompile Include="Services\CollisionService.cpp" />
     <ClCompile Include="Services\TowerAppServices.cpp" />
-    <ClCompile Include="Environment\Dunes\DuneCreator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Weapons\Bow.h" />
@@ -30,6 +29,5 @@
     <ClInclude Include="Character\EnemySystem.h" />
     <ClInclude Include="Services\CollisionService.h" />
     <ClInclude Include="Services\TowerAppServices.h" />
-    <ClInclude Include="Environment\Dunes\DuneCreator.h" />
   </ItemGroup>
 </Project>
