@@ -7,11 +7,32 @@
 #include "../TowerAppRenderer.h"
 #include "../Services/TowerAppServices.h"
 
+Terrain* Terrain::m_pStatic = nullptr;
 
-Terrain::Terrain(TowerAppServices& services, const Math::Float3& position, const Math::Float2& size)
-	: m_Size{ size }
+void Terrain::Init(const TowerAppServices& services, const Float3& position, const Float2& size)
 {
-	FromHeightMap(services, position);
+	m_pStatic = new Terrain(services, position, size);
+}
+
+void Terrain::Release()
+{
+	delete m_pStatic;
+	m_pStatic = nullptr;
+}
+
+float Terrain::GetHeight(const Float2& point) const
+{
+	return m_HeightMap.GetHeight(point);
+}
+
+Terrain::Terrain(const TowerAppServices& services, const Float3& position, const Float2& size)
+	: m_HeightMap{ MakeHeightMap(size, {300,300}) }
+{
+	//MESH
+	Array<Rendering::V_PosNorCol> vertices{ 0 };
+	Array<int> indices{0};
+	m_HeightMap.ToVertices(vertices, indices, position);
+	m_pMesh = Rendering::Mesh::Create(vertices, indices);
 	services.Renderer.GetTerrainRenderer().AddEntry(*m_pMesh);
 }
 
@@ -20,11 +41,9 @@ Terrain::~Terrain()
 	delete m_pMesh;
 }
 
-void Terrain::FromHeightMap(TowerAppServices& services, const Math::Float3& position)
+HeightMap Terrain::MakeHeightMap(const Float2& worldSize, const Int2& nrPoints)
 {
-	MeshCollidable& collidable{ services.Collision.Terrain };
-	Array<Rendering::V_PosNorCol> vertices{ 0 };
-	HeightMap heightMap{ {300,300}, 0, m_Size };
+	HeightMap heightMap{ nrPoints, 0, worldSize };
 
 	heightMap.AddSinWaveX(40, 1.2f);
 	heightMap.AddSinWaveX(100, 1);
@@ -45,10 +64,5 @@ void Terrain::FromHeightMap(TowerAppServices& services, const Math::Float3& posi
 	heightMap.SinDisplaceAlongX(40, 2);
 	heightMap.SinDisplaceAlongY(70, 3);
 
-	heightMap.ToVertices(vertices, collidable.TriangleNormals, collidable.Indices, position);
-	m_pMesh = Rendering::Mesh::Create(vertices, collidable.Indices);
-
-	collidable.Points = { vertices.GetSize() };
-	for (int i = 0; i < collidable.Points.GetSize(); i++)
-		collidable.Points[i] = vertices[i].Pos;
+	return heightMap;
 }

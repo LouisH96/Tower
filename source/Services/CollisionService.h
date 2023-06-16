@@ -34,12 +34,9 @@ private:
 	bool IsColliding(const Math::Float3& begin, const Math::Float3& end, const Enemy& enemy) const;
 	static bool HasOverlap(float aMin, float aMax, float bMin, float bMax);
 };
-
-
 struct CollisionService
 {
 	MeshCollidable Tower;
-	MeshCollidable Terrain;
 	EnemiesCollidable Enemies;
 };
 

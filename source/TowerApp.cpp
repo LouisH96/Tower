@@ -19,17 +19,17 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	const Float3 towerPosition3{ Float3::FromXz(terrainSize / 2) };
 	const Float2 towerRoofSize{ 10,6 };
 	constexpr float towerHeight{ 8 };
-	m_pTerrain = new Terrain(m_Services, {}, terrainSize);
+	Terrain::Init(m_Services, {}, terrainSize);
 	m_pTower = new Tower(m_Services, towerPosition3, towerRoofSize, towerHeight);
 	const Float3 characterPosition{ towerPosition3 + Float3::FromXz(towerRoofSize * .5) + Float3{ 0,towerHeight, 0 } };
 	m_pCharacter = new Character(coreServices, characterPosition);
 
-	m_pCharacter->Register(*m_pTerrain);
+	m_pCharacter->Register(Terrain::Get());
 	m_pCharacter->Register(m_Services.Renderer);
 	m_pCharacter->Register(*m_pTower);
 
 	//Enemy-System
-	m_pEnemySystem = new EnemySystem(m_Services, 10, towerPosition, *m_pTerrain);
+	m_pEnemySystem = new EnemySystem(m_Services, 100, towerPosition, Terrain::Get());
 	m_Services.pEnemySystem = m_pEnemySystem;
 }
 
@@ -37,7 +37,7 @@ void TowerApp::Release()
 {
 	delete m_pEnemySystem;
 	delete m_pTower;
-	delete m_pTerrain;
+	Terrain::Release();
 	delete m_pCharacter;
 	m_Services.Renderer.Release();
 }
@@ -51,7 +51,7 @@ void TowerApp::Update()
 	}
 
 	m_pCharacter->Update(m_Services);
-	//m_pEnemySystem->Update(m_Services);
+	m_pEnemySystem->Update(m_Services);
 }
 
 void TowerApp::Render()

@@ -22,10 +22,13 @@ public:
 	void Scale(float scale);
 	void Divide(float scale);
 
-	void ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Float3>& triangleNormals, Array<int>& indices, const Float3& origin) const;
+	void ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& indices, const Float3& origin) const;
 	Float2 GetCellSize() const;
 	float GetCellWidth() const;
 	float GetCellHeight() const;
+	const Float2& GetSize() const { return m_Size; }
+
+	float GetHeight(const Float2& point) const;
 
 private:
 	GridArray<float> m_Grid;

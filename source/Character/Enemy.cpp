@@ -65,14 +65,7 @@ void Enemy::UpdateMove(
 		m_World.Position += Float3::FromXz(movement);
 	}
 
-	Float3 feet{ m_World.Position };
-	feet.y = -1000;
-	Float3 head{ m_World.Position };
-	head.y += 2;
-
-	Physics::CollisionDetection::Collision collision{};
-	if (services.Collision.Terrain.IsColliding(head, feet, collision))
-		m_World.Position.y = collision.position.y;
+	m_World.Position.y = Terrain::Get().GetHeight(m_World.Position.Xz());
 }
 
 void Enemy::UpdateFall(const TowerAppServices& services)
@@ -80,16 +73,9 @@ void Enemy::UpdateFall(const TowerAppServices& services)
 	const Quaternion rotation{ Quaternion::FromAxis(m_FallOverAxis, 150 * Constants::TO_RAD * Globals::DeltaTime) };
 	m_World.Rotation.RotateBy(rotation);
 
-	const Float3 head{ 0, 1.8f,0 };
-	constexpr float headRadius{ .1f };
+	const Float3 head{ m_World.LocalToWorld({0, 1.8f,0}) };
+	const float terrainHeight{ Terrain::Get().GetHeight(head.Xz()) };
 
-	const Float3 headFront{ m_World.LocalToWorld(head + Float3{0,0,headRadius}) };
-	const Float3 headBack{ m_World.LocalToWorld(head + Float3{0,0,-headRadius}) };
-	if (services.Collision.Terrain.IsColliding(headFront, headBack))
-		m_FallOverAxis.x = DEAD;
-
-	const Float3 headLeft{ m_World.LocalToWorld(head + Float3{-headRadius, 0,0 }) };
-	const Float3 headRight{ m_World.LocalToWorld(head + Float3{headRadius, 0, 0}) };
-	if (services.Collision.Terrain.IsColliding(headLeft, headRight))
+	if (head.y <= terrainHeight)
 		m_FallOverAxis.x = DEAD;
 }

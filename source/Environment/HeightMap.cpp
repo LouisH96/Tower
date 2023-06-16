@@ -127,7 +127,7 @@ void HeightMap::SinDisplaceAlongY(float period, float magnitude)
 	}
 }
 
-void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Float3>& triangleNormals, Array<int>& indices, const
+void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& indices, const
 	Float3& origin) const
 {
 	vertices = { m_Grid.GetNrElements() };
@@ -146,7 +146,6 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Float3
 	}
 
 	//Normals
-	triangleNormals = { (m_Grid.GetNrCols() - 1) * (m_Grid.GetNrRows() - 1) * 2 };
 	int triangleIdx = 0;
 	idx = 0;
 	for (int iRow = 0; iRow < m_Grid.GetNrRows() - 1; iRow++)
@@ -168,8 +167,6 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<Float3
 
 			const Float3 normal1{ diagonal.Cross(horizontal).Normalized() };
 			const Float3 normal2{ vertical.Cross(diagonal).Normalized() };
-			triangleNormals[triangleIdx++] = normal1;
-			triangleNormals[triangleIdx++] = normal2;
 
 			vertices[idxBotLeft].Normal += normal1 + normal2;
 			vertices[idxBotRight].Normal += normal1;
@@ -226,6 +223,45 @@ float HeightMap::GetCellWidth() const
 float HeightMap::GetCellHeight() const
 {
 	return m_Size.y / (m_Grid.GetNrRows() - 1);
+}
+
+float HeightMap::GetHeight(const Float2& point) const
+{
+	constexpr float fallback{ -1 };
+	const Float2 pointCoord{
+		point.x / GetCellWidth(),
+		point.y / GetCellHeight()
+	};
+	const Int2 leftBotCoord{
+		Float::Floor(pointCoord.x),
+		Float::Floor(pointCoord.y)
+	};
+	if (leftBotCoord.x < 0 || leftBotCoord.y < 0)  return fallback;
+	const Int2 rightTopCoord{ leftBotCoord.x + 1,leftBotCoord.y + 1 };
+	if (rightTopCoord.x >= m_Grid.GetNrCols() || rightTopCoord.y >= m_Grid.GetNrRows()) return fallback;
+
+	//barycentric coordinates
+	const Float2 pointLocal{ pointCoord - leftBotCoord };
+	const float crossDiagonal{ pointLocal.Cross({1,1}) };
+	if (crossDiagonal < 0)
+	{
+		//left-top triangle
+		const float weightLeftTop{ -crossDiagonal };
+		const float weightRightTop{ pointLocal.Cross({0,1}) };
+		const float weightLeftBot{ Float2{pointLocal.x, pointLocal.y - 1}.Cross({1,0}) };
+		const float heightLeftBot{ m_Grid.Get(leftBotCoord) };
+		const float heightLeftTop{ m_Grid.Get({leftBotCoord.x, leftBotCoord.y + 1}) };
+		const float heightTopRight{ m_Grid.Get({leftBotCoord.x + 1, leftBotCoord.y + 1}) };
+		return heightLeftBot * weightLeftBot + heightLeftTop * weightLeftTop + heightTopRight * weightRightTop;
+	}
+	//right-bot triangle
+	const float weightRightBot{ crossDiagonal };
+	const float weightRightTop{ Float2{1,0}.Cross(pointLocal) };
+	const float weightLeftBot{ Float2{0,1}.Cross({pointLocal.x - 1, pointLocal.y}) };
+	const float heightRightBot{ m_Grid.Get({leftBotCoord.x + 1, leftBotCoord.y}) };
+	const float heightRightTop{ m_Grid.Get(rightTopCoord) };
+	const float heightLeftBot{ m_Grid.Get(leftBotCoord) };
+	return heightLeftBot * weightLeftBot + heightRightTop * weightRightTop + heightRightBot * weightRightBot;
 }
 
 float HeightMap::CubeFunction(float period, float magnitude, float t) const

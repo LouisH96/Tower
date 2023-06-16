@@ -108,18 +108,22 @@ void Bow::UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) co
 	arrowData.pTransform->Position += arrowData.Velocity * Globals::DeltaTime;
 	arrowData.pTransform->Rotation = Math::Quaternion::FromForward(arrowData.Velocity.Normalized());
 
-	if (services.Collision.Tower.IsColliding(oldPos, arrowData.pTransform->Position) 
-		|| services.Collision.Terrain.IsColliding(oldPos, arrowData.pTransform->Position))
+	if (services.Collision.Tower.IsColliding(oldPos, arrowData.pTransform->Position))
 	{
 		arrowData.Velocity.x = 2000;
+		return;
 	}
-	else
+	Enemy* pHitEnemy{ services.Collision.Enemies.IsColliding(oldPos, arrowData.pTransform->Position) };
+	if (pHitEnemy)
 	{
-		Enemy* pHitEnemy{ services.Collision.Enemies.IsColliding(oldPos, arrowData.pTransform->Position) };
-		if (pHitEnemy)
-		{
-			services.pEnemySystem->OnCollision(*arrowData.pTransform, *pHitEnemy);
-			arrowData.Velocity.x = 2000;
-		}
+		services.pEnemySystem->OnCollision(*arrowData.pTransform, *pHitEnemy);
+		arrowData.Velocity.x = 2000;
+		return;
+	}
+
+	if (Terrain::Get().GetHeight(arrowData.pTransform->Position.Xz()) > arrowData.pTransform->Position.y)
+	{
+		arrowData.Velocity.x = 2000;
+		return;
 	}
 }

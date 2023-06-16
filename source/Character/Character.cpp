@@ -12,7 +12,7 @@ using namespace Math;
 using namespace Physics;
 
 Character::Character(const Framework::CoreServices& services, const Math::Float3& position)
-	: m_CameraController{ services.Camera}
+	: m_CameraController{ services.Camera }
 {
 	m_CameraController.SetPosition(position);
 }
@@ -46,14 +46,17 @@ void Character::Update(const TowerAppServices& services)
 	const Float3 head{ oldHead };
 	const Float3 feet{ newPos - Float3{0, height, 0} };
 	CollisionDetection::Collision collision{};
-	if (services.Collision.Tower.IsColliding(head, feet, collision)
-		|| services.Collision.Terrain.IsColliding(head, feet, collision))
+	if (services.Collision.Tower.IsColliding(head, feet, collision))
 		m_CameraController.SetPositionY(collision.position.y + height);
-	else if (feet.y < -1)
-		m_CameraController.SetPositionY(-1 + height);
+	else
+	{
+		const float terrainHeight{ Terrain::Get().GetHeight(feet.Xz()) };
+		if (feet.y < terrainHeight)
+			m_CameraController.SetPositionY(terrainHeight + height);
+	}
 
 	Float3 overlap;
-	if(services.Collision.Tower.IsColliding(Sphere{newPos, .1f}, overlap))
+	if (services.Collision.Tower.IsColliding(Sphere{ newPos, .1f }, overlap))
 		m_CameraController.SetPosition(m_CameraController.GetPosition() - overlap);
 
 	//cam & bow

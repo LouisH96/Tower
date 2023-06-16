@@ -17,7 +17,6 @@ private:
 	TowerAppServices m_Services;
 
 	Character* m_pCharacter;
-	Terrain* m_pTerrain{};
 	Tower* m_pTower{};
 	EnemySystem* m_pEnemySystem{};
 };
