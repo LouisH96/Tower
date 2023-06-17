@@ -31,7 +31,7 @@ TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 	, m_pTextureRenderer{ new TextureRenderer(Resources::GlobalShader(L"Font_Inst.hlsl")) }
 	, m_pTexture2DRenderer{ new Texture2DRenderer() }
 {
-	DebugRenderer::Init(*Globals::pGpu);
+	DebugRenderer::Init();
 	services.FpsControl.SetFpsDisplay(m_FpsDisplay);
 
 	CreateArrows();
@@ -54,14 +54,14 @@ void TowerAppRenderer::Render(const Game::FpsCameraController& cameraController)
 	const Float4X4& viewProjection{ cameraController.GetCamera().GetViewProjection() };
 
 	m_Canvas.BeginPaint();
-	m_pTerrainRenderer->Render(cameraPosition, viewProjection);
-	m_pTransformRenderer->Render(cameraPosition, viewProjection);
-	m_pSimpleRenderer->Render(cameraPosition, viewProjection);
-	m_pTexture2DRenderer->Render(cameraController.GetCamera());
-	m_pUnlitRenderer->Render(cameraPosition, viewProjection);
-	m_pTextureRenderer->Render(cameraPosition, viewProjection);
+	m_pTerrainRenderer->Render();
+	m_pTransformRenderer->Render();
+	m_pSimpleRenderer->Render();
+	m_pTexture2DRenderer->Render();
+	m_pUnlitRenderer->Render();
+	m_pTextureRenderer->Render();
 	m_pCharacter->Render(cameraController.GetCamera());
-	DebugRenderer::Render(cameraPosition, viewProjection);
+	DebugRenderer::Render();
 	m_FpsDisplay.Render();
 	m_Canvas.Present();
 }
