@@ -28,7 +28,7 @@ TowerAppRenderer::TowerAppRenderer(const Framework::CoreServices& services)
 	, m_pSimpleRenderer(RendererFactory::CreateSimpleRenderer())
 	, m_pTransformRenderer{ new R_LambertCam_Tex_Transform() }
 	, m_pTerrainRenderer{ new TerrainRenderer(false) }
-	, m_pTextureRenderer{ new TextureRenderer(Framework::Resources::GlobalShader(L"Font_Inst.hlsl")) }
+	, m_pTextureRenderer{ new TextureRenderer(Resources::GlobalShader(L"Font_Inst.hlsl")) }
 	, m_pTexture2DRenderer{ new Texture2DRenderer() }
 {
 	DebugRenderer::Init(*Globals::pGpu);

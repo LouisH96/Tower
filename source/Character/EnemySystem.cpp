@@ -21,7 +21,7 @@ EnemySystem::EnemySystem(
 	, m_Target{ target }
 {
 	//MESH
-	const std::wstring meshPath{ Framework::Resources::Local(L"SK_Character_DarkElf_01.fbx") };
+	const std::wstring meshPath{ Resources::Local(L"SK_Character_DarkElf_01.fbx") };
 	Io::Fbx::FbxClass fbxModel{ meshPath };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
@@ -32,7 +32,7 @@ EnemySystem::EnemySystem(
 	m_pMesh = Mesh::Create(vertices);
 
 	//TEXTURE
-	const std::wstring texturePath{ Framework::Resources::Local(L"FantasyRivals_Texture_01_A.png") };
+	const std::wstring texturePath{ Resources::Local(L"FantasyRivals_Texture_01_A.png") };
 	m_pTexture = new Texture(texturePath);
 
 	//ENEMIES

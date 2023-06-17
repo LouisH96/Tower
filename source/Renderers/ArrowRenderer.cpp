@@ -10,11 +10,11 @@ using namespace Rendering;
 
 ArrowRenderer::ArrowRenderer()
 	: m_InputLayout{ InputLayout::FromType<Instance>() }
-	, m_Shader{ Framework::Resources::GlobalShader(L"LambertCam_Tex_Tran_Inst.hlsl") }
-	, m_Texture{ Framework::Resources::Local(L"Texture_01.png") }
+	, m_Shader{ Resources::GlobalShader(L"LambertCam_Tex_Tran_Inst.hlsl") }
+	, m_Texture{ Resources::Local(L"Texture_01.png") }
 {
 	//VERTICES
-	const std::wstring arrowMeshPath{ Framework::Resources::Local(L"SM_Arrow_01.fbx") };
+	const std::wstring arrowMeshPath{ Resources::Local(L"SM_Arrow_01.fbx") };
 	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath };
 	Io::Fbx::FbxClass::Geometry& arrowGeom = arrowFbxModel.GetGeometries()[0];
 	Array<V_PosNorUv> arrowVertices{ arrowGeom.Points.GetSize() };
