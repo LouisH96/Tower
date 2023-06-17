@@ -29,7 +29,7 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	m_pCharacter->Register(*m_pTower);
 
 	//Enemy-System
-	m_pEnemySystem = new EnemySystem(m_Services, 100, towerPosition, Terrain::Get());
+	m_pEnemySystem = new EnemySystem(m_Services, 20, towerPosition, Terrain::Get());
 	m_Services.pEnemySystem = m_pEnemySystem;
 }
 

@@ -13,6 +13,8 @@
 #include "../Character/EnemySystem.h"
 #include "../Environment/Tower.h"
 #include "../Services/TowerAppServices.h"
+#include "Framework/CoreServices.h"
+#include "Rendering/Renderers/R_LambertCam_Tex_Transform.h"
 
 Bow::Bow()
 {
@@ -34,18 +36,6 @@ Bow::Bow()
 
 	m_pBowMesh = Mesh::Create(vertices);
 
-	//ARROW-MESH
-	const std::wstring arrowMeshPath{ Framework::Resources::Local(L"SM_Arrow_01.fbx") };
-	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath };
-	Io::Fbx::FbxClass::Geometry& arrowGeom = arrowFbxModel.GetGeometries()[0];
-
-
-	Array<V_PosNorUv> arrowVertices{ arrowGeom.Points.GetSize() };
-	for (int i = 0; i < arrowGeom.Points.GetSize(); i++)
-		arrowVertices[i] = V_PosNorUv{ arrowGeom.Points[i] * 0.01f, arrowGeom.Normals[i], arrowGeom.Uvs[i] };
-
-	m_pArrowMesh = Mesh::Create(arrowVertices);
-
 	//TEXTURE
 	const std::wstring texturePath{ Framework::Resources::Local(L"Texture_01.png") };
 	m_pTexture = new Texture(texturePath);
@@ -53,9 +43,6 @@ Bow::Bow()
 
 Bow::~Bow()
 {
-	for (int i = 0; i < m_ArrowData.size(); i++)
-		delete m_ArrowData[i].pTransform;
-	delete m_pArrowMesh;
 	delete m_pBowMesh;
 	delete m_pTexture;
 }
@@ -70,19 +57,25 @@ void Bow::Update(const TowerAppServices& services, const Transform& cameraTransf
 	if (Globals::pMouse->IsLeftBtnReleased())
 	{
 		m_ArrowData.push_back(ArrowData{
-			new Transform(m_WorldTransform), m_WorldTransform.Rotation.GetForward() * 20
+			Transform{m_WorldTransform}, m_WorldTransform.Rotation.GetForward() * 20
 			});
-		const ArrowData& bowData{ m_ArrowData[m_ArrowData.size() - 1] };
-		m_pRenderer->AddEntry(*m_pArrowMesh, *m_pTexture, *bowData.pTransform);
 	}
 
+	m_ArrowRenderer.SetSize(m_ArrowData.size());
 	for (int i = 0; i < m_ArrowData.size(); i++)
+	{
 		UpdateArrow(services, m_ArrowData[i]);
+		m_ArrowRenderer.UpdateData(i, m_ArrowData[i].Transform, services.Core.Camera);
+	}
+}
+
+void Bow::Render(const Camera& camera)
+{
+	m_ArrowRenderer.Render(camera);
 }
 
 void Bow::Register(Rendering::R_LambertCam_Tex_Transform& renderer)
 {
-	m_pRenderer = &renderer;
 	renderer.AddEntry(*m_pBowMesh, *m_pTexture, m_WorldTransform);
 }
 
@@ -100,28 +93,28 @@ void Bow::UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) co
 {
 	constexpr float gravity = -9.81f;
 
-	if (arrowData.pTransform->Position.y <= -1) return;
+	if (arrowData.Transform.Position.y <= -1) return;
 	if (arrowData.Velocity.x == 2000) return;
 
-	const Math::Float3 oldPos{ arrowData.pTransform->Position };
+	const Math::Float3 oldPos{ arrowData.Transform.Position };
 	arrowData.Velocity.y += gravity * Globals::DeltaTime;
-	arrowData.pTransform->Position += arrowData.Velocity * Globals::DeltaTime;
-	arrowData.pTransform->Rotation = Math::Quaternion::FromForward(arrowData.Velocity.Normalized());
+	arrowData.Transform.Position += arrowData.Velocity * Globals::DeltaTime;
+	arrowData.Transform.Rotation = Math::Quaternion::FromForward(arrowData.Velocity.Normalized());
 
-	if (services.Collision.Tower.IsColliding(oldPos, arrowData.pTransform->Position))
+	if (services.Collision.Tower.IsColliding(oldPos, arrowData.Transform.Position))
 	{
 		arrowData.Velocity.x = 2000;
 		return;
 	}
-	Enemy* pHitEnemy{ services.Collision.Enemies.IsColliding(oldPos, arrowData.pTransform->Position) };
+	Enemy* pHitEnemy{ services.Collision.Enemies.IsColliding(oldPos, arrowData.Transform.Position) };
 	if (pHitEnemy)
 	{
-		services.pEnemySystem->OnCollision(*arrowData.pTransform, *pHitEnemy);
+		services.pEnemySystem->OnCollision(arrowData.Transform, *pHitEnemy);
 		arrowData.Velocity.x = 2000;
 		return;
 	}
 
-	if (Terrain::Get().GetHeight(arrowData.pTransform->Position.Xz()) > arrowData.pTransform->Position.y)
+	if (Terrain::Get().GetHeight(arrowData.Transform.Position.Xz()) > arrowData.Transform.Position.y)
 	{
 		arrowData.Velocity.x = 2000;
 		return;

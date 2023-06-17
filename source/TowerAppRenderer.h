@@ -5,6 +5,8 @@
 #include "Weapons/Bow.h"
 #include "Rendering/Renderers/R_LambertLight_Col.h"
 
+class Character;
+
 namespace MyEngine
 {
 	namespace Framework
@@ -53,6 +55,7 @@ public:
 	TransformRenderer& GetTransformRenderer() const { return *m_pTransformRenderer; }
 	TerrainRenderer& GetTerrainRenderer() const { return *m_pTerrainRenderer; }
 	Rendering::Texture2DRenderer& GetTexture2DRenderer() const { return *m_pTexture2DRenderer; }
+	void SetCharacter(Character& character) { m_pCharacter = &character; }
 
 private:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
@@ -68,6 +71,7 @@ private:
 	TerrainRenderer* m_pTerrainRenderer{};
 	TextureRenderer* m_pTextureRenderer{};
 	Rendering::Texture2DRenderer* m_pTexture2DRenderer{};
+	Character* m_pCharacter{};
 
 	void CreateArrows() const;
 };

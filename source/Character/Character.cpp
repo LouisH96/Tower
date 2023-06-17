@@ -29,9 +29,10 @@ void Character::Register(const Tower& tower)
 	m_pTower = &tower;
 }
 
-void Character::Register(const TowerAppRenderer& renderer)
+void Character::Register(TowerAppRenderer& renderer)
 {
 	m_Bow.Register(renderer.GetTransformRenderer());
+	renderer.SetCharacter(*this);
 }
 
 void Character::Update(const TowerAppServices& services)
@@ -62,4 +63,9 @@ void Character::Update(const TowerAppServices& services)
 	//cam & bow
 	m_CameraController.Update();
 	m_Bow.Update(services, m_CameraController.GetTransform());
+}
+
+void Character::Render(const Camera& camera)
+{
+	m_Bow.Render(camera);
 }

@@ -1,8 +1,7 @@
 #pragma once
 #include <Game/Transform.h>
-#include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
-
 #include "../Environment/Terrain.h"
+#include "../Renderers/ArrowRenderer.h"
 
 class Tower;
 class TowerAppRenderer;
@@ -12,6 +11,7 @@ namespace MyEngine
 {
 	namespace Rendering
 	{
+		class R_LambertCam_Tex_Transform;
 		class Gpu;
 		class Texture;
 		class Mesh;
@@ -25,6 +25,7 @@ public:
 	~Bow();
 
 	void Update(const TowerAppServices& services, const Transform& cameraTransform);
+	void Render(const Camera& camera);
 
 	void Register(Rendering::R_LambertCam_Tex_Transform& renderer);
 	void Register(const Terrain& terrain);
@@ -33,17 +34,16 @@ public:
 private:
 	struct ArrowData
 	{
-		Transform* pTransform;
+		Transform Transform;
 		Float3 Velocity;
 	};
 
 	Transform m_LocalTransform{};
 	Transform m_WorldTransform{};
 
-	Rendering::R_LambertCam_Tex_Transform* m_pRenderer{};
+	ArrowRenderer m_ArrowRenderer;
 	Rendering::Texture* m_pTexture{};
 	Rendering::Mesh* m_pBowMesh{};
-	Rendering::Mesh* m_pArrowMesh{};
 
 	std::vector<ArrowData> m_ArrowData{};
 

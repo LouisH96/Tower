@@ -10,6 +10,7 @@
 #include <Rendering/FpsDisplay.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
 
+#include "Character/Character.h"
 #include "Framework/Resources.h"
 #include "Game/Camera/Camera.h"
 #include "Rendering/Image.h"
@@ -59,6 +60,7 @@ void TowerAppRenderer::Render(const Game::FpsCameraController& cameraController)
 	m_pTexture2DRenderer->Render(cameraController.GetCamera());
 	m_pUnlitRenderer->Render(cameraPosition, viewProjection);
 	m_pTextureRenderer->Render(cameraPosition, viewProjection);
+	m_pCharacter->Render(cameraController.GetCamera());
 	DebugRenderer::Render(cameraPosition, viewProjection);
 	m_FpsDisplay.Render();
 	m_Canvas.Present();

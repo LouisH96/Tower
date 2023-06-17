@@ -6,6 +6,7 @@
 #include "Framework/CoreServices.h"
 #include "Framework/Resources.h"
 #include "Io/Fbx/FbxClass.h"
+#include "Rendering/Renderers/R_LambertCam_Tex_Transform.h"
 
 using namespace Rendering;
 using namespace Math;

@@ -93,6 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Renderers\ArrowRenderer.cpp" />
     <ClCompile Include="Character\Enemy.cpp" />
     <ClCompile Include="Character\EnemySystem.cpp" />
     <ClCompile Include="Services\CollisionService.cpp" />
@@ -112,6 +113,7 @@
     <ClCompile Include="TowerAppRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Renderers\ArrowRenderer.h" />
     <ClInclude Include="Character\Enemy.h" />
     <ClInclude Include="Character\EnemySystem.h" />
     <ClInclude Include="Services\CollisionService.h" />
