@@ -35,11 +35,9 @@ void ArrowRenderer::SetSize(int size)
 void ArrowRenderer::UpdateData(int idx, const Transform& transform, const Camera& camera)
 {
 	const Float4X4 model{ transform.AsMatrix() };
-	const Float4X4 invTranModel{ transform.GetTransposeInverse() };
 	const Float4X4 modelViewProj{ model * camera.GetViewProjection() };
 	m_Instances[idx] = Instance{
 		model,
-		invTranModel,
 		modelViewProj };
 }
 
