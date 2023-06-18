@@ -9,7 +9,7 @@
 using namespace Rendering;
 
 ArrowRenderer::ArrowRenderer()
-	: m_InputLayout{ InputLayout::FromType<Instance>() }
+	: m_InputLayout{ InputLayout::FromTypes<Vertex, Instance>() }
 	, m_Shader{ Resources::GlobalShader(L"LambertCam_Tex_Tran_Inst.hlsl") }
 	, m_Texture{ Resources::Local(L"Texture_01.png") }
 {
