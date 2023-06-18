@@ -1,22 +1,21 @@
 #include "pch.h"
 #include "EnemySystem.h"
 
-#include "../TowerAppRenderer.h"
-#include "../Services/TowerAppServices.h"
+#include "Environment/Terrain.h"
 #include "Framework/Resources.h"
 #include "Io/Fbx/FbxClass.h"
 #include "Rendering/Renderers/R_LambertCam_Tex_Transform.h"
+#include "Services/CollisionService.h"
+#include "Services/GameplaySystems.h"
+#include "Services/RenderSystems.h"
 
 using namespace Rendering;
 using namespace Math;
 
 EnemySystem::EnemySystem(
-	TowerAppServices& services,
 	int nrEnemies,
-	const Float2& target, const Terrain& terrain)
-	: m_Renderer{ services.Renderer.GetTransformRenderer() }
-	, m_Enemies{ nrEnemies }
-	, m_Terrain{ terrain }
+	const Float2& target)
+	: m_Enemies{ nrEnemies }
 	, m_Target{ target }
 {
 	//MESH
@@ -38,17 +37,16 @@ EnemySystem::EnemySystem(
 	for (int i = 0; i < m_Enemies.GetSize(); i++)
 	{
 		const float angle = (rand() % 360) * Constants::TO_RAD;
-		float x = cos(angle) * m_Terrain.GetSize().x / 2;
-		float y = sin(angle) * m_Terrain.GetSize().y / 2;
+		float x = cos(angle) * GameplaySystems::GetTerrain().GetSize().x / 2;
+		float y = sin(angle) * GameplaySystems::GetTerrain().GetSize().y / 2;
 		if (abs(x) < 5) x = x < 0 ? -5 : 5;
 		if (abs(y) < 5) y = y < 0 ? -5 : 5;
 		m_Enemies[i].GetTransform().Position = Float3{ target.x + x, 0, target.y + y };
 		m_Enemies[i].GetTransform().LookAt(Float3::FromXz(m_Target));
-		m_Renderer.AddEntry(*m_pMesh, *m_pTexture, m_Enemies[i].GetTransform());
 	}
 
 	//COLLIDABLES
-	EnemiesCollidable& collidable{ services.Collision.Enemies };
+	EnemiesCollidable& collidable{ GameplaySystems::GetCollisionService().Enemies };
 	collidable.pEnemies = &m_Enemies;
 	collidable.Points = { vertices.GetSize() };
 	collidable.TriangleNormals = { vertices.GetSize() / 3 };
@@ -64,11 +62,18 @@ EnemySystem::~EnemySystem()
 	delete m_pMesh;
 }
 
-void EnemySystem::Update(TowerAppServices& services)
+void EnemySystem::LinkRenderers()
+{
+	RenderSystems::TransformRenderer& renderer{ RenderSystems::GetTransformRenderer() };
+	for(int i = 0; i < m_Enemies.GetSize(); i++)
+		renderer.AddEntry(*m_pMesh, *m_pTexture, m_Enemies[i].GetTransform());
+}
+
+void EnemySystem::Update()
 {
 	for (int i = 0; i < m_Enemies.GetSize(); i++)
 	{
-		m_Enemies[i].Update(services, m_Target, 1 * Globals::DeltaTime);
+		m_Enemies[i].Update(m_Target, 1 * Globals::DeltaTime);
 	}
 }
 

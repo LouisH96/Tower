@@ -32,16 +32,16 @@ void ArrowRenderer::SetSize(int size)
 	m_Instances.SetCount(size);
 }
 
-void ArrowRenderer::UpdateData(int idx, const Transform& transform, const Camera& camera)
+void ArrowRenderer::UpdateData(int idx, const Transform& transform)
 {
 	const Float4X4 model{ transform.AsMatrix() };
-	const Float4X4 modelViewProj{ model * camera.GetViewProjection() };
+	const Float4X4 modelViewProj{ model * Globals::pCamera->GetViewProjection() };
 	m_Instances[idx] = Instance{
 		model,
 		modelViewProj };
 }
 
-void ArrowRenderer::Render(const Camera& camera)
+void ArrowRenderer::Render()
 {
 	m_BlendState.Activate();
 	m_RasterizerState.Activate();
@@ -50,7 +50,7 @@ void ArrowRenderer::Render(const Camera& camera)
 	m_InputLayout.Activate();
 	m_Shader.Activate();
 	m_Texture.Activate();
-	m_CameraBuffer.Update(CB_CamPos{ camera.GetPosition() });
+	m_CameraBuffer.Update(CB_CamPos{ Globals::pCamera->GetPosition() });
 	m_CameraBuffer.Activate();
 	m_Instances.Draw();
 }

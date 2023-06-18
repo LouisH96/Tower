@@ -2,11 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Weapons\Bow.cpp" />
-    <ClCompile Include="Weapons\BowRenderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="TowerApp.cpp" />
-    <ClCompile Include="TowerAppRenderer.cpp" />
     <ClCompile Include="Environment\Terrain.cpp" />
     <ClCompile Include="Environment\HeightMap.cpp" />
     <ClCompile Include="Character\Character.cpp" />
@@ -14,14 +12,13 @@
     <ClCompile Include="Character\Enemy.cpp" />
     <ClCompile Include="Character\EnemySystem.cpp" />
     <ClCompile Include="Services\CollisionService.cpp" />
-    <ClCompile Include="Services\TowerAppServices.cpp" />
     <ClCompile Include="Renderers\ArrowRenderer.cpp" />
+    <ClCompile Include="Services\GameplaySystems.cpp" />
+    <ClCompile Include="Services\RenderSystems.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Weapons\Bow.h" />
-    <ClInclude Include="Weapons\BowRenderer.h" />
     <ClInclude Include="TowerApp.h" />
-    <ClInclude Include="TowerAppRenderer.h" />
     <ClInclude Include="Environment\Terrain.h" />
     <ClInclude Include="Environment\HeightMap.h" />
     <ClInclude Include="Character\Character.h" />
@@ -29,7 +26,8 @@
     <ClInclude Include="Character\Enemy.h" />
     <ClInclude Include="Character\EnemySystem.h" />
     <ClInclude Include="Services\CollisionService.h" />
-    <ClInclude Include="Services\TowerAppServices.h" />
     <ClInclude Include="Renderers\ArrowRenderer.h" />
+    <ClInclude Include="Services\GameplaySystems.h" />
+    <ClInclude Include="Services\RenderSystems.h" />
   </ItemGroup>
 </Project>

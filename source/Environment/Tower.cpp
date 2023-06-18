@@ -1,26 +1,36 @@
 #include "pch.h"
 #include "Tower.h"
 
-#include "../TowerAppRenderer.h"
-#include "../Services/TowerAppServices.h"
 #include "Rendering/State/Mesh.h"
 #include "Rendering/Structs/VertexTypes.h"
+#include "Services/CollisionService.h"
+#include "Services/GameplaySystems.h"
+#include "Services/RenderSystems.h"
 
 using namespace Math;
 using namespace Rendering;
 
-Tower::Tower(
-	TowerAppServices& services,
-	const Float3& position, const Float2& roofSize, float height)
+Tower::Tower(const Float3& position, const Float2& roofSize, float height)
+	: m_Position{ position }
+	, m_RoofSize{ roofSize }
+	, m_Height{ height }
 {
-	Generate(services.Collision.Tower,
-		position, roofSize, height);
-	services.Renderer.GetTerrainRenderer().AddEntry(*m_pMesh);
 }
 
 Tower::~Tower()
 {
 	delete m_pMesh;
+}
+
+void Tower::LinkGameplay()
+{
+	Generate(GameplaySystems::GetCollisionService().Tower,
+		m_Position, m_RoofSize, m_Height);
+}
+
+void Tower::LinkRenderers()
+{
+	RenderSystems::GetTerrainRenderer().AddEntry(*m_pMesh);
 }
 
 void Tower::Generate(MeshCollidable& collidable,
@@ -79,7 +89,7 @@ void Tower::Generate(MeshCollidable& collidable,
 	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.x, origin, color, vertices, iVertex, iIndex, iTriangle);
 
 	//ramp-right
-	origin += rampDepthAxis * roofSize.x + Float3{ 0,rampHeight, 0 };
+	origin += rampDepthAxis * roofSize.x + Float3{ 0, rampHeight, 0 };
 	rampWidthAxis = Float3{ 1,0,0 };
 	rampDepthAxis = Float3{ 0,0,1 };
 	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.y, origin, color, vertices, iVertex, iIndex, iTriangle);
@@ -90,7 +100,7 @@ void Tower::Generate(MeshCollidable& collidable,
 	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, vertices, iVertex, iIndex, iTriangle);
 
 	//ramp-back
-	origin += rampDepthAxis * roofSize.y + Float3{ 0,rampHeight, 0 };
+	origin += rampDepthAxis * roofSize.y + Float3{ 0, rampHeight, 0 };
 	rampWidthAxis = Float3{ 0,0,1 };
 	rampDepthAxis = Float3{ -1,0,0 };
 	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.x, origin, color, vertices, iVertex, iIndex, iTriangle);
@@ -101,16 +111,16 @@ void Tower::Generate(MeshCollidable& collidable,
 	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, vertices, iVertex, iIndex, iTriangle);
 
 	//ramp-left
-	origin += rampDepthAxis * roofSize.x + Float3{ 0,rampHeight, 0 };
+	origin += rampDepthAxis * roofSize.x + Float3{ 0, rampHeight, 0 };
 	rampWidthAxis = Float3{ -1,0,0 };
 	rampDepthAxis = Float3{ 0,0,-1 };
-	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.y-rampWidth, origin, color, vertices, iVertex, iIndex, iTriangle);
-	rampSideOrigin = position + Float3{ 0,0,2 * rampWidth + roofSize.y };
+	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.y - rampWidth, origin, color, vertices, iVertex, iIndex, iTriangle);
+	rampSideOrigin = position + Float3{ 0, 0, 2 * rampWidth + roofSize.y };
 	right = Float3{ 0,0,-(rampWidth + roofSize.y) };
 	up = Float3{ 0,rampHeight * 3, 0 };
 	rightUp = right + up;
 	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, vertices, iVertex, iIndex, iTriangle);
-	rampSideOrigin = position + Float3{ 0,0,rampWidth };
+	rampSideOrigin = position + Float3{ 0, 0, rampWidth };
 	right = Float3{ rampWidth, 0, 0 };
 	up = Float3{ 0,rampHeight * 4, 0 };
 	rightUp = right + up;
@@ -176,11 +186,11 @@ void Tower::AddRamp(
 	origin += right;
 	right = { depth * (rampDepth + rampWidth) };
 	up = Float3{ depth * rampDepth } + Float3{ 0, rampHeight, 0 };
-	rightUp = right + Float3{ 0,rampHeight, 0 };
+	rightUp = right + Float3{ 0, rampHeight, 0 };
 	AddPlane(collidable, right, up, rightUp, origin, color, vertices, verticesIdx, indicesIdx, triangleNormalIdx);
 
 	//ramp top
-	origin = position + depth * rampDepth + Float3{ 0,rampHeight, 0 };
+	origin = position + depth * rampDepth + Float3{ 0, rampHeight, 0 };
 	right = width * rampWidth;
 	up = depth * rampWidth;
 	rightUp = right + up;

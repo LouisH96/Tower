@@ -1,9 +1,18 @@
 #pragma once
-#include "TowerAppRenderer.h"
-#include "Services/TowerAppServices.h"
+#include "Services/GameplaySystems.h"
+#include "Services/RenderSystems.h"
 
-class EnemySystem;
-class Character;
+namespace MyEngine
+{
+	namespace App
+	{
+		class FpsControl;
+	}
+	namespace Framework
+	{
+		class CoreServices;
+	}
+}
 
 class TowerApp
 {
@@ -14,9 +23,13 @@ public:
 	void Render();
 
 private:
-	TowerAppServices m_Services;
+	GameplaySystems m_Gameplay;
+	RenderSystems m_Rendering;
 
-	Character* m_pCharacter;
-	Tower* m_pTower{};
-	EnemySystem* m_pEnemySystem{};
+	void InitGameplay();
+	void LinkGameplay();
+	void InitRendering(App::FpsControl& fpsControl);
+	void LinkRendering();
+
+	void CreateArrows();
 };

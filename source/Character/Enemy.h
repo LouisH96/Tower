@@ -1,8 +1,4 @@
 #pragma once
-#include "Game/Transform.h"
-
-struct TowerAppServices;
-class Terrain;
 
 class Enemy
 {
@@ -10,9 +6,7 @@ public:
 	Enemy();
 	Enemy(const Float3& initPos);
 
-	void Update(
-		TowerAppServices& services,
-		const Float2& target, float maxMovement);
+	void Update(const Float2& target, float maxMovement);
 
 	Transform& GetTransform() { return m_World; }
 	const Transform& GetTransform() const { return m_World; }
@@ -33,10 +27,6 @@ private:
 
 	std::vector<AttachedArrow> m_Arrows{};
 
-	void UpdateMove(
-		const TowerAppServices& services,
-		const Float2& target, float maxMovement);
-
-	void UpdateFall(const TowerAppServices& services);
+	void UpdateMove(const Float2& target, float maxMovement);
+	void UpdateFall();
 };
-

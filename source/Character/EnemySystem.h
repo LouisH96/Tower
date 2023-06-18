@@ -1,50 +1,31 @@
 #pragma once
 #include "Enemy.h"
 
-class Bow;
-struct TowerAppServices;
-class Tower;
-
 namespace MyEngine
 {
 	namespace Rendering
 	{
-		class R_LambertCam_Tex_Transform;
-		class Texture;
 		class Mesh;
+		class Texture;
 	}
 }
-
-namespace MyEngine
-{
-	namespace Framework
-	{
-		class CoreServices;
-	}
-}
-
-class TowerAppRenderer;
 
 class EnemySystem
 {
 public:
-	EnemySystem(
-		TowerAppServices& services, 
-		int nrEnemies, 
-		const Float2& target, const Terrain& terrain);
+	EnemySystem(int nrEnemies, const Float2& target);
 	~EnemySystem();
 
-	void Update(TowerAppServices& services);
+	void LinkRenderers();
+	void Update();
 
 	void OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy);
 
 private:
-	Rendering::R_LambertCam_Tex_Transform& m_Renderer;
 	Rendering::Texture* m_pTexture{};
 	Rendering::Mesh* m_pMesh{};
 
 	Array<Enemy> m_Enemies;
 
-	const Terrain& m_Terrain;
 	const Float2 m_Target;
 };

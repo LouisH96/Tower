@@ -1,23 +1,14 @@
 #include "pch.h"
 #include "Terrain.h"
 
+#include <Environment/HeightMap.h>
 #include <Rendering/State/Mesh.h>
 #include <Rendering/Structs/VertexTypes.h>
-#include "HeightMap.h"
-#include "../TowerAppRenderer.h"
-#include "../Services/TowerAppServices.h"
+#include <Services/RenderSystems.h>
 
-Terrain* Terrain::m_pStatic = nullptr;
-
-void Terrain::Init(const TowerAppServices& services, const Float3& position, const Float2& size)
+void Terrain::LinkRenderers()
 {
-	m_pStatic = new Terrain(services, position, size);
-}
-
-void Terrain::Release()
-{
-	delete m_pStatic;
-	m_pStatic = nullptr;
+	RenderSystems::GetTerrainRenderer().AddEntry(*m_pMesh);
 }
 
 float Terrain::GetHeight(const Float2& point) const
@@ -25,7 +16,7 @@ float Terrain::GetHeight(const Float2& point) const
 	return m_HeightMap.GetHeight(point);
 }
 
-Terrain::Terrain(const TowerAppServices& services, const Float3& position, const Float2& size)
+Terrain::Terrain(const Float3& position, const Float2& size)
 	: m_HeightMap{ MakeHeightMap(size, {300,300}) }
 {
 	//MESH
@@ -33,7 +24,6 @@ Terrain::Terrain(const TowerAppServices& services, const Float3& position, const
 	Array<int> indices{0};
 	m_HeightMap.ToVertices(vertices, indices, position);
 	m_pMesh = Rendering::Mesh::Create(vertices, indices);
-	services.Renderer.GetTerrainRenderer().AddEntry(*m_pMesh);
 }
 
 Terrain::~Terrain()

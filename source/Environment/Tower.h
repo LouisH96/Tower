@@ -2,15 +2,9 @@
 #include "Rendering/Structs/VertexTypes.h"
 
 struct MeshCollidable;
-struct TowerAppServices;
-class TowerAppRenderer;
 
 namespace MyEngine
 {
-	namespace Framework
-	{
-		class CoreServices;
-	}
 	namespace Rendering
 	{
 		class Mesh;
@@ -20,13 +14,17 @@ namespace MyEngine
 class Tower
 {
 public:
-	explicit Tower(
-		TowerAppServices& services,
-		const Float3& position, const Float2& roofSize, float height);
+	explicit Tower(const Float3& position, const Float2& roofSize, float height);
 	~Tower();
+
+	void LinkGameplay();
+	void LinkRenderers();
 
 private:
 	Rendering::Mesh* m_pMesh{};
+	Float3 m_Position;
+	Float2 m_RoofSize;
+	float m_Height;
 
 	void Generate(MeshCollidable& collidable,
 		const Float3& position, const Float2& roofSize,

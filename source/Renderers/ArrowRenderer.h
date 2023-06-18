@@ -19,8 +19,8 @@ public:
 	~ArrowRenderer() = default;
 
 	void SetSize(int size);
-	void UpdateData(int idx, const Transform& transform, const Camera& camera);
-	void Render(const Camera& camera);
+	void UpdateData(int idx, const Transform& transform);
+	void Render();
 
 private:
 	using Vertex = Rendering::V_PosNorUv;

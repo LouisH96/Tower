@@ -1,15 +1,13 @@
 #include "pch.h"
 #include "CollisionService.h"
 
-using namespace Math;
-
-bool MeshCollidable::IsColliding(const Math::Float3& begin, const Math::Float3& end) const
+bool MeshCollidable::IsColliding(const Float3& begin, const Float3& end) const
 {
 	Physics::CollisionDetection::Collision collision;
 	return Physics::CollisionDetection::Detect(begin, end, Points, TriangleNormals, Indices, collision);
 }
 
-bool MeshCollidable::IsColliding(const Math::Float3& begin, const Math::Float3& end,
+bool MeshCollidable::IsColliding(const Float3& begin, const Float3& end,
 	Physics::CollisionDetection::Collision& collision) const
 {
 	return Physics::CollisionDetection::Detect(begin, end, Points, TriangleNormals, Indices, collision);
@@ -20,7 +18,7 @@ bool MeshCollidable::IsColliding(const Sphere& sphere, Float3& sphereToHitPlane)
 	return Physics::CollisionDetection::Detect(sphere, Points, TriangleNormals, Indices, sphereToHitPlane);
 }
 
-Enemy* EnemiesCollidable::IsColliding(const Math::Float3& begin, const Math::Float3& end) const
+Enemy* EnemiesCollidable::IsColliding(const Float3& begin, const Float3& end) const
 {
 	for (int i = 0; i < pEnemies->GetSize(); i++)
 		if (IsColliding(begin, end, (*pEnemies)[i]))
@@ -28,7 +26,7 @@ Enemy* EnemiesCollidable::IsColliding(const Math::Float3& begin, const Math::Flo
 	return nullptr;
 }
 
-bool EnemiesCollidable::IsColliding(const Math::Float3& begin, const Math::Float3& end, const Enemy& enemy) const
+bool EnemiesCollidable::IsColliding(const Float3& begin, const Float3& end, const Enemy& enemy) const
 {
 	constexpr float cylinderRadius = .75f;
 	const float cylinderBot{ enemy.GetTransform().Position.y };

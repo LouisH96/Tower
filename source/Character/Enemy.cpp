@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "Enemy.h"
 
-#include "../Services/TowerAppServices.h"
-#include "Physics/CollisionDetection.h"
+#include <Environment/Terrain.h>
+#include <Services/GameplaySystems.h>
+#include <Weapons/Bow.h>
 
 constexpr float MOVING = 2000;
 constexpr float DEAD = 2001;
@@ -18,19 +19,17 @@ Enemy::Enemy(const Float3& initPos)
 {
 }
 
-void Enemy::Update(
-	TowerAppServices& services,
-	const Float2& target, float maxMovement)
+void Enemy::Update(const Float2& target, float maxMovement)
 {
 	if (m_FallOverAxis.x < DEAD)
 	{
 		if (m_FallOverAxis.x == MOVING)
-			UpdateMove(services, target, maxMovement);
+			UpdateMove(target, maxMovement);
 		else
-			UpdateFall(services);
+			UpdateFall();
 	}
 	for (int i = 0; i < m_Arrows.size(); i++)
-		services.pBowSystem->SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
+		GameplaySystems::GetBow().SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
 }
 
 void Enemy::HitByArrow(const Transform& worldArrowTransform, int arrowIdx)
@@ -47,9 +46,7 @@ void Enemy::HitByArrow(const Transform& worldArrowTransform, int arrowIdx)
 		Float3{ 0,1,0 }.Cross(worldArrowTransform.Rotation.GetForward()).Normalized();
 }
 
-void Enemy::UpdateMove(
-	const TowerAppServices& services,
-	const Float2& target, float maxMovement)
+void Enemy::UpdateMove(const Float2& target, float maxMovement)
 {
 	constexpr float minTargetDistanceSq = 6 * 6;
 
@@ -61,16 +58,16 @@ void Enemy::UpdateMove(
 		m_World.Position += Float3::FromXz(movement);
 	}
 
-	m_World.Position.y = Terrain::Get().GetHeight(m_World.Position.Xz());
+	m_World.Position.y = GameplaySystems::GetTerrain().GetHeight(m_World.Position.Xz());
 }
 
-void Enemy::UpdateFall(const TowerAppServices& services)
+void Enemy::UpdateFall()
 {
 	const Quaternion rotation{ Quaternion::FromAxis(m_FallOverAxis, 150 * Constants::TO_RAD * Globals::DeltaTime) };
 	m_World.Rotation.RotateBy(rotation);
 
 	const Float3 head{ m_World.LocalToWorld({0, 1.8f,0}) };
-	const float terrainHeight{ Terrain::Get().GetHeight(head.Xz()) };
+	const float terrainHeight{ GameplaySystems::GetTerrain().GetHeight(head.Xz()) };
 
 	if (head.y <= terrainHeight)
 		m_FallOverAxis.x = DEAD;
