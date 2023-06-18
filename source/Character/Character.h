@@ -18,6 +18,7 @@ public:
 	void Render(const Camera& camera);
 
 	const FpsCameraController& GetCameraController() const { return m_CameraController; }
+	Bow& GetBow() { return m_Bow; }
 
 private:
 	FpsCameraController m_CameraController;

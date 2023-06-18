@@ -21,6 +21,7 @@ namespace MyEngine
 class Bow
 {
 public:
+
 	Bow();
 	~Bow();
 
@@ -30,6 +31,8 @@ public:
 	void Register(Rendering::R_LambertCam_Tex_Transform& renderer);
 	void Register(const Terrain& terrain);
 	void Register(const Tower& tower);
+
+	void SetArrowTransform(int idx, const Transform& transform);
 
 private:
 	struct ArrowData
@@ -50,5 +53,5 @@ private:
 	const Terrain* m_pTerrain{};
 	const Tower* m_pTower{};
 
-	void UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) const;
+	void UpdateArrow(const TowerAppServices& services, int arrowIdx, ArrowData& arrowData) const;
 };

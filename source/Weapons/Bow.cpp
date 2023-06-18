@@ -64,7 +64,7 @@ void Bow::Update(const TowerAppServices& services, const Transform& cameraTransf
 	m_ArrowRenderer.SetSize(m_ArrowData.size());
 	for (int i = 0; i < m_ArrowData.size(); i++)
 	{
-		UpdateArrow(services, m_ArrowData[i]);
+		UpdateArrow(services, i, m_ArrowData[i]);
 		m_ArrowRenderer.UpdateData(i, m_ArrowData[i].Transform, services.Core.Camera);
 	}
 }
@@ -89,7 +89,12 @@ void Bow::Register(const Tower& tower)
 	m_pTower = &tower;
 }
 
-void Bow::UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) const
+void Bow::SetArrowTransform(int idx, const Transform& transform)
+{
+	m_ArrowData[idx].Transform = transform;
+}
+
+void Bow::UpdateArrow(const TowerAppServices& services, int arrowIdx, ArrowData& arrowData) const
 {
 	constexpr float gravity = -9.81f;
 
@@ -109,7 +114,7 @@ void Bow::UpdateArrow(const TowerAppServices& services, ArrowData& arrowData) co
 	Enemy* pHitEnemy{ services.Collision.Enemies.IsColliding(oldPos, arrowData.Transform.Position) };
 	if (pHitEnemy)
 	{
-		services.pEnemySystem->OnCollision(arrowData.Transform, *pHitEnemy);
+		services.pEnemySystem->OnCollision(arrowData.Transform, arrowIdx, *pHitEnemy);
 		arrowData.Velocity.x = 2000;
 		return;
 	}

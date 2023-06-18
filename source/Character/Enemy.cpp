@@ -19,7 +19,7 @@ Enemy::Enemy(const Float3& initPos)
 }
 
 void Enemy::Update(
-	const TowerAppServices& services,
+	TowerAppServices& services,
 	const Float2& target, float maxMovement)
 {
 	if (m_FallOverAxis.x < DEAD)
@@ -29,19 +29,15 @@ void Enemy::Update(
 		else
 			UpdateFall(services);
 	}
-}
-
-void Enemy::UpdateArrows() const
-{
 	for (int i = 0; i < m_Arrows.size(); i++)
-		*m_Arrows[i].pWorld = Game::Transform::LocalToWorld(m_Arrows[i].Local, m_World);
+		services.pBowSystem->SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
 }
 
-void Enemy::HitByArrow(Game::Transform& worldArrowTransform)
+void Enemy::HitByArrow(const Transform& worldArrowTransform, int arrowIdx)
 {
 	m_Arrows.push_back(
 		{
-			&worldArrowTransform,
+			arrowIdx,
 			worldArrowTransform
 		});
 	m_Arrows[m_Arrows.size() - 1].Local.SetRelativeTo(m_World);

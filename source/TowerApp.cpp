@@ -27,6 +27,7 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 	m_pCharacter->Register(Terrain::Get());
 	m_pCharacter->Register(m_Services.Renderer);
 	m_pCharacter->Register(*m_pTower);
+	m_Services.pBowSystem = &m_pCharacter->GetBow();
 
 	//Enemy-System
 	m_pEnemySystem = new EnemySystem(m_Services, 20, towerPosition, Terrain::Get());

@@ -1,6 +1,7 @@
 #pragma once
 #include "Enemy.h"
 
+class Bow;
 struct TowerAppServices;
 class Tower;
 
@@ -30,12 +31,12 @@ public:
 	EnemySystem(
 		TowerAppServices& services, 
 		int nrEnemies, 
-		const Math::Float2& target, const Terrain& terrain);
+		const Float2& target, const Terrain& terrain);
 	~EnemySystem();
 
-	void Update(const TowerAppServices& services);
+	void Update(TowerAppServices& services);
 
-	void OnCollision(Game::Transform& arrowTransform, Enemy& enemy);
+	void OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy);
 
 private:
 	Rendering::R_LambertCam_Tex_Transform& m_Renderer;

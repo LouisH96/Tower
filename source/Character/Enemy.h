@@ -11,25 +11,24 @@ public:
 	Enemy(const Float3& initPos);
 
 	void Update(
-		const TowerAppServices& services,
+		TowerAppServices& services,
 		const Float2& target, float maxMovement);
-	void UpdateArrows() const;
 
-	Game::Transform& GetTransform() { return m_World; }
-	const Game::Transform& GetTransform() const { return m_World; }
+	Transform& GetTransform() { return m_World; }
+	const Transform& GetTransform() const { return m_World; }
 
-	void HitByArrow(Game::Transform& worldArrowTransform);
+	void HitByArrow(const Transform& worldArrowTransform, int arrowIdx);
 
 	static constexpr float HEIGHT = 2.f;
 
 private:
 	struct AttachedArrow
 	{
-		Game::Transform* pWorld;
-		Game::Transform Local;
+		int arrowIdx;
+		Transform Local;
 	};
 
-	Game::Transform m_World;
+	Transform m_World;
 	Float3 m_FallOverAxis;
 
 	std::vector<AttachedArrow> m_Arrows{};

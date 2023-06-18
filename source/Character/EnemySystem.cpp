@@ -3,7 +3,6 @@
 
 #include "../TowerAppRenderer.h"
 #include "../Services/TowerAppServices.h"
-#include "Framework/CoreServices.h"
 #include "Framework/Resources.h"
 #include "Io/Fbx/FbxClass.h"
 #include "Rendering/Renderers/R_LambertCam_Tex_Transform.h"
@@ -65,16 +64,15 @@ EnemySystem::~EnemySystem()
 	delete m_pMesh;
 }
 
-void EnemySystem::Update(const TowerAppServices& services)
+void EnemySystem::Update(TowerAppServices& services)
 {
-	for (int i = 0; i < m_Enemies.GetSize();i++)
+	for (int i = 0; i < m_Enemies.GetSize(); i++)
 	{
 		m_Enemies[i].Update(services, m_Target, 1 * Globals::DeltaTime);
-		m_Enemies[i].UpdateArrows();
 	}
 }
 
-void EnemySystem::OnCollision(Game::Transform& arrowTransform, Enemy& enemy)
+void EnemySystem::OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy)
 {
-	enemy.HitByArrow(arrowTransform);
+	enemy.HitByArrow(arrowTransform, arrowIdx);
 }

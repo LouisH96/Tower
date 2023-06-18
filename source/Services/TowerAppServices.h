@@ -18,5 +18,6 @@ struct TowerAppServices
 	TowerAppRenderer Renderer;
 	CollisionService Collision;
 	EnemySystem* pEnemySystem{};
+	Bow* pBowSystem{};
 };
 
