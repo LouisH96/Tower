@@ -48,6 +48,11 @@ void TowerApp::Release()
 	delete m_Gameplay.pCharacter;
 }
 
+void TowerApp::EarlyUpdate()
+{
+	m_Gameplay.pCharacter->Update();
+}
+
 void TowerApp::Update()
 {
 	if (Globals::pKeyboard->IsDown_('\x1b'))
@@ -56,7 +61,6 @@ void TowerApp::Update()
 		return;
 	}
 
-	m_Gameplay.pCharacter->Update();
 	m_Gameplay.pBow->Update(m_Gameplay.pCharacter->GetCameraController().GetTransform());
 	m_Gameplay.pEnemySystem->Update();
 	m_Gameplay.pArrowSystem->Update();

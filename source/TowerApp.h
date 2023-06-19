@@ -19,6 +19,7 @@ class TowerApp
 public:
 	explicit TowerApp(const Framework::CoreServices& coreServices);
 	void Release();
+	void EarlyUpdate();
 	void Update();
 	void Render();
 
