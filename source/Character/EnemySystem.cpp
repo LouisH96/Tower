@@ -5,6 +5,7 @@
 #include "Framework/Resources.h"
 #include "Io/Fbx/FbxClass.h"
 #include "Rendering/Renderers/R_LambertCam_Tex_Transform.h"
+#include "Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h"
 #include "Services/CollisionService.h"
 #include "Services/GameplaySystems.h"
 #include "Services/RenderSystems.h"
@@ -12,9 +13,7 @@
 using namespace Rendering;
 using namespace Math;
 
-EnemySystem::EnemySystem(
-	int nrEnemies,
-	const Float2& target)
+EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	: m_Enemies{ nrEnemies }
 	, m_Target{ target }
 {
@@ -23,15 +22,9 @@ EnemySystem::EnemySystem(
 	Io::Fbx::FbxClass fbxModel{ meshPath };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
-	Array<V_PosNorUv> vertices{ geom.Points.GetSize() };
+	m_Vertices = { geom.Points.GetSize() };
 	for (int i = 0; i < geom.Points.GetSize(); i++)
-		vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
-
-	m_pMesh = Mesh::Create(vertices);
-
-	//TEXTURE
-	const std::wstring texturePath{ Resources::Local(L"FantasyRivals_Texture_01_A.png") };
-	m_pTexture = new Texture(texturePath);
+		m_Vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
 
 	//ENEMIES
 	for (int i = 0; i < m_Enemies.GetSize(); i++)
@@ -48,25 +41,21 @@ EnemySystem::EnemySystem(
 	//COLLIDABLES
 	EnemiesCollidable& collidable{ GameplaySystems::GetCollisionService().Enemies };
 	collidable.pEnemies = &m_Enemies;
-	collidable.Points = { vertices.GetSize() };
-	collidable.TriangleNormals = { vertices.GetSize() / 3 };
-	for (int i = 0; i < vertices.GetSize(); i++)
-		collidable.Points[i] = vertices[i].Pos;
-	for (int iVertex = 0, iTriangle = 0; iVertex < vertices.GetSize(); iVertex += 3, iTriangle++)
-		collidable.TriangleNormals[iTriangle] = vertices[iVertex].Normal;
-}
-
-EnemySystem::~EnemySystem()
-{
-	delete m_pTexture;
-	delete m_pMesh;
+	collidable.Points = { m_Vertices.GetSize() };
+	collidable.TriangleNormals = { m_Vertices.GetSize() / 3 };
+	for (int i = 0; i < m_Vertices.GetSize(); i++)
+		collidable.Points[i] = m_Vertices[i].Pos;
+	for (int iVertex = 0, iTriangle = 0; iVertex < m_Vertices.GetSize(); iVertex += 3, iTriangle++)
+		collidable.TriangleNormals[iTriangle] = m_Vertices[iVertex].Normal;
 }
 
 void EnemySystem::LinkRenderers()
 {
-	RenderSystems::TransformRenderer& renderer{ RenderSystems::GetTransformRenderer() };
-	for(int i = 0; i < m_Enemies.GetSize(); i++)
-		renderer.AddEntry(*m_pMesh, *m_pTexture, m_Enemies[i].GetTransform());
+	RenderSystems::InstanceTransformRenderer& renderer{ RenderSystems::GetInstanceTransformRenderer() };
+	const int modelIdx{ renderer.CreateModel({ Resources::Local(L"FantasyRivals_Texture_01_A.png") }, m_Vertices.GetData(), m_Vertices.GetSizeU()) };
+
+	for (int i = 0; i < m_Enemies.GetSize(); i++)
+		renderer.AddInstance(modelIdx, m_Enemies[i].GetTransform());
 }
 
 void EnemySystem::Update()

@@ -14,6 +14,7 @@
 #include <Services/CollisionService.h>
 #include <Weapons/Bow.h>
 
+#include "Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h"
 #include "Weapons/ArrowSystem.h"
 
 TowerApp::TowerApp(const Framework::CoreServices& coreServices)
@@ -28,6 +29,7 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 
 void TowerApp::Release()
 {
+	delete m_Rendering.pInstanceTransform;
 	delete m_Rendering.pTexture2DRenderer;
 	delete m_Rendering.pUnlitRenderer;
 	delete m_Rendering.pFpsDisplay;
@@ -69,7 +71,7 @@ void TowerApp::Render()
 	RenderSystems::GetTexture2DRenderer().Render();
 	RenderSystems::GetUnlitRenderer().Render();
 	RenderSystems::GetTextureRenderer().Render();
-
+	RenderSystems::GetInstanceTransformRenderer().Render();
 	GameplaySystems::GetArrowSystem().Render();
 
 	RenderSystems::GetFpsDisplay().Render();
@@ -98,7 +100,7 @@ void TowerApp::InitGameplay()
 	m_Gameplay.pCollisionService = new CollisionService();
 
 	//ENEMIES
-	m_Gameplay.pEnemySystem = new EnemySystem(20, towerPosition);
+	m_Gameplay.pEnemySystem = new EnemySystem(500, towerPosition);
 }
 
 void TowerApp::LinkGameplay()
@@ -119,6 +121,7 @@ void TowerApp::InitRendering(App::FpsControl& fpsControl)
 	r.pTerrainRenderer = new RenderSystems::TerrainRenderer(false);
 	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"Font_Inst.hlsl"));
 	r.pTexture2DRenderer = new Texture2DRenderer();
+	r.pInstanceTransform = new RenderSystems::InstanceTransformRenderer();
 	fpsControl.SetFpsDisplay(*r.pFpsDisplay);
 }
 
