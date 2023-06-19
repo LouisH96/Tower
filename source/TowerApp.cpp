@@ -100,7 +100,7 @@ void TowerApp::InitGameplay()
 	m_Gameplay.pCollisionService = new CollisionService();
 
 	//ENEMIES
-	m_Gameplay.pEnemySystem = new EnemySystem(500, towerPosition);
+	m_Gameplay.pEnemySystem = new EnemySystem(100, towerPosition);
 }
 
 void TowerApp::LinkGameplay()
