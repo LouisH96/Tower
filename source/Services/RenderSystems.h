@@ -6,7 +6,7 @@
 #include "Rendering/Structs/ConstantBufferTypes.h"
 #include "Rendering/Structs/VertexTypes.h"
 
-class ArrowRenderer;
+class ArrowSystem;
 
 namespace MyEngine
 {
@@ -32,7 +32,6 @@ public:
 	static Rendering::FpsDisplay& GetFpsDisplay() { return *m_pStatic->pFpsDisplay; }
 	static Rendering::RendererFactory::UnlitRenderer& GetUnlitRenderer() { return *m_pStatic->pUnlitRenderer; }
 	static Rendering::Texture2DRenderer& GetTexture2DRenderer() { return *m_pStatic->pTexture2DRenderer; }
-	static ArrowRenderer& GetArrowRenderer() { return *m_pStatic->pArrowRenderer; }
 
 	RenderSystems();
 	void Release();
@@ -44,7 +43,6 @@ public:
 	Rendering::FpsDisplay* pFpsDisplay;
 	Rendering::RendererFactory::UnlitRenderer* pUnlitRenderer{};
 	Rendering::Texture2DRenderer* pTexture2DRenderer{};
-	ArrowRenderer* pArrowRenderer{};
 
 private:
 	static const RenderSystems* m_pStatic;

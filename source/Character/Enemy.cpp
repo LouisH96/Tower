@@ -5,6 +5,8 @@
 #include <Services/GameplaySystems.h>
 #include <Weapons/Bow.h>
 
+#include "Weapons/ArrowSystem.h"
+
 constexpr float MOVING = 2000;
 constexpr float DEAD = 2001;
 
@@ -29,7 +31,7 @@ void Enemy::Update(const Float2& target, float maxMovement)
 			UpdateFall();
 	}
 	for (int i = 0; i < m_Arrows.size(); i++)
-		GameplaySystems::GetBow().SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
+		GameplaySystems::GetArrowSystem().SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
 }
 
 void Enemy::HitByArrow(const Transform& worldArrowTransform, int arrowIdx)

@@ -1,4 +1,5 @@
 #pragma once
+class ArrowSystem;
 class EnemySystem;
 struct CollisionService;
 class Bow;
@@ -15,6 +16,7 @@ public:
 	static Bow& GetBow() { return *m_pStatic->pBow; }
 	static EnemySystem& GetEnemySystem() { return *m_pStatic->pEnemySystem; }
 	static CollisionService& GetCollisionService() { return *m_pStatic->pCollisionService; }
+	static ArrowSystem& GetArrowSystem() { return *m_pStatic->pArrowSystem; }
 
 	GameplaySystems();
 
@@ -24,6 +26,7 @@ public:
 	Bow* pBow{};
 	EnemySystem* pEnemySystem{};
 	CollisionService* pCollisionService{};
+	ArrowSystem* pArrowSystem{};
 
 private:
 	static const GameplaySystems* m_pStatic;

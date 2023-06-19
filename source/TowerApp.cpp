@@ -9,11 +9,12 @@
 #include <Framework/CoreServices.h>
 #include <Framework/Resources.h>
 #include <Generation/Shapes/ArrowGenerator.h>
-#include <Renderers/ArrowRenderer.h>
 #include <Rendering/FpsDisplay.h>
 #include <Rendering/Renderers/Texture2DRenderer.h>
 #include <Services/CollisionService.h>
 #include <Weapons/Bow.h>
+
+#include "Weapons/ArrowSystem.h"
 
 TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 {
@@ -27,7 +28,6 @@ TowerApp::TowerApp(const Framework::CoreServices& coreServices)
 
 void TowerApp::Release()
 {
-	delete m_Rendering.pArrowRenderer;
 	delete m_Rendering.pTexture2DRenderer;
 	delete m_Rendering.pUnlitRenderer;
 	delete m_Rendering.pFpsDisplay;
@@ -37,6 +37,7 @@ void TowerApp::Release()
 	delete m_Rendering.pSimpleRenderer;
 	DebugRenderer::Release();
 
+	delete m_Gameplay.pArrowSystem;
 	delete m_Gameplay.pEnemySystem;
 	delete m_Gameplay.pCollisionService;
 	delete m_Gameplay.pBow;
@@ -56,6 +57,7 @@ void TowerApp::Update()
 	m_Gameplay.pCharacter->Update();
 	m_Gameplay.pBow->Update(m_Gameplay.pCharacter->GetCameraController().GetTransform());
 	m_Gameplay.pEnemySystem->Update();
+	m_Gameplay.pArrowSystem->Update();
 }
 
 void TowerApp::Render()
@@ -67,7 +69,9 @@ void TowerApp::Render()
 	RenderSystems::GetTexture2DRenderer().Render();
 	RenderSystems::GetUnlitRenderer().Render();
 	RenderSystems::GetTextureRenderer().Render();
-	RenderSystems::GetArrowRenderer().Render();
+
+	GameplaySystems::GetArrowSystem().Render();
+
 	RenderSystems::GetFpsDisplay().Render();
 	DebugRenderer::Render();
 	Globals::pCanvas->Present();
@@ -88,6 +92,7 @@ void TowerApp::InitGameplay()
 	const Float3 characterPosition{ towerPosition3 + Float3::FromXz(towerRoofSize * .5) + Float3{ 0,towerHeight, 0 } };
 	m_Gameplay.pCharacter = new Character(characterPosition);
 	m_Gameplay.pBow = new Bow();
+	m_Gameplay.pArrowSystem = new ArrowSystem();
 
 	//COLLIDABLES
 	m_Gameplay.pCollisionService = new CollisionService();
@@ -114,7 +119,6 @@ void TowerApp::InitRendering(App::FpsControl& fpsControl)
 	r.pTerrainRenderer = new RenderSystems::TerrainRenderer(false);
 	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"Font_Inst.hlsl"));
 	r.pTexture2DRenderer = new Texture2DRenderer();
-	r.pArrowRenderer = new ArrowRenderer();
 	fpsControl.SetFpsDisplay(*r.pFpsDisplay);
 }
 

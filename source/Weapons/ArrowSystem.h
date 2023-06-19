@@ -12,19 +12,23 @@
 #include "Rendering/Structs/Instances.h"
 #include "Rendering/Structs/VertexTypes.h"
 
-class ArrowRenderer
+class ArrowSystem
 {
 public:
-	ArrowRenderer();
-	~ArrowRenderer() = default;
+	ArrowSystem();
+	~ArrowSystem() = default;
 
-	void SetSize(int size);
-	void UpdateData(int idx, const Transform& transform);
+	void Update();
 	void Render();
+
+	void Spawn(const Transform& bowTransform);
+	void SetArrowTransform(int arrowIdx, const Transform& newArrowWorld);
 
 private:
 	using Vertex = Rendering::V_PosNorUv;
 	using Instance = Rendering::I_ModelMatrices;
+
+	static constexpr float ARROW_FINISHED = 2000;
 
 	Rendering::BlendState m_BlendState;
 	Rendering::RasterizerState m_RasterizerState;
@@ -37,4 +41,9 @@ private:
 
 	Rendering::ConstantBuffer<Rendering::CB_CamPos> m_CameraBuffer;
 	Rendering::InstanceList<Vertex, Instance> m_Instances;
+
+	List<Float3> m_Velocities;
+
+	static bool IsArrowFinished(const Float3& arrowVelocity);
+	static void SetArrowFinished(Float3& arrowVelocity);
 };
