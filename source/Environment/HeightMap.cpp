@@ -75,14 +75,11 @@ void HeightMap::AddCubeWaveY(float period, float magnitude)
 
 void HeightMap::CubeDisplaceAlongX(float period, float magnitude)
 {
-	const float cellHeight{ GetCellHeight() };
-	const float cellWidth{ GetCellWidth() };
-
+	const Float2 cellSize{ GetCellSize() };
 	const GridArray<float> copy{m_Grid};
-
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
-		const int displacement{ Float::Round(CubeFunction(period, magnitude, iRow * cellHeight) / cellWidth) };
+		const int displacement{ Float::Round(CubeFunction(period, magnitude, iRow * cellSize.y) / cellSize.x) };
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
 			int prevCol{ iCol - displacement };
@@ -99,13 +96,19 @@ void HeightMap::SinDisplaceAlongX(float period, float magnitude)
 	const GridArray<float> copy{m_Grid};
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
-		const int displacement{ Float::Round(SinFunction(period, magnitude, iRow * cellSize.y) / cellSize.x) };
+		const float displacement{ SinFunction(period, magnitude, iRow * cellSize.y) / cellSize.x };
+		const int lerpA{ Float::Floor(displacement) };
+		const int lerpB{ Float::Ceil(displacement) };
+		const float lerpAlpha{ displacement - lerpA };
+
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
-			int prevCol{ iCol - displacement };
-			if (prevCol < 0) prevCol = 0;
-			if (prevCol >= m_Grid.GetNrCols()) prevCol = m_Grid.GetNrCols() - 1;
-			m_Grid.Set({ iCol, iRow }, copy.Get({ prevCol, iRow }));
+			const int lerpACol{ Int::Clamp(iCol + lerpA, 0, m_Grid.GetNrCols() - 1) };
+			const int lerpBCol{ Int::Clamp(iCol + lerpB, 0, m_Grid.GetNrCols() - 1) };
+			const float lerpAValue{ copy.Get({lerpACol, iRow}) };
+			const float lerpBValue{ copy.Get({lerpBCol, iRow}) };
+			const float lerped{ Float::Lerp(lerpAlpha, lerpAValue, lerpBValue) };
+			m_Grid.Set({ iCol, iRow }, lerped);
 		}
 	}
 }
@@ -116,13 +119,18 @@ void HeightMap::SinDisplaceAlongY(float period, float magnitude)
 	const GridArray<float> copy{m_Grid};
 	for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 	{
-		const int displacement{ Float::Round(SinFunction(period, magnitude, iCol * cellSize.x) / cellSize.y) };
+		const float displacement{ SinFunction(period, magnitude, iCol * cellSize.x) / cellSize.y };
+		const int lerpA{ Float::Floor(displacement) };
+		const int lerpB{ Float::Ceil(displacement) };
+		const float lerpAlpha{ displacement - lerpA };
 		for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 		{
-			int prevRow{ iRow - displacement };
-			if (prevRow < 0) prevRow = 0;
-			if (prevRow >= m_Grid.GetNrRows()) prevRow = m_Grid.GetNrRows() - 1;
-			m_Grid.Set({ iCol, iRow }, copy.Get({ iCol, prevRow }));
+			const int lerpARow{ Int::Clamp(iRow + lerpA, 0, m_Grid.GetNrRows() - 1) };
+			const int lerpBRow{ Int::Clamp(iRow + lerpB, 0, m_Grid.GetNrRows() - 1) };
+			const float lerpAValue{ copy.Get({iCol, lerpARow}) };
+			const float lerpBValue{ copy.Get({iCol, lerpBRow}) };
+			const float lerped{ Float::Lerp(lerpAlpha, lerpAValue, lerpBValue) };
+			m_Grid.Set({ iCol, iRow }, lerped);
 		}
 	}
 }
@@ -269,7 +277,7 @@ float HeightMap::CubeFunction(float period, float magnitude, float t) const
 	constexpr float scaleX{ 4 }; //constant value is to choose pointiness
 	const float scaleY{ 1.f / (scaleX * scaleX * scaleX) * magnitude };
 	t /= period;
-	t = fmod(t, 2);
+	t = fmod(t, 2.f);
 	if (t > 1)
 		t = 1 - (t - 1);
 	t *= scaleX;
