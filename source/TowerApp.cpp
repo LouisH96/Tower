@@ -6,10 +6,8 @@
 #include <Debug/Rendering/DebugRenderer.h>
 #include <Environment/Tower.h>
 #include <Framework/BasicAppFrame.h>
-#include <Framework/CoreServices.h>
 #include <Framework/Resources.h>
 #include <Generation/Shapes/ArrowGenerator.h>
-#include <Rendering/FpsDisplay.h>
 #include <Rendering/Renderers/Texture2DRenderer.h>
 #include <Services/CollisionService.h>
 #include <Weapons/Bow.h>
@@ -17,22 +15,21 @@
 #include "Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h"
 #include "Weapons/ArrowSystem.h"
 
-TowerApp::TowerApp(const Framework::CoreServices& coreServices)
+TowerApp::TowerApp()
 {
 	InitGameplay();
 	LinkGameplay();
-	InitRendering(coreServices.FpsControl);
+	InitRendering();
 	LinkRendering();
 
 	CreateArrows();
 }
 
-void TowerApp::Release()
+TowerApp::~TowerApp()
 {
 	delete m_Rendering.pInstanceTransform;
 	delete m_Rendering.pTexture2DRenderer;
 	delete m_Rendering.pUnlitRenderer;
-	delete m_Rendering.pFpsDisplay;
 	delete m_Rendering.pTextureRenderer;
 	delete m_Rendering.pTerrainRenderer;
 	delete m_Rendering.pTransformRenderer;
@@ -46,6 +43,10 @@ void TowerApp::Release()
 	delete m_Gameplay.pTerrain;
 	delete m_Gameplay.pTower;
 	delete m_Gameplay.pCharacter;
+}
+
+void TowerApp::OnWindowResized(const Int2& newSize)
+{
 }
 
 void TowerApp::EarlyUpdate()
@@ -68,7 +69,6 @@ void TowerApp::Update()
 
 void TowerApp::Render()
 {
-	Globals::pCanvas->BeginPaint();
 	RenderSystems::GetTerrainRenderer().Render();
 	RenderSystems::GetTransformRenderer().Render();
 	RenderSystems::GetSimpleRenderer().Render();
@@ -78,9 +78,7 @@ void TowerApp::Render()
 	RenderSystems::GetInstanceTransformRenderer().Render();
 	GameplaySystems::GetArrowSystem().Render();
 
-	RenderSystems::GetFpsDisplay().Render();
 	DebugRenderer::Render();
-	Globals::pCanvas->Present();
 }
 
 void TowerApp::InitGameplay()
@@ -112,13 +110,12 @@ void TowerApp::LinkGameplay()
 	m_Gameplay.pTower->LinkGameplay();
 }
 
-void TowerApp::InitRendering(App::FpsControl& fpsControl)
+void TowerApp::InitRendering()
 {
 	using namespace Rendering;
 	RenderSystems& r{ m_Rendering };
 
 	DebugRenderer::Init();
-	r.pFpsDisplay = new FpsDisplay();
 	r.pUnlitRenderer = RendererFactory::CreateUnlitRenderer(false);
 	r.pSimpleRenderer = RendererFactory::CreateSimpleRenderer();
 	r.pTransformRenderer = new R_LambertCam_Tex_Transform();
@@ -126,7 +123,6 @@ void TowerApp::InitRendering(App::FpsControl& fpsControl)
 	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"Font_Inst.hlsl"));
 	r.pTexture2DRenderer = new Texture2DRenderer();
 	r.pInstanceTransform = new RenderSystems::InstanceTransformRenderer();
-	fpsControl.SetFpsDisplay(*r.pFpsDisplay);
 }
 
 void TowerApp::LinkRendering()

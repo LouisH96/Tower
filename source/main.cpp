@@ -1,12 +1,11 @@
 #include "pch.h"
-//#include <Framework/BasicAppFrame.h>
-#include <Framework/Frame_NoCamContr.h>
 #include "TowerApp.h"
+#include "Framework/GameFrame.h"
 
 int main()
 {
 	App::Win32::Window::Options options{};
 	options.CursorFocusMode = true;
 	options.ClientSize = { 2000,1350 };
-	Framework::Frame_NoCamContr<TowerApp>::Run(L"Tower", options);
+	Framework::GameFrame::Run<TowerApp>(L"Tower", options);
 }

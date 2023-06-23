@@ -31,7 +31,6 @@ public:
 	static TransformRenderer& GetTransformRenderer() { return *m_pStatic->pTransformRenderer; }
 	static TerrainRenderer& GetTerrainRenderer() { return *m_pStatic->pTerrainRenderer; }
 	static TextureRenderer& GetTextureRenderer() { return *m_pStatic->pTextureRenderer; }
-	static Rendering::FpsDisplay& GetFpsDisplay() { return *m_pStatic->pFpsDisplay; }
 	static Rendering::RendererFactory::UnlitRenderer& GetUnlitRenderer() { return *m_pStatic->pUnlitRenderer; }
 	static Rendering::Texture2DRenderer& GetTexture2DRenderer() { return *m_pStatic->pTexture2DRenderer; }
 	static InstanceTransformRenderer& GetInstanceTransformRenderer() { return *m_pStatic->pInstanceTransform; }
@@ -42,7 +41,6 @@ public:
 	TransformRenderer* pTransformRenderer{};
 	TerrainRenderer* pTerrainRenderer{};
 	TextureRenderer* pTextureRenderer{};
-	Rendering::FpsDisplay* pFpsDisplay;
 	Rendering::RendererFactory::UnlitRenderer* pUnlitRenderer{};
 	Rendering::Texture2DRenderer* pTexture2DRenderer{};
 	InstanceTransformRenderer* pInstanceTransform{};

@@ -2,23 +2,14 @@
 #include "Services/GameplaySystems.h"
 #include "Services/RenderSystems.h"
 
-namespace MyEngine
-{
-	namespace App
-	{
-		class FpsControl;
-	}
-	namespace Framework
-	{
-		class CoreServices;
-	}
-}
-
 class TowerApp
 {
 public:
-	explicit TowerApp(const Framework::CoreServices& coreServices);
-	void Release();
+	explicit TowerApp();
+	~TowerApp();
+
+	void OnWindowResized(const Int2& newSize);
+
 	void EarlyUpdate();
 	void Update();
 	void Render();
@@ -29,7 +20,7 @@ private:
 
 	void InitGameplay();
 	void LinkGameplay();
-	void InitRendering(App::FpsControl& fpsControl);
+	void InitRendering();
 	void LinkRendering();
 
 	void CreateArrows();
