@@ -34,7 +34,6 @@ TowerApp::~TowerApp()
 	delete m_Rendering.pTerrainRenderer;
 	delete m_Rendering.pTransformRenderer;
 	delete m_Rendering.pSimpleRenderer;
-	DebugRenderer::Release();
 
 	delete m_Gameplay.pArrowSystem;
 	delete m_Gameplay.pEnemySystem;
@@ -77,8 +76,6 @@ void TowerApp::Render()
 	RenderSystems::GetTextureRenderer().Render();
 	RenderSystems::GetInstanceTransformRenderer().Render();
 	GameplaySystems::GetArrowSystem().Render();
-
-	DebugRenderer::Render();
 }
 
 void TowerApp::InitGameplay()
@@ -115,7 +112,6 @@ void TowerApp::InitRendering()
 	using namespace Rendering;
 	RenderSystems& r{ m_Rendering };
 
-	DebugRenderer::Init();
 	r.pUnlitRenderer = RendererFactory::CreateUnlitRenderer(false);
 	r.pSimpleRenderer = RendererFactory::CreateSimpleRenderer();
 	r.pTransformRenderer = new R_LambertCam_Tex_Transform();
