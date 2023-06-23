@@ -1,3 +1,4 @@
+
 #include "pch.h"
 #include "Bow.h"
 
@@ -54,7 +55,7 @@ void Bow::Update(const Transform& cameraTransform)
 	m_WorldTransform = Transform::LocalToWorld(m_LocalTransform, cameraTransform);
 
 	if (Globals::pMouse->IsLeftBtnReleased())
-		GameplaySystems::GetArrowSystem().Spawn(m_WorldTransform);
+		GameplaySystems::GetArrowSystem().Launch();
 }
 
 void Bow::LinkRenderers()

@@ -105,6 +105,7 @@ void TowerApp::InitGameplay()
 void TowerApp::LinkGameplay()
 {
 	m_Gameplay.pTower->LinkGameplay();
+	m_Gameplay.pArrowSystem->LinkGameplaySystems();
 }
 
 void TowerApp::InitRendering()

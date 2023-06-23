@@ -20,6 +20,8 @@ public:
 	void Update(const Transform& cameraTransform);
 	void LinkRenderers();
 
+	const Transform& GetWorldTransform() const { return m_WorldTransform; }
+
 private:
 	Transform m_LocalTransform{};
 	Transform m_WorldTransform{};
