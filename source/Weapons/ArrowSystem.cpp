@@ -34,7 +34,7 @@ ArrowSystem::ArrowSystem()
 
 void ArrowSystem::Update()
 {
-	for (int i = 0; i < m_Velocities.GetSize() - 1; i++)
+	for (int i = 0; i < m_Velocities.GetSize(); i++)
 	{
 		//IS ALREADY FINISHED ?
 		Float3& velocity{ m_Velocities[i] };
@@ -77,15 +77,13 @@ void ArrowSystem::Update()
 			continue;
 		}
 	}
-	UpdateBowArrow();
 }
 
-void ArrowSystem::Spawn()
+int ArrowSystem::Spawn()
 {
-	const Float4X4 world{ m_pBowTransform->AsMatrix() };
-	const Float4X4 worldViewProjection{ world * Globals::pCamera->GetViewProjection() };
-	m_Instances.Add({ world, worldViewProjection });
+	m_Instances.Add({  });
 	m_Velocities.Add({ ARROW_FINISHED, 0, 0 });
+	return m_Velocities.GetSize() - 1;
 }
 
 void ArrowSystem::SetArrowTransform(int arrowIdx, const Transform& newArrowWorld)
@@ -95,18 +93,10 @@ void ArrowSystem::SetArrowTransform(int arrowIdx, const Transform& newArrowWorld
 	m_Instances[arrowIdx] = { world, worldViewProjection };
 }
 
-void ArrowSystem::UpdateBowArrow()
+void ArrowSystem::Launch(int arrowIdx)
 {
-	Instance& instance{ m_Instances.Last() };
-	instance.model = m_pBowTransform->AsMatrix();
-	instance.modelViewProj = instance.model * Globals::pCamera->GetViewProjection();
-}
-
-void ArrowSystem::Launch()
-{
-	const Instance& instance{ m_Instances.Last() };
-	m_Velocities.Last() = WorldMatrix::GetForward(instance.model) * 20;
-	Spawn();
+	const Instance& instance{ m_Instances[arrowIdx] };
+	m_Velocities[arrowIdx] = WorldMatrix::GetForward(instance.model) * 20;
 }
 
 bool ArrowSystem::IsArrowFinished(const Float3& arrowVelocity)
@@ -131,11 +121,4 @@ void ArrowSystem::Render()
 	m_CameraBuffer.Update(CB_CamPos{ Globals::pCamera->GetPosition() });
 	m_CameraBuffer.Activate();
 	m_Instances.Draw();
-}
-
-void ArrowSystem::LinkGameplaySystems()
-{
-	const Bow& bow{ GameplaySystems::GetBow() };
-	m_pBowTransform = &bow.GetWorldTransform();
-	Spawn();
 }

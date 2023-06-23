@@ -28,4 +28,6 @@ private:
 
 	Rendering::Texture* m_pTexture{};
 	Rendering::Mesh* m_pBowMesh{};
+
+	int m_ArrowIdx{ -1 };
 };

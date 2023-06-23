@@ -54,8 +54,20 @@ void Bow::Update(const Transform& cameraTransform)
 
 	m_WorldTransform = Transform::LocalToWorld(m_LocalTransform, cameraTransform);
 
-	if (Globals::pMouse->IsLeftBtnReleased())
-		GameplaySystems::GetArrowSystem().Launch();
+	if (Globals::pMouse->IsLeftBtnPressed())
+	{
+		m_ArrowIdx = GameplaySystems::GetArrowSystem().Spawn();
+	}
+	else if(Globals::pMouse->IsLeftBtnReleased())
+	{
+		GameplaySystems::GetArrowSystem().Launch(m_ArrowIdx);
+		m_ArrowIdx = -1;
+	}
+
+	if(m_ArrowIdx >= 0)
+	{
+		GameplaySystems::GetArrowSystem().SetArrowTransform(m_ArrowIdx, m_WorldTransform);
+	}
 }
 
 void Bow::LinkRenderers()

@@ -20,10 +20,9 @@ public:
 
 	void Update();
 	void Render();
-	void LinkGameplaySystems();
 
-	void Spawn();
-	void Launch();
+	int Spawn();
+	void Launch(int arrowIdx);
 	void SetArrowTransform(int arrowIdx, const Transform& newArrowWorld);
 
 private:
@@ -44,10 +43,8 @@ private:
 	Rendering::ConstantBuffer<Rendering::CB_CamPos> m_CameraBuffer;
 	Rendering::InstanceList<Vertex, Instance> m_Instances;
 
-	const Transform* m_pBowTransform{};
 	List<Float3> m_Velocities;
 
-	void UpdateBowArrow();
 	static bool IsArrowFinished(const Float3& arrowVelocity);
 	static void SetArrowFinished(Float3& arrowVelocity);
 };
