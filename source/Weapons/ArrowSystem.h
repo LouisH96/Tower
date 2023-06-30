@@ -9,7 +9,7 @@
 #include "Rendering/State/Shader.h"
 #include "Rendering/State/Texture.h"
 #include "Rendering/Structs/ConstantBufferTypes.h"
-#include "Rendering/Structs/Instances.h"
+#include "Rendering/Structs/InstanceTypes.h"
 #include "Rendering/Structs/VertexTypes.h"
 
 class ArrowSystem
