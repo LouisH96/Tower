@@ -8,7 +8,7 @@ public:
 	explicit TowerApp();
 	~TowerApp();
 
-	void OnWindowResized(const Int2& newSize);
+	void OnCanvasResized(const App::ResizedEvent& event);
 
 	void EarlyUpdate();
 	void Update();

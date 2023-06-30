@@ -44,7 +44,7 @@ TowerApp::~TowerApp()
 	delete m_Gameplay.pCharacter;
 }
 
-void TowerApp::OnWindowResized(const Int2& newSize)
+void TowerApp::OnCanvasResized(const App::ResizedEvent& event)
 {
 }
 
