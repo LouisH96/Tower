@@ -5,6 +5,7 @@
 #include <Physics/CollisionDetection.h>
 #include <Services/CollisionService.h>
 #include <Services/GameplaySystems.h>
+#include <Geometry/Shapes/Sphere.h>
 
 Character::Character(const Float3& position)
 	: m_CameraController{ *Globals::pCamera }

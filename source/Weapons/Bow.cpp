@@ -20,7 +20,6 @@ Bow::Bow()
 {
 	using namespace Rendering;
 	using namespace DirectX;
-	using namespace Math;
 
 	m_LocalTransform.Position = Float3{ .5f, -.1f, 1.0f };
 	m_LocalTransform.Rotation = Quaternion::FromAxis({ 1,0,0 }, -25 * Constants::TO_RAD);

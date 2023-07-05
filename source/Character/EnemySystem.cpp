@@ -4,14 +4,12 @@
 #include "Environment/Terrain.h"
 #include "Framework/Resources.h"
 #include "Io/Fbx/FbxClass.h"
-#include "Rendering/Renderers/R_LambertCam_Tex_Transform.h"
 #include "Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h"
 #include "Services/CollisionService.h"
 #include "Services/GameplaySystems.h"
 #include "Services/RenderSystems.h"
 
 using namespace Rendering;
-using namespace Math;
 
 EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	: m_Enemies{ nrEnemies }
