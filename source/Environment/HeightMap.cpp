@@ -97,14 +97,14 @@ void HeightMap::SinDisplaceAlongX(float period, float magnitude)
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
 		const float displacement{ SinFunction(period, magnitude, iRow * cellSize.y) / cellSize.x };
-		const int lerpA{ Float::Floor(displacement) };
-		const int lerpB{ Float::Ceil(displacement) };
+		const int lerpA{ Int::Floor(displacement) };
+		const int lerpB{ Int::Ceil(displacement) };
 		const float lerpAlpha{ displacement - lerpA };
 
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
-			const int lerpACol{ Int::Clamp(iCol + lerpA, 0, m_Grid.GetNrCols() - 1) };
-			const int lerpBCol{ Int::Clamp(iCol + lerpB, 0, m_Grid.GetNrCols() - 1) };
+			const int lerpACol{ Int::Clamped(iCol + lerpA, 0, m_Grid.GetNrCols() - 1) };
+			const int lerpBCol{ Int::Clamped(iCol + lerpB, 0, m_Grid.GetNrCols() - 1) };
 			const float lerpAValue{ copy.Get({lerpACol, iRow}) };
 			const float lerpBValue{ copy.Get({lerpBCol, iRow}) };
 			const float lerped{ Float::Lerp(lerpAlpha, lerpAValue, lerpBValue) };
@@ -120,13 +120,13 @@ void HeightMap::SinDisplaceAlongY(float period, float magnitude)
 	for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 	{
 		const float displacement{ SinFunction(period, magnitude, iCol * cellSize.x) / cellSize.y };
-		const int lerpA{ Float::Floor(displacement) };
-		const int lerpB{ Float::Ceil(displacement) };
+		const int lerpA{ Int::Floor(displacement) };
+		const int lerpB{ Int::Ceil(displacement) };
 		const float lerpAlpha{ displacement - lerpA };
 		for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 		{
-			const int lerpARow{ Int::Clamp(iRow + lerpA, 0, m_Grid.GetNrRows() - 1) };
-			const int lerpBRow{ Int::Clamp(iRow + lerpB, 0, m_Grid.GetNrRows() - 1) };
+			const int lerpARow{ Int::Clamped(iRow + lerpA, 0, m_Grid.GetNrRows() - 1) };
+			const int lerpBRow{ Int::Clamped(iRow + lerpB, 0, m_Grid.GetNrRows() - 1) };
 			const float lerpAValue{ copy.Get({iCol, lerpARow}) };
 			const float lerpBValue{ copy.Get({iCol, lerpBRow}) };
 			const float lerped{ Float::Lerp(lerpAlpha, lerpAValue, lerpBValue) };
@@ -241,8 +241,8 @@ float HeightMap::GetHeight(const Float2& point) const
 		point.y / GetCellHeight()
 	};
 	const Int2 leftBotCoord{
-		Float::Floor(pointCoord.x),
-		Float::Floor(pointCoord.y)
+		Int::Floor(pointCoord.x),
+		Int::Floor(pointCoord.y)
 	};
 	if (leftBotCoord.x < 0 || leftBotCoord.y < 0)  return fallback;
 	const Int2 rightTopCoord{ leftBotCoord.x + 1,leftBotCoord.y + 1 };
