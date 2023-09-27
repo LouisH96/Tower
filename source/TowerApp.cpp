@@ -12,6 +12,7 @@
 #include <Weapons/Bow.h>
 
 #include "App/Win32/Window.h"
+#include "Environment/Terrain.h"
 #include "Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h"
 #include "Weapons/ArrowSystem.h"
 

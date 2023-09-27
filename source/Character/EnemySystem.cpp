@@ -50,7 +50,7 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 void EnemySystem::LinkRenderers()
 {
 	RenderSystems::InstanceTransformRenderer& renderer{ RenderSystems::GetInstanceTransformRenderer() };
-	const int modelIdx{ renderer.CreateModel({ Resources::Local(L"FantasyRivals_Texture_01_A.png") }, m_Vertices.GetData(), m_Vertices.GetSizeU()) };
+	const int modelIdx{ renderer.CreateModel({ Resources::Local(L"FantasyRivals_Texture_01_A.png") }, m_Vertices.GetData(), m_Vertices.GetSize()) };
 
 	for (int i = 0; i < m_Enemies.GetSize(); i++)
 		renderer.AddInstance(modelIdx, m_Enemies[i].GetTransform());

@@ -1,6 +1,4 @@
 #pragma once
-#include <Transform.h>
-#include <Environment/Terrain.h>
 
 namespace MyEngine
 {

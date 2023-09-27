@@ -5,12 +5,12 @@
 #include "Character/EnemySystem.h"
 #include "Environment/Terrain.h"
 #include "Framework/Resources.h"
-#include "WorldMatrix.h"
 #include "Game/Camera/Camera.h"
 #include "Generation/PlaneGeneration.h"
 #include "Io/Fbx/FbxClass.h"
 #include "Services/CollisionService.h"
 #include "Services/GameplaySystems.h"
+#include "Transform/WorldMatrix.h"
 
 using namespace Rendering;
 
@@ -28,7 +28,7 @@ ArrowSystem::ArrowSystem()
 		arrowVertices[i] = V_PosNorUv{ arrowGeom.Points[i] * 0.01f, arrowGeom.Normals[i], arrowGeom.Uvs[i] };
 
 	m_Instances = InstanceList<Vertex, Instance>{
-		arrowVertices.GetData(), arrowVertices.GetSizeU()
+		arrowVertices.GetData(), arrowVertices.GetSize()
 	};
 }
 

@@ -79,7 +79,7 @@ void HeightMap::CubeDisplaceAlongX(float period, float magnitude)
 	const GridArray<float> copy{m_Grid};
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
-		const int displacement{ Float::Round(CubeFunction(period, magnitude, iRow * cellSize.y) / cellSize.x) };
+		const int displacement{ Int::Round(CubeFunction(period, magnitude, iRow * cellSize.y) / cellSize.x) };
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
 			int prevCol{ iCol - displacement };
