@@ -21,7 +21,7 @@ ArrowSystem::ArrowSystem()
 {
 	//VERTICES
 	const std::wstring arrowMeshPath{ Resources::Local(L"SM_Arrow_01.fbx") };
-	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath };
+	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath, 1.f };
 	Io::Fbx::FbxClass::Geometry& arrowGeom = arrowFbxModel.GetGeometries()[0];
 	Array<V_PosNorUv> arrowVertices{ arrowGeom.Points.GetSize() };
 	for (int i = 0; i < arrowGeom.Points.GetSize(); i++)

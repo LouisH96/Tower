@@ -79,6 +79,10 @@ void TowerApp::Render()
 	GameplaySystems::GetArrowSystem().Render();
 }
 
+void TowerApp::RenderUi()
+{
+}
+
 void TowerApp::InitGameplay()
 {
 	//TERRAIN & TOWER

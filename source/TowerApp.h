@@ -13,6 +13,7 @@ public:
 	void EarlyUpdate();
 	void Update();
 	void Render();
+	void RenderUi();
 
 private:
 	GameplaySystems m_Gameplay;

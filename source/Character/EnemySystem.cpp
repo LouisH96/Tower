@@ -17,7 +17,7 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 {
 	//MESH
 	const std::wstring meshPath{ Resources::Local(L"SK_Character_DarkElf_01.fbx") };
-	Io::Fbx::FbxClass fbxModel{ meshPath };
+	Io::Fbx::FbxClass fbxModel{ meshPath, 1.f };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
 	m_Vertices = { geom.Points.GetSize() };

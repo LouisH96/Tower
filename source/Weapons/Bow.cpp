@@ -26,7 +26,7 @@ Bow::Bow()
 
 	//BOW-MESH
 	const std::wstring meshPath{ Resources::Local(L"Rigged_Bow_Testing.fbx") };
-	Io::Fbx::FbxClass fbxModel{ meshPath };
+	Io::Fbx::FbxClass fbxModel{ meshPath, 1.f };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
 	Array<V_PosNorUv> vertices{ geom.Points.GetSize() };
