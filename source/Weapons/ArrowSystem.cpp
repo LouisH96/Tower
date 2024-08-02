@@ -5,7 +5,7 @@
 #include "Character/EnemySystem.h"
 #include "Environment/Terrain.h"
 #include "Framework/Resources.h"
-#include "Game/Camera/Camera.h"
+#include "Camera/Camera.h"
 #include "Generation/PlaneGeneration.h"
 #include "Io/Fbx/FbxClass.h"
 #include "Services/CollisionService.h"

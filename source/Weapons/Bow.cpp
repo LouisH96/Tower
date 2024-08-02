@@ -4,7 +4,7 @@
 
 #include <App/Win32/Mouse.h>
 #include <Framework/Resources.h>
-#include <Game/Globals.h>
+#include <Framework/Globals.h>
 #include <Io/Fbx/FbxClass.h>
 #include <Math/Quaternion.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>

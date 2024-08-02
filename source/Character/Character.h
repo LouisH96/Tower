@@ -1,5 +1,5 @@
 #pragma once
-#include <Game/Camera/FpsCameraController.h>
+#include <Camera/FpsCameraController.h>
 
 class Character
 {
