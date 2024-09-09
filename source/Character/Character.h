@@ -12,4 +12,9 @@ public:
 
 private:
 	FpsCameraController m_CameraController;
+
+	char m_MoveLeftKey;
+	char m_MoveRightKey;
+	char m_MoveUpKey;
+	char m_MoveDownKey;
 };

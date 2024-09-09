@@ -11,12 +11,19 @@ Character::Character(const Float3& position)
 	: m_CameraController{ *Globals::pCamera }
 {
 	m_CameraController.SetPosition(position);
+
+	m_MoveDownKey = Keyboard::ScanCodeToVk(ScanCode::S);
+	m_MoveUpKey = Keyboard::ScanCodeToVk(ScanCode::W);
+	m_MoveLeftKey = Keyboard::ScanCodeToVk(ScanCode::A);
+	m_MoveRightKey = Keyboard::ScanCodeToVk(ScanCode::D);
 }
 
 void Character::Update()
 {
 	const Float3 oldHead{ m_CameraController.GetPosition() };
-	const Float2 movement{ Globals::pKeyboard->GetWasdInput(Globals::DeltaTime * 5) };
+	const Float2 movement{ Globals::pKeyboard->GetArrowInput(
+			m_MoveLeftKey, m_MoveRightKey, m_MoveUpKey, m_MoveDownKey,
+			Globals::DeltaTime * 5) };
 	m_CameraController.MoveRelative({ movement.x, -9.81f * Globals::DeltaTime, movement.y });
 	const Float3 newPos{ m_CameraController.GetPosition() };
 
