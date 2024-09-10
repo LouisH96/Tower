@@ -24,7 +24,7 @@ ArrowSystem::ArrowSystem()
 	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath, 1.f };
 	Io::Fbx::FbxClass::Geometry& arrowGeom = arrowFbxModel.GetGeometries()[0];
 	Array<V_PosNorUv> arrowVertices{ arrowGeom.Points.GetSize() };
-	for (int i = 0; i < arrowGeom.Points.GetSize(); i++)
+	for (unsigned i = 0; i < arrowGeom.Points.GetSize(); i++)
 		arrowVertices[i] = V_PosNorUv{ arrowGeom.Points[i] * 0.01f, arrowGeom.Normals[i], arrowGeom.Uvs[i] };
 
 	m_Instances = InstanceList<Vertex, Instance>{
@@ -34,7 +34,7 @@ ArrowSystem::ArrowSystem()
 
 void ArrowSystem::Update()
 {
-	for (int i = 0; i < m_Velocities.GetSize(); i++)
+	for (unsigned i = 0; i < m_Velocities.GetSize(); i++)
 	{
 		//IS ALREADY FINISHED ?
 		Float3& velocity{ m_Velocities[i] };

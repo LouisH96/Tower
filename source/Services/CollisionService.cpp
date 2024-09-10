@@ -20,7 +20,7 @@ bool MeshCollidable::IsColliding(const Sphere& sphere, Float3& sphereToHitPlane)
 
 Enemy* EnemiesCollidable::IsColliding(const Float3& begin, const Float3& end) const
 {
-	for (int i = 0; i < pEnemies->GetSize(); i++)
+	for (unsigned i = 0; i < pEnemies->GetSize(); i++)
 		if (IsColliding(begin, end, (*pEnemies)[i]))
 			return &(*pEnemies)[i];
 	return nullptr;

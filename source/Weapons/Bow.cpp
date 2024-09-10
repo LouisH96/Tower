@@ -30,7 +30,7 @@ Bow::Bow()
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
 	Array<V_PosNorUv> vertices{ geom.Points.GetSize() };
-	for (int i = 0; i < geom.Points.GetSize(); i++)
+	for (unsigned i = 0; i < geom.Points.GetSize(); i++)
 		vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
 
 	m_pBowMesh = Mesh::Create(vertices);

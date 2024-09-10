@@ -186,7 +186,7 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& 
 		idx++;
 	}
 	//can optimize because nr of normals is known
-	for (int i = 0; i < vertices.GetSize(); i++)
+	for (unsigned i = 0; i < vertices.GetSize(); i++)
 		vertices[i].Normal.Normalize();
 
 	//Indices
