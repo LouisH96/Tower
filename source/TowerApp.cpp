@@ -69,6 +69,8 @@ void TowerApp::Update()
 
 void TowerApp::Render()
 {
+	m_Renderer.Render();
+
 	RenderSystems::GetTerrainRenderer().Render();
 	RenderSystems::GetTransformRenderer().Render();
 	RenderSystems::GetSimpleRenderer().Render();

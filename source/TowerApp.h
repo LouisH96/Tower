@@ -1,6 +1,7 @@
 #pragma once
 #include "Services/GameplaySystems.h"
 #include "Services/RenderSystems.h"
+#include <Renderer\TowerGameRenderer.h>
 
 class TowerApp
 {
@@ -18,6 +19,7 @@ public:
 private:
 	GameplaySystems m_Gameplay;
 	RenderSystems m_Rendering;
+	TowerGame::TowerGameRenderer m_Renderer;
 
 	void InitGameplay();
 	void LinkGameplay();

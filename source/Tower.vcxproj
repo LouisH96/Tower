@@ -180,6 +180,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Renderer\TowerGameRenderer.cpp" />
+    <ClCompile Include="Renderer\SkyDomeRenderer.cpp" />
     <ClCompile Include="Weapons\ArrowSystem.cpp" />
     <ClCompile Include="Character\Enemy.cpp" />
     <ClCompile Include="Character\EnemySystem.cpp" />
@@ -201,6 +203,8 @@
     <ClCompile Include="TowerApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Renderer\TowerGameRenderer.h" />
+    <ClInclude Include="Renderer\SkyDomeRenderer.h" />
     <ClInclude Include="Weapons\ArrowSystem.h" />
     <ClInclude Include="Character\Enemy.h" />
     <ClInclude Include="Character\EnemySystem.h" />
