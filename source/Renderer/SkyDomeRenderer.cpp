@@ -62,7 +62,7 @@ void SkyDomeRenderer::InitPanelBuffer()
 	buffer.PanelSize.x = windowWidth;
 	buffer.PanelSize.y = windowHeight;
 
-	buffer.MaxFov = 60.f / 90.f;
+	buffer.MaxFov = 30.f / 90.f;
 
 	m_PanelBuffer.Update(buffer);
 }
