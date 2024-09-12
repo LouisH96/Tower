@@ -15,8 +15,15 @@ public:
 	void Render();
 
 private:
-	using Vertex = Rendering::V_Pos2Uv;
+	using Vertex = Rendering::V_Pos2;
 	static constexpr ModelTopology TOPOLOGY{ ModelTopology::TriangleList };
+
+	struct PanelBuffer
+	{
+		Float2 PanelSize;
+		float PanelHeight;
+		float Padding;
+	};
 
 	Rendering::Shader m_Shader;
 	Rendering::InputLayout m_InputLayout;
@@ -24,8 +31,10 @@ private:
 	Rendering::DepthStencilState m_DepthStencil;
 	Rendering::Texture m_Texture;
 	Rendering::SamplerState m_Sampler;
+	Rendering::ConstantBuffer<PanelBuffer> m_PanelBuffer;
 
 	void InitVertexBuffer();
+	void InitPanelBuffer();
 };
 }
 
