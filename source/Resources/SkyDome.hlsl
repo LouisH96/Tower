@@ -5,7 +5,7 @@ SamplerState sampler_main : register(s0);
 cbuffer PanelInfo : register(b1)
 {
     float2 panel_size;
-    float panel_height;
+    float panel_fov; //[0,1]
     float padding;
 }
 
@@ -42,17 +42,16 @@ float4 scalarColor(float value)
 float4 ps_main(Pixel pixel) : SV_TARGET
 {
     float2 uv;
-    const float2 hitPos = (float2) (pixel.uv) * panel_size;
  
-    const float panelPlaneAngle = atan2(hitPos.y, hitPos.x) + PI;
-    const float panelPlaneAngleRatio = panelPlaneAngle / (2 * PI);
-    uv.x = panelPlaneAngleRatio;
+    const float2 hitPos = (float2) (pixel.uv) * panel_size;
+    const float hitDist = sqrt(hitPos.x * hitPos.x + hitPos.y * hitPos.y);
     
-    const float panelPlaneDist = sqrt(hitPos.x * hitPos.x + hitPos.y * hitPos.y);
-    const float depthPlaneAngle = atan(panelPlaneDist / panel_height);
-    uv.y = depthPlaneAngle * 2 / PI;
+    uv.y = hitDist * panel_fov;
     
-    //return scalarColor(uv.y);
+    const float hitAngle = atan2(hitPos.y, hitPos.x) + PI;
+    const float hitAngleRatio = hitAngle / (2 * PI);
+    uv.x = hitAngleRatio;
+    
     
     const float3 diffuse = (float3) texture_main.Sample(sampler_main, uv);
     return float4(diffuse, 1);

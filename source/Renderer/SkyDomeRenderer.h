@@ -21,7 +21,7 @@ private:
 	struct PanelBuffer
 	{
 		Float2 PanelSize;
-		float PanelHeight;
+		float MaxFov; //[0,1]
 		float Padding;
 	};
 

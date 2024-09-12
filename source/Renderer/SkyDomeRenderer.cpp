@@ -10,8 +10,8 @@ SkyDomeRenderer::SkyDomeRenderer()
 	, m_InputLayout{ InputLayout::FromType<Vertex>() }
 	, m_DepthStencil{ false }
 	//, m_Texture{ Resources::Local(L"SkyDome1.jpg") }
-	, m_Texture{ Resources::Local(L"SkyDome2.jpg") }
-	//, m_Texture{ Resources::Local(L"SkyDome3.jpg") }
+	//, m_Texture{ Resources::Local(L"SkyDome2.jpg") }
+	, m_Texture{ Resources::Local(L"SkyDome3.jpg") }
 {
 	InitVertexBuffer();
 	InitPanelBuffer();
@@ -50,24 +50,19 @@ void SkyDomeRenderer::InitVertexBuffer()
 
 void SkyDomeRenderer::InitPanelBuffer()
 {
-
-	float windowFovX{ Globals::pCamera->GetHalfFov() };
-	windowFovX = 30 * Constants::TO_RAD;
-
-	const float windowWidth{ sinf(windowFovX) };
-	const float windowHeight{ windowWidth / Globals::pCamera->GetAspectRatio() };
-	const float windowDepth{ cosf(windowFovX) };
-
-	const float panelCornerDist{ sqrtf(1 + windowHeight * windowHeight) };
-	const float panelScale{ 1.f / panelCornerDist };
-	const float panelWidth{ windowWidth * panelScale };
-	const float panelHeight{ windowHeight * panelScale };
-	const float panelDepth{ windowDepth * panelScale };
-
-
 	PanelBuffer buffer{};
-	buffer.PanelSize = { panelWidth, panelHeight };
-	buffer.PanelHeight = panelDepth;
+
+	float windowWidth{ Globals::pCamera->GetAspectRatio() };
+	float windowHeight{ 1 };
+	const float windowRadius{ sqrtf(1 + windowWidth * windowWidth) };
+
+	windowWidth /= windowRadius;
+	windowHeight /= windowRadius;
+
+	buffer.PanelSize.x = windowWidth;
+	buffer.PanelSize.y = windowHeight;
+
+	buffer.MaxFov = 60.f / 90.f;
 
 	m_PanelBuffer.Update(buffer);
 }
