@@ -18,12 +18,15 @@ private:
 	using Vertex = Rendering::V_Pos2;
 	static constexpr ModelTopology TOPOLOGY{ ModelTopology::TriangleList };
 
-	struct PanelBuffer
+	struct DomeBuffer
 	{
-		Float2 PanelSize;
-		float MaxFov; //[0,1]
-		float Padding;
-	};
+		Float2 FovTan;
+		float PitchCos;
+		float PitchSin;
+
+		float Yaw; //radians
+		Float3 Padding;
+	} m_DomeBuffer{};
 
 	Rendering::Shader m_Shader;
 	Rendering::InputLayout m_InputLayout;
@@ -31,10 +34,12 @@ private:
 	Rendering::DepthStencilState m_DepthStencil;
 	Rendering::Texture m_Texture;
 	Rendering::SamplerState m_Sampler;
-	Rendering::ConstantBuffer<PanelBuffer> m_PanelBuffer;
+	Rendering::ConstantBuffer<DomeBuffer> m_PanelBuffer;
 
 	void InitVertexBuffer();
-	void InitPanelBuffer();
+	void InitDomeBuffer();
+
+	void UpdateDomeBufferCameraData();
 };
 }
 
