@@ -2,11 +2,14 @@
 Texture2D texture_main : register(t0);
 SamplerState sampler_main : register(s0);
 
-cbuffer PanelInfo : register(b1)
+cbuffer DomeBufffer : register(b1)
 {
-    float2 panel_size;
-    float panel_fov; //[0,1]
-    float padding;
+    float2 dome_fovTan;
+    float dome_pitch_cos; //camera
+    float dome_pitch_sin;
+    
+    float dome_yaw; //radians
+    float3 padding;
 }
 
 struct Vertex
@@ -41,18 +44,23 @@ float4 scalarColor(float value)
 
 float4 ps_main(Pixel pixel) : SV_TARGET
 {
-    float2 uv;
- 
-    const float2 hitPos = (float2) (pixel.uv) * panel_size;
-    const float hitDist = sqrt(hitPos.x * hitPos.x + hitPos.y * hitPos.y);
+    float3 position = float3(
+         1,
+        dome_fovTan.y * pixel.uv.y,
+        dome_fovTan.x * pixel.uv.x
+    );
     
-    uv.y = hitDist * panel_fov;
+    position = normalize(float3(
+    position.x * dome_pitch_cos - position.y * dome_pitch_sin,
+    position.x * dome_pitch_sin + position.y * dome_pitch_cos,
+    position.z
+    ));
     
-    const float hitAngle = atan2(hitPos.y, hitPos.x) + PI;
-    const float hitAngleRatio = hitAngle / (2 * PI);
-    uv.x = hitAngleRatio;
+    float2 texturePos = float2(
+        (atan2(position.z, position.x) - dome_yaw) / (2 * PI),
+        1 - asin(position.y) / (PI / 2)
+    );
     
-    
-    const float3 diffuse = (float3) texture_main.Sample(sampler_main, uv);
+    float3 diffuse = (float3) texture_main.Sample(sampler_main, texturePos);
     return float4(diffuse, 1);
 }

@@ -10,15 +10,17 @@ SkyDomeRenderer::SkyDomeRenderer()
 	, m_InputLayout{ InputLayout::FromType<Vertex>() }
 	, m_DepthStencil{ false }
 	//, m_Texture{ Resources::Local(L"SkyDome1.jpg") }
-	//, m_Texture{ Resources::Local(L"SkyDome2.jpg") }
-	, m_Texture{ Resources::Local(L"SkyDome3.jpg") }
+	, m_Texture{ Resources::Local(L"SkyDome2.jpg") }
+	//, m_Texture{ Resources::Local(L"SkyDome3.jpg") }
 {
 	InitVertexBuffer();
-	InitPanelBuffer();
+	InitDomeBuffer();
 }
 
 void SkyDomeRenderer::Render()
 {
+	UpdateDomeBufferCameraData();
+
 	m_DepthStencil.Activate();
 	m_Shader.Activate();
 	m_InputLayout.Activate();
@@ -48,21 +50,24 @@ void SkyDomeRenderer::InitVertexBuffer()
 	m_VertexBuffer = Buffer<Vertex>{ PtrRangeConst<Vertex>{vertices, nrVertices}, false };
 }
 
-void SkyDomeRenderer::InitPanelBuffer()
+void SkyDomeRenderer::InitDomeBuffer()
 {
-	PanelBuffer buffer{};
+	const float aspectRatio{ Globals::pCamera->GetAspectRatio() };
+	const float cameraFovX = 45 * Constants::TO_RAD;
 
-	float windowWidth{ Globals::pCamera->GetAspectRatio() };
-	float windowHeight{ 1 };
-	const float windowRadius{ sqrtf(1 + windowWidth * windowWidth) };
+	m_DomeBuffer.FovTan.x = tanf(cameraFovX);
+	m_DomeBuffer.FovTan.y = m_DomeBuffer.FovTan.x / aspectRatio;
+}
 
-	windowWidth /= windowRadius;
-	windowHeight /= windowRadius;
+void SkyDomeRenderer::UpdateDomeBufferCameraData()
+{
+	const Float3& cameraForward{ Globals::pCamera->GetForward() };
+	const float cameraPitch{ asinf(cameraForward.y) };
+	float cameraYaw{ atan2f(cameraForward.z, cameraForward.x) };
 
-	buffer.PanelSize.x = windowWidth;
-	buffer.PanelSize.y = windowHeight;
+	m_DomeBuffer.PitchCos = cosf(cameraPitch);
+	m_DomeBuffer.PitchSin = cameraForward.y;
+	m_DomeBuffer.Yaw = cameraYaw;
 
-	buffer.MaxFov = 30.f / 90.f;
-
-	m_PanelBuffer.Update(buffer);
+	m_PanelBuffer.Update(m_DomeBuffer);
 }
