@@ -63,7 +63,7 @@ void SkyDomeRenderer::UpdateDomeBufferCameraData()
 {
 	const Float3 cameraForward{ Globals::pCamera->GetForward() };
 	const float cameraPitch{ asinf(cameraForward.y) };
-	float cameraYaw{ atan2f(cameraForward.z, cameraForward.x) };
+	float cameraYaw{ atan2f(cameraForward.x, cameraForward.z) };
 
 	m_DomeBuffer.PitchCos = cosf(cameraPitch);
 	m_DomeBuffer.PitchSin = cameraForward.y;

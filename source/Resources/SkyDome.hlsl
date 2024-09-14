@@ -45,19 +45,19 @@ float4 scalarColor(float value)
 float4 ps_main(Pixel pixel) : SV_TARGET
 {
     float3 position = float3(
-         1,
+        dome_fovTan.x * pixel.uv.x,
         dome_fovTan.y * pixel.uv.y,
-        dome_fovTan.x * pixel.uv.x
+         1
     );
     
     position = normalize(float3(
-    position.x * dome_pitch_cos - position.y * dome_pitch_sin,
-    position.x * dome_pitch_sin + position.y * dome_pitch_cos,
-    position.z
+    position.x,
+    position.z * dome_pitch_sin + position.y * dome_pitch_cos,
+    position.z * dome_pitch_cos - position.y * dome_pitch_sin
     ));
     
     float2 texturePos = float2(
-        (atan2(position.z, position.x) - dome_yaw) / (2 * PI),
+        (atan2(position.x, position.z) + dome_yaw) / (2 * PI),
         1 - asin(position.y) / (PI / 2)
     );
     
