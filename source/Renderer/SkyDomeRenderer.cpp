@@ -53,10 +53,8 @@ void SkyDomeRenderer::InitVertexBuffer()
 void SkyDomeRenderer::InitDomeBuffer()
 {
 	const float aspectRatio{ Globals::pCamera->GetAspectRatio() };
-	const float cameraFovX = 45 * Constants::TO_RAD;
-
-	m_DomeBuffer.FovTan.x = tanf(cameraFovX);
-	m_DomeBuffer.FovTan.y = m_DomeBuffer.FovTan.x / aspectRatio;
+	m_DomeBuffer.FovTan.y = Globals::pCamera->GetTanHalfFov();
+	m_DomeBuffer.FovTan.x = m_DomeBuffer.FovTan.y * aspectRatio;
 }
 
 void SkyDomeRenderer::UpdateDomeBufferCameraData()
