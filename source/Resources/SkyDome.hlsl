@@ -20,45 +20,32 @@ struct Vertex
 struct Pixel
 {
     float4 pos : SV_POSITION;
-    float2 uv : TEXCOORD;
+    float3 uv : TEXCOORD;
 };
 
 Pixel vs_main(Vertex vertex)
 {
     Pixel pixel;
     pixel.pos = float4(vertex.pos, 0, 1);
-    pixel.uv = float2(vertex.pos);
+    
+    pixel.uv.x = dome_fovTan.x * pixel.pos.x;
+    pixel.uv.y = dome_pitch_sin + dome_fovTan.y * pixel.pos.y * dome_pitch_cos;
+    pixel.uv.z = dome_pitch_cos - dome_fovTan.y * pixel.pos.y * dome_pitch_sin;
+    
     return pixel;
 }
 
 static const float PI = 3.14159265f;
-
-static const float4 red = float4(1, 0, 0, 1);
-static const float4 green = float4(0, 1, 0, 1);
-static const float4 blue = float4(0, 0, 1, 1);
-
-float4 scalarColor(float value)
-{
-    return float4(value, value, value, 1);
-}
+static const float INV_2PI = 1.f / (2 * PI);
+static const float INV_HALF_PI = 2.f / PI;
 
 float4 ps_main(Pixel pixel) : SV_TARGET
 {
-    float3 position = float3(
-        dome_fovTan.x * pixel.uv.x,
-        dome_fovTan.y * pixel.uv.y,
-         1
-    );
-    
-    position = normalize(float3(
-    position.x,
-    position.z * dome_pitch_sin + position.y * dome_pitch_cos,
-    position.z * dome_pitch_cos - position.y * dome_pitch_sin
-    ));
+    pixel.uv = normalize(pixel.uv);
     
     float2 texturePos = float2(
-        (atan2(position.x, position.z) + dome_yaw) / (2 * PI),
-        1 - asin(position.y) / (PI / 2)
+        (atan2(pixel.uv.x, pixel.uv.z) + dome_yaw) * INV_2PI,
+        1 - asin(pixel.uv.y) * INV_HALF_PI
     );
     
     float3 diffuse = (float3) texture_main.Sample(sampler_main, texturePos);
