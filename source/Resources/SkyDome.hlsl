@@ -37,7 +37,7 @@ Pixel vs_main(Vertex vertex)
 
 static const float PI = 3.14159265f;
 static const float INV_2PI = 1.f / (2 * PI);
-static const float INV_HALF_PI = 2.f / PI;
+static const float INV_HALF_PI = 1.9f / PI; //horizon-angle: 2 = 90°, 1 = 180°
 
 float4 ps_main(Pixel pixel) : SV_TARGET
 {
@@ -45,7 +45,7 @@ float4 ps_main(Pixel pixel) : SV_TARGET
     
     float2 texturePos = float2(
         (atan2(pixel.uv.x, pixel.uv.z) + dome_yaw) * INV_2PI,
-        1 - asin(pixel.uv.y) * INV_HALF_PI
+        acos(pixel.uv.y) * INV_HALF_PI
     );
     
     float3 diffuse = (float3) texture_main.Sample(sampler_main, texturePos);
