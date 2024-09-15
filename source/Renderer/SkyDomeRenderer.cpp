@@ -9,9 +9,7 @@ SkyDomeRenderer::SkyDomeRenderer()
 	: m_Shader{ Resources::Local(L"SkyDome.hlsl") }
 	, m_InputLayout{ InputLayout::FromType<Vertex>() }
 	, m_DepthStencil{ false }
-	//, m_Texture{ Resources::Local(L"SkyDome1.jpg") }
-	, m_Texture{ Resources::Local(L"SkyDome2.jpg") }
-	//, m_Texture{ Resources::Local(L"SkyDome3.jpg") }
+	, m_Texture{ Resources::Local(L"SkyDome.jpg") }
 {
 	InitVertexBuffer();
 	InitDomeBuffer();
