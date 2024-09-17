@@ -182,6 +182,7 @@
   <ItemGroup>
     <ClCompile Include="Renderer\TowerGameRenderer.cpp" />
     <ClCompile Include="Renderer\SkyDomeRenderer.cpp" />
+    <ClCompile Include="Renderer\ShadowRenderer.cpp" />
     <ClCompile Include="Weapons\ArrowSystem.cpp" />
     <ClCompile Include="Character\Enemy.cpp" />
     <ClCompile Include="Character\EnemySystem.cpp" />
@@ -205,6 +206,7 @@
   <ItemGroup>
     <ClInclude Include="Renderer\TowerGameRenderer.h" />
     <ClInclude Include="Renderer\SkyDomeRenderer.h" />
+    <ClInclude Include="Renderer\ShadowRenderer.h" />
     <ClInclude Include="Weapons\ArrowSystem.h" />
     <ClInclude Include="Character\Enemy.h" />
     <ClInclude Include="Character\EnemySystem.h" />

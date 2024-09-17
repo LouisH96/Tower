@@ -7,13 +7,13 @@
 #include <Environment/Tower.h>
 #include <Framework/Resources.h>
 #include <Generation/Shapes/ArrowGenerator.h>
+#include <Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h>
 #include <Rendering/Renderers/Texture2DRenderer.h>
 #include <Services/CollisionService.h>
 #include <Weapons/Bow.h>
 
 #include "App/Win32/Window.h"
 #include "Environment/Terrain.h"
-#include "Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h"
 #include "Weapons/ArrowSystem.h"
 
 TowerApp::TowerApp()
@@ -70,15 +70,6 @@ void TowerApp::Update()
 void TowerApp::Render()
 {
 	m_Renderer.Render();
-
-	RenderSystems::GetTerrainRenderer().Render();
-	RenderSystems::GetTransformRenderer().Render();
-	RenderSystems::GetSimpleRenderer().Render();
-	RenderSystems::GetTexture2DRenderer().Render();
-	RenderSystems::GetUnlitRenderer().Render();
-	RenderSystems::GetTextureRenderer().Render();
-	RenderSystems::GetInstanceTransformRenderer().Render();
-	GameplaySystems::GetArrowSystem().Render();
 }
 
 void TowerApp::RenderUi()

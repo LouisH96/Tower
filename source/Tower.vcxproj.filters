@@ -17,6 +17,7 @@
     <ClCompile Include="Services\RenderSystems.cpp" />
     <ClCompile Include="Renderer\TowerGameRenderer.cpp" />
     <ClCompile Include="Renderer\SkyDomeRenderer.cpp" />
+    <ClCompile Include="Renderer\ShadowRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Weapons\Bow.h" />
@@ -33,5 +34,6 @@
     <ClInclude Include="Services\RenderSystems.h" />
     <ClInclude Include="Renderer\TowerGameRenderer.h" />
     <ClInclude Include="Renderer\SkyDomeRenderer.h" />
+    <ClInclude Include="Renderer\ShadowRenderer.h" />
   </ItemGroup>
 </Project>
