@@ -13,6 +13,7 @@ public:
 
 	void EarlyUpdate();
 	void Update();
+	void PreRender();
 	void Render();
 	void RenderUi();
 

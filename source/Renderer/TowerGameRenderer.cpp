@@ -13,6 +13,11 @@ TowerGameRenderer::TowerGameRenderer()
 {
 }
 
+void TowerGameRenderer::PreRender()
+{
+	m_ShadowRenderer.Render();
+}
+
 void TowerGameRenderer::Render()
 {
 	m_SkyDomeRenderer.Render();

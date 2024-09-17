@@ -67,6 +67,11 @@ void TowerApp::Update()
 	m_Gameplay.pArrowSystem->Update();
 }
 
+void TowerApp::PreRender()
+{
+	m_Renderer.PreRender();
+}
+
 void TowerApp::Render()
 {
 	m_Renderer.Render();
