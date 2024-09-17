@@ -15,6 +15,11 @@ SkyDomeRenderer::SkyDomeRenderer()
 	InitDomeBuffer();
 }
 
+void SkyDomeRenderer::OnCanvasResized(const App::ResizedEvent& event)
+{
+	InitDomeBuffer();
+}
+
 void SkyDomeRenderer::Render()
 {
 	UpdateDomeBufferCameraData();

@@ -47,6 +47,7 @@ TowerApp::~TowerApp()
 
 void TowerApp::OnCanvasResized(const App::ResizedEvent& event)
 {
+	m_Renderer.OnCanvasResized(event);
 }
 
 void TowerApp::EarlyUpdate()

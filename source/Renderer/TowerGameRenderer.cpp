@@ -13,6 +13,11 @@ TowerGameRenderer::TowerGameRenderer()
 {
 }
 
+void TowerGameRenderer::OnCanvasResized(const App::ResizedEvent& event)
+{
+	m_SkyDomeRenderer.OnCanvasResized(event);
+}
+
 void TowerGameRenderer::PreRender()
 {
 	m_ShadowRenderer.Render();

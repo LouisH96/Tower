@@ -11,6 +11,8 @@ class TowerGameRenderer
 public:
 	TowerGameRenderer();
 
+	void OnCanvasResized(const App::ResizedEvent& event);
+
 	void PreRender();
 	void Render();
 

@@ -12,6 +12,8 @@ class SkyDomeRenderer
 public:
 	SkyDomeRenderer();
 
+	void OnCanvasResized(const App::ResizedEvent& event);
+
 	void Render();
 
 private:
