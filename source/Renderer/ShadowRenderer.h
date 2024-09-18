@@ -11,6 +11,8 @@ namespace TowerGame
 
 		void Render();
 
+		Rendering::DepthStencilBuffer& GetDepthStencilBuffer() { return m_DepthStencil; }
+
 	private:
 		static const Float3 m_LightDir;
 

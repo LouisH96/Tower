@@ -11,7 +11,7 @@ const Float3 ShadowRenderer::m_LightDir{ { Float3{-1,-1,1}.Normalized() } };
 
 ShadowRenderer::ShadowRenderer()
 {
-	m_DepthStencil.Init({ 500,500 });
+	m_DepthStencil.Init({ 1300,900 }, true);
 }
 
 void ShadowRenderer::Render()
@@ -22,7 +22,7 @@ void ShadowRenderer::Render()
 		nullptr
 	};
 	Globals::pGpu->GetContext().OMSetRenderTargets(1, renderTargets, m_DepthStencil.GetView());
-	RenderSystems::GetTextureRenderer().Render<Shader::Function::Vertex>();
 	RenderSystems::GetTerrainRenderer().Render<Shader::Function::Vertex>();
+	RenderSystems::GetTransformRenderer().Render<Shader::Function::Vertex>();
 }
 

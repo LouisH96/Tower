@@ -2,15 +2,17 @@
 
 namespace TowerGame
 {
+class ShadowRenderer;
+
 class ShadowMapController
 {
 public:
 	ShadowMapController();
 
-	void Start();
+	void Start(ShadowRenderer& shadowMapRenderer);
 
 private:
-
-	void InitDemoQuad();
+	void InitDemoQuad(Rendering::Texture* pTexture);
+	static Rendering::Texture* MakeTexture(ShadowRenderer& shadowMapRenderer);
 };
 }

@@ -16,6 +16,7 @@ public:
 	void PreRender();
 	void Render();
 
+	ShadowRenderer& GetShadowRenderer() { return m_ShadowRenderer; }
 	const ShadowRenderer& GetShadowRenderer() const { return m_ShadowRenderer; }
 
 private:

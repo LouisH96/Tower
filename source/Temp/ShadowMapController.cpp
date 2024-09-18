@@ -8,19 +8,25 @@
 #include <DataStructures\Adders\ArrayAdder.h>
 #include <Rendering\State\Mesh.h>
 #include <Rendering\State\Texture.h>
+#include <Rendering\State\DepthStencilBuffer.h>
+#include <Renderer\ShadowRenderer.h>
+
+#include <d3d11.h>
 
 using namespace TowerGame;
+using namespace Rendering;
 
 ShadowMapController::ShadowMapController()
 {
 }
 
-void ShadowMapController::Start()
+void ShadowMapController::Start(ShadowRenderer& shadowMapRenderer)
 {
-	InitDemoQuad();
+	Texture* pTexture{ MakeTexture(shadowMapRenderer) };
+	InitDemoQuad(pTexture);
 }
 
-void ShadowMapController::InitDemoQuad()
+void ShadowMapController::InitDemoQuad(Texture* pTexture)
 {
 	using namespace Rendering;
 
@@ -47,9 +53,47 @@ void ShadowMapController::InitDemoQuad()
 	Generator::GenerateVertices(combinator, ArrayAdder<Vertex>{vertices}, rect);
 	vertices[0].Uv = { 0,1 };
 	vertices[1].Uv = { 0,0 };
-	vertices[2].Uv = { 1, 0 };
+	vertices[2].Uv = { 1,0 };
 	vertices[3].Uv = { 1,1 };
 	Generator::GenerateIndices(ArrayAdder<int>{indices}, 0);
 
-	RenderSystems::GetTextureRenderer().AddMesh(vertices, indices, Resources::Local(L"PolygonFantasyKingdom_Texture_01_A.png"));
+	Mesh* pMesh{ Mesh::Create<Vertex>(vertices, indices) };
+
+	RenderSystems::GetTextureRenderer().AddMesh(pMesh, pTexture);
+}
+
+Texture* ShadowMapController::MakeTexture(ShadowRenderer& renderer)
+{
+	//Get
+	DepthStencilBuffer& dsBuffer{ renderer.GetDepthStencilBuffer() };
+	ID3D11DepthStencilView* pDsView{ dsBuffer.GetView() };
+
+	CD3D11_DEPTH_STENCIL_VIEW_DESC dsViewDesc;
+	pDsView->GetDesc(&dsViewDesc);
+
+	ID3D11Resource* dsResource;
+	pDsView->GetResource(&dsResource);
+
+	//Make ShaderResourceViewDesc
+	D3D11_SHADER_RESOURCE_VIEW_DESC resourceViewDesc{};
+	resourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	resourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	resourceViewDesc.Texture2D.MipLevels = 1;
+
+	//Make ShaderResourceView
+	ID3D11ShaderResourceView* pShaderResourceView;
+	const HRESULT result{
+		Globals::pGpu->GetDevice().CreateShaderResourceView(dsResource, &resourceViewDesc, &pShaderResourceView)
+	};
+	SAFE_RELEASE(dsResource);
+
+	if (FAILED(result)) {
+		Logger::PrintError("[ShadowMapController::MakeTexture]");
+		SAFE_RELEASE(pShaderResourceView);
+	}
+
+	//Make Texture
+	Texture* pTexture{ new Texture(pShaderResourceView) };
+
+	return pTexture;
 }
