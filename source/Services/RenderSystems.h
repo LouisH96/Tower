@@ -10,12 +10,12 @@ class ArrowSystem;
 
 namespace MyEngine
 {
-	namespace Rendering
-	{
-		class R_LambertCam_Tex_Tran_Inst;
-		class FpsDisplay;
-		class Texture2DRenderer;
-	}
+namespace Rendering
+{
+class R_LambertCam_Tex_Tran_Inst;
+class FpsDisplay;
+class Texture2DRenderer;
+}
 }
 
 class RenderSystems
