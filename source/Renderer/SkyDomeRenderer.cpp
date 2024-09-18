@@ -23,15 +23,15 @@ void SkyDomeRenderer::OnCanvasResized(const App::ResizedEvent& event)
 void SkyDomeRenderer::Render()
 {
 	UpdateDomeBufferCameraData();
+	m_PanelBuffer.Activate(1);
 
+	PrimitiveTopology::Activate(TOPOLOGY);
 	m_DepthStencil.Activate();
 	m_Shader.Activate();
 	m_InputLayout.Activate();
 
 	m_Texture.Activate();
 	m_Sampler.Activate();
-
-	m_PanelBuffer.Activate(1);
 
 	m_VertexBuffer.Activate(0);
 	m_VertexBuffer.Draw();
