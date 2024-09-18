@@ -3,9 +3,13 @@
 #include "Services/RenderSystems.h"
 #include <Renderer\TowerGameRenderer.h>
 
+#include <Temp\ShadowMapController.h>
+
 class TowerApp
 {
 public:
+	static TowerApp* pApp;
+
 	explicit TowerApp();
 	~TowerApp();
 
@@ -17,10 +21,15 @@ public:
 	void Render();
 	void RenderUi();
 
+	const TowerGame::TowerGameRenderer& GetRenderer() const { return m_Renderer; }
+
 private:
 	GameplaySystems m_Gameplay;
 	RenderSystems m_Rendering;
 	TowerGame::TowerGameRenderer m_Renderer;
+
+	//Temp
+	TowerGame::ShadowMapController m_ShadowMapController;
 
 	void InitGameplay();
 	void LinkGameplay();
@@ -29,3 +38,5 @@ private:
 
 	void CreateArrows();
 };
+
+#define APP (*TowerApp::pApp)

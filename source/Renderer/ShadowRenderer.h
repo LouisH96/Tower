@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Rendering\State\DepthStencilBuffer.h>
+
 namespace TowerGame
 {
 	class ShadowRenderer
@@ -10,8 +12,8 @@ namespace TowerGame
 		void Render();
 
 	private:
-
 		static const Float3 m_LightDir;
 
+		Rendering::DepthStencilBuffer m_DepthStencil;
 	};
 }

@@ -16,14 +16,20 @@
 #include "Environment/Terrain.h"
 #include "Weapons/ArrowSystem.h"
 
+TowerApp* TowerApp::pApp{ nullptr };
+
 TowerApp::TowerApp()
 {
+	pApp = this;
+
 	InitGameplay();
 	LinkGameplay();
 	InitRendering();
 	LinkRendering();
 
 	CreateArrows();
+
+	m_ShadowMapController.Start();
 }
 
 TowerApp::~TowerApp()
@@ -120,7 +126,7 @@ void TowerApp::InitRendering()
 	r.pSimpleRenderer = RendererFactory::CreateSimpleRenderer();
 	r.pTransformRenderer = new R_LambertCam_Tex_Transform();
 	r.pTerrainRenderer = new RenderSystems::TerrainRenderer(false);
-	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"Font_Inst.hlsl"));
+	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"unlitTexture.hlsl"));
 	r.pTexture2DRenderer = new Texture2DRenderer();
 	r.pInstanceTransform = new RenderSystems::InstanceTransformRenderer();
 }
