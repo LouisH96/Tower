@@ -31,16 +31,8 @@ private:
 
 	static constexpr float ARROW_FINISHED = 2000;
 
-	Rendering::BlendState m_BlendState;
-	Rendering::RasterizerState m_RasterizerState;
-	Rendering::SamplerState m_Sampler;
-	Rendering::DepthStencilState m_DepthStencilState;
-
-	Rendering::InputLayout m_InputLayout;
-	Rendering::Shader m_Shader;
 	Rendering::Texture m_Texture;
 
-	Rendering::ConstantBuffer<Rendering::CB_CamPos> m_CameraBuffer;
 	Rendering::InstanceList<Vertex, Instance> m_Instances;
 
 	List<Float3> m_Velocities;

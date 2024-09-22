@@ -15,9 +15,7 @@
 using namespace Rendering;
 
 ArrowSystem::ArrowSystem()
-	: m_InputLayout{ InputLayout::FromTypes<Vertex, Instance>() }
-	, m_Shader{ Resources::GlobalShader(L"LambertCam_Tex_Tran_Inst.hlsl") }
-	, m_Texture{ Resources::Local(L"Texture_01.png") }
+	: m_Texture{ Resources::Local(L"Texture_01.png") }
 {
 	//VERTICES
 	const std::wstring arrowMeshPath{ Resources::Local(L"SM_Arrow_01.fbx") };
@@ -111,14 +109,6 @@ void ArrowSystem::SetArrowFinished(Float3& arrowVelocity)
 
 void ArrowSystem::Render()
 {
-	m_BlendState.Activate();
-	m_RasterizerState.Activate();
-	m_Sampler.Activate();
-	m_DepthStencilState.Activate();
-	m_InputLayout.Activate();
-	m_Shader.Activate();
 	m_Texture.Activate();
-	m_CameraBuffer.Update(CB_CamPos{ Globals::pCamera->GetPosition() });
-	m_CameraBuffer.Activate();
 	m_Instances.Draw();
 }

@@ -25,7 +25,6 @@ public:
 	using TextureRenderer = Rendering::TextureRenderer<Rendering::V_PosUv, Rendering::CB_CamMat>;
 	using TransformRenderer = Rendering::R_LambertCam_Tex_Transform;
 	using TerrainRenderer = Rendering::R_LambertLight_Col;
-	using InstanceTransformRenderer = Rendering::R_LambertCam_Tex_Tran_Inst;
 
 	static SimpleRenderer& GetSimpleRenderer() { return *m_pStatic->pSimpleRenderer; }
 	static TransformRenderer& GetTransformRenderer() { return *m_pStatic->pTransformRenderer; }
@@ -33,7 +32,6 @@ public:
 	static TextureRenderer& GetTextureRenderer() { return *m_pStatic->pTextureRenderer; }
 	static Rendering::RendererFactory::UnlitRenderer& GetUnlitRenderer() { return *m_pStatic->pUnlitRenderer; }
 	static Rendering::Texture2DRenderer& GetTexture2DRenderer() { return *m_pStatic->pTexture2DRenderer; }
-	static InstanceTransformRenderer& GetInstanceTransformRenderer() { return *m_pStatic->pInstanceTransform; }
 
 	RenderSystems();
 
@@ -43,7 +41,6 @@ public:
 	TextureRenderer* pTextureRenderer{};
 	Rendering::RendererFactory::UnlitRenderer* pUnlitRenderer{};
 	Rendering::Texture2DRenderer* pTexture2DRenderer{};
-	InstanceTransformRenderer* pInstanceTransform{};
 
 private:
 	static const RenderSystems* m_pStatic;
