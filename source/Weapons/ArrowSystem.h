@@ -32,7 +32,6 @@ private:
 	static constexpr float ARROW_FINISHED = 2000;
 
 	Rendering::Texture m_Texture;
-
 	Rendering::InstanceList<Vertex, Instance> m_Instances;
 
 	List<Float3> m_Velocities;

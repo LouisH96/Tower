@@ -21,15 +21,18 @@ public:
 	const ShadowRenderer& GetShadowRenderer() const { return m_ShadowRenderer; }
 
 private:
+
 	//CamBuffers
-	using CameraPosBuffer = Rendering::CB_CamPos;
-	Rendering::ConstantBuffer<CameraPosBuffer> m_CameraPosBuffer;
+	Rendering::ConstantBuffer<Rendering::CB_CamPos> m_CameraPosBuffer;
 
 	//InputLayouts
-	Rendering::InputLayout m_Il_Tex_Trans_Inst;
+	Rendering::InputLayout m_Il_V_PosNorUv_I_ModelMatrices;
 
 	//Shaders
 	Rendering::Shader m_Shader_Tex_Trans_Inst;
+
+	//DepthStencilStates
+	Rendering::DepthStencilState m_DepthStencilState_On;
 
 	//Renderers
 	ShadowRenderer m_ShadowRenderer;
