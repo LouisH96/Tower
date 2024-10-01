@@ -15,7 +15,7 @@ ShadowRenderer::ShadowRenderer()
 	m_DepthStencil.Init(Globals::pCanvas->GetSize(), true);
 }
 
-void ShadowRenderer::Render()
+void ShadowRenderer::PrepareRendering()
 {
 	m_DepthStencil.Clear();
 	ID3D11RenderTargetView* renderTargets[1]
@@ -23,8 +23,6 @@ void ShadowRenderer::Render()
 		nullptr
 	};
 	Globals::pGpu->GetContext().OMSetRenderTargets(1, renderTargets, m_DepthStencil.GetView());
-	RenderSystems::GetTerrainRenderer().Render<Shader::Function::Vertex>();
-	RenderSystems::GetTransformRenderer().Render<Shader::Function::Vertex>();
 }
 
 void ShadowRenderer::OnCanvasResized(const App::ResizedEvent& event)
