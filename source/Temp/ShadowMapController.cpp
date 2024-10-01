@@ -1,68 +1,59 @@
 #include "pch.h"
 #include "ShadowMapController.h"
 
-#include <Generation\RectGenerator.h>
-#include <Services\GameplaySystems.h>
-#include <Services\RenderSystems.h>
+#include <Applied\NewUi\Elements\AnchorParent.h>
+#include <Applied\NewUi\Elements\Box.h>
+#include <Applied\NewUi\Elements\Margin.h>
+#include <Applied\NewUi\NewUiSystem.h>
 #include <Character\Character.h>
 #include <DataStructures\Adders\ArrayAdder.h>
+#include <Generation\RectGenerator.h>
+#include <Renderer\ShadowRenderer.h>
+#include <Rendering\Canvas.h>
+#include <Rendering\State\DepthStencilBuffer.h>
 #include <Rendering\State\Mesh.h>
 #include <Rendering\State\Texture.h>
-#include <Rendering\State\DepthStencilBuffer.h>
-#include <Renderer\ShadowRenderer.h>
+#include <Services\GameplaySystems.h>
+#include <Services\RenderSystems.h>
+#include <TowerApp.h>
 
 #include <d3d11.h>
 
 using namespace TowerGame;
 using namespace Rendering;
 
-ShadowMapController::ShadowMapController()
-{
-}
-
 void ShadowMapController::Start(ShadowRenderer& shadowMapRenderer)
 {
-	Texture* pTexture{ MakeTexture(shadowMapRenderer) };
-	InitDemoQuad(pTexture);
+	//Ui
+	using namespace NewUi;
+	NEW_UI.BeforeEdit();
+
+	AnchorParent* pAnchor{ new AnchorParent() };
+	NEW_UI.AddChild(pAnchor);
+
+	Margin* pMargin{ new Margin(5.f) };
+	pAnchor->AddChild(pMargin, { 1,1 });
+
+	m_pExtender = new Extender(SizeDef{ SizeDef::Mode::Pixels, CalcImageSize() });
+	pMargin->AddChild(m_pExtender);
+
+	const unsigned textureId{ NEW_UI.GetImageRenderer().AddTexture(
+		MakeTexture(shadowMapRenderer)) };
+	m_pImage = new NewUi::Image(textureId);
+	m_pExtender->AddChild(m_pImage);
+
+	NEW_UI.AfterEdit();
 }
 
-void ShadowMapController::InitDemoQuad(Texture* pTexture)
+void ShadowMapController::OnCanvasResized(ShadowRenderer& shadowMapRenderer)
 {
-	using namespace Rendering;
+	NEW_UI.GetImageRenderer().ReplaceTexture(
+		m_pImage->GetTextureId(), MakeTexture(shadowMapRenderer));
 
-	using Renderer = RenderSystems::TextureRenderer;
-	using Vertex = Renderer::VertexType;
-	static constexpr ModelTopology Topology{ ModelTopology::TriangleListIdx };
-	using Generator = RectGenerator<Topology>;
-
-	const Float3& characterPos{ GameplaySystems::GetCharacter().GetPosition() };
-	const Float3 planePos{ characterPos + Float3{ 0, 1, 3 } };
-
-	const RectFloat rect{ {}, Float2{1,1} };
-
-	Array<int> indices{ Generator::GetNrIndices() };
-	Array<Vertex> vertices{ Generator::GetNrVertices() };
-	auto combinator = [&planePos](const Float2& pos)
-		{
-			return Vertex{ Float3{
-					planePos.x + pos.x,
-					planePos.y + pos.y,
-					planePos.z} };
-		};
-
-	Generator::GenerateVertices(combinator, ArrayAdder<Vertex>{vertices}, rect);
-	vertices[0].Uv = { 0,1 };
-	vertices[1].Uv = { 0,0 };
-	vertices[2].Uv = { 1,0 };
-	vertices[3].Uv = { 1,1 };
-	Generator::GenerateIndices(ArrayAdder<int>{indices}, 0);
-
-	Mesh* pMesh{ Mesh::Create<Vertex>(vertices, indices) };
-
-	RenderSystems::GetTextureRenderer().AddMesh(pMesh, pTexture);
+	m_pExtender->SetSizeDef(CalcImageSize());
 }
 
-Texture* ShadowMapController::MakeTexture(ShadowRenderer& renderer)
+Texture ShadowMapController::MakeTexture(ShadowRenderer& renderer)
 {
 	//Get
 	DepthStencilBuffer& dsBuffer{ renderer.GetDepthStencilBuffer() };
@@ -92,8 +83,16 @@ Texture* ShadowMapController::MakeTexture(ShadowRenderer& renderer)
 		SAFE_RELEASE(pShaderResourceView);
 	}
 
-	//Make Texture
-	Texture* pTexture{ new Texture(pShaderResourceView) };
+	return Texture{ pShaderResourceView };
+}
 
-	return pTexture;
+Float2 ShadowMapController::CalcImageSize(const float maxSide)
+{
+	const Canvas& canvas{ *Globals::pCanvas };
+	const float ratio{ canvas.GetAspectRatio() };
+
+	if (ratio > 1.f)
+		return { maxSide, maxSide / ratio };
+	else
+		return { maxSide * ratio, maxSide };
 }

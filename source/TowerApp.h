@@ -40,3 +40,4 @@ private:
 };
 
 #define APP (*TowerApp::pApp)
+#define NEW_UI (*Globals::pUi)
