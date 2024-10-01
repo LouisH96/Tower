@@ -1,6 +1,7 @@
 #pragma once
+
+#include "ShadowRenderer.h"
 #include "SkyDomeRenderer.h"
-#include <Rendering\State\DepthStencilBuffer.h>
 
 namespace TowerGame
 {
@@ -16,7 +17,8 @@ public:
 	void PreRender();
 	void Render();
 
-	Rendering::DepthStencilBuffer& GetDsBufferShadow() { return m_DepthStencilBuffer_Shadow; }
+	ShadowRenderer& GetShadowRenderer() { return m_ShadowRenderer; }
+	const ShadowRenderer& GetShadowRenderer() const { return m_ShadowRenderer; }
 
 private:
 
@@ -32,11 +34,8 @@ private:
 	//DepthStencilStates
 	Rendering::DepthStencilState m_DepthStencilState_On;
 
-	//DepthStencilBuffers
-	Rendering::DepthStencilBuffer m_DepthStencilBuffer_Shadow;
-
 	//Renderers
-	//ShadowRenderer m_ShadowRenderer;
+	ShadowRenderer m_ShadowRenderer;
 	SkyDomeRenderer m_SkyDomeRenderer;
 };
 

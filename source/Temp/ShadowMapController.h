@@ -2,7 +2,6 @@
 
 #include <Applied\NewUi\Elements\Extender.h>
 #include <Applied\NewUi\Elements\Image.h>
-#include <Rendering\State\DepthStencilBuffer.h>
 
 namespace TowerGame
 {
@@ -13,11 +12,11 @@ class ShadowMapController
 public:
 	ShadowMapController() = default;
 
-	void Start(Rendering::DepthStencilBuffer& dsBufferShadow);
-	void OnCanvasResized(Rendering::DepthStencilBuffer& dsBufferShadow);
+	void Start(ShadowRenderer& shadowMapRenderer);
+	void OnCanvasResized(ShadowRenderer& shadowMapRenderer);
 
 private:
-	static Rendering::Texture MakeTexture(Rendering::DepthStencilBuffer& dsBufferShadow);
+	static Rendering::Texture MakeTexture(ShadowRenderer& shadowMapRenderer);
 	static Float2 CalcImageSize(const float maxSide = 200.f);
 
 	NewUi::Extender* m_pExtender;

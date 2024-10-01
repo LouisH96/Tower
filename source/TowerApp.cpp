@@ -29,7 +29,7 @@ TowerApp::TowerApp()
 
 	CreateArrows();
 
-	m_ShadowMapController.Start(m_Renderer.GetDsBufferShadow());
+	m_ShadowMapController.Start(m_Renderer.GetShadowRenderer());
 }
 
 TowerApp::~TowerApp()
@@ -53,7 +53,7 @@ TowerApp::~TowerApp()
 void TowerApp::OnCanvasResized(const App::ResizedEvent& event)
 {
 	m_Renderer.OnCanvasResized(event);
-	m_ShadowMapController.OnCanvasResized(m_Renderer.GetDsBufferShadow());
+	m_ShadowMapController.OnCanvasResized(m_Renderer.GetShadowRenderer());
 }
 
 void TowerApp::EarlyUpdate()
