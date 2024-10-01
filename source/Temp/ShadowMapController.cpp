@@ -8,7 +8,6 @@
 #include <Character\Character.h>
 #include <DataStructures\Adders\ArrayAdder.h>
 #include <Generation\RectGenerator.h>
-#include <Renderer\ShadowRenderer.h>
 #include <Rendering\Canvas.h>
 #include <Rendering\State\DepthStencilBuffer.h>
 #include <Rendering\State\Mesh.h>
@@ -22,7 +21,7 @@
 using namespace TowerGame;
 using namespace Rendering;
 
-void ShadowMapController::Start(ShadowRenderer& shadowMapRenderer)
+void ShadowMapController::Start(Rendering::DepthStencilBuffer& dsBufferShadow)
 {
 	//Ui
 	using namespace NewUi;
@@ -38,26 +37,25 @@ void ShadowMapController::Start(ShadowRenderer& shadowMapRenderer)
 	pMargin->AddChild(m_pExtender);
 
 	const unsigned textureId{ NEW_UI.GetImageRenderer().AddTexture(
-		MakeTexture(shadowMapRenderer)) };
+		MakeTexture(dsBufferShadow)) };
 	m_pImage = new NewUi::Image(textureId);
 	m_pExtender->AddChild(m_pImage);
 
 	NEW_UI.AfterEdit();
 }
 
-void ShadowMapController::OnCanvasResized(ShadowRenderer& shadowMapRenderer)
+void ShadowMapController::OnCanvasResized(Rendering::DepthStencilBuffer& dsBufferShadow)
 {
 	NEW_UI.GetImageRenderer().ReplaceTexture(
-		m_pImage->GetTextureId(), MakeTexture(shadowMapRenderer));
+		m_pImage->GetTextureId(), MakeTexture(dsBufferShadow));
 
 	m_pExtender->SetSizeDef(CalcImageSize());
 }
 
-Texture ShadowMapController::MakeTexture(ShadowRenderer& renderer)
+Texture ShadowMapController::MakeTexture(Rendering::DepthStencilBuffer& dsBufferShadow)
 {
 	//Get
-	DepthStencilBuffer& dsBuffer{ renderer.GetDepthStencilBuffer() };
-	ID3D11DepthStencilView* pDsView{ dsBuffer.GetView() };
+	ID3D11DepthStencilView* pDsView{ dsBufferShadow.GetView() };
 
 	CD3D11_DEPTH_STENCIL_VIEW_DESC dsViewDesc;
 	pDsView->GetDesc(&dsViewDesc);
