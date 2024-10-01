@@ -20,9 +20,13 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	Io::Fbx::FbxClass fbxModel{ meshPath, 1.f };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
-	m_Vertices = { geom.Points.GetSize() };
+	Array<Vertex> vertices{ geom.Points.GetSize() };
 	for (unsigned i = 0; i < geom.Points.GetSize(); i++)
-		m_Vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
+		vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
+
+	m_InstanceArray = InstanceArray{ PtrRangeConst<Vertex>{vertices}, sizeof(Instance), Uint::Cast(nrEnemies) };
+	m_InstanceArray.SetInstanceCount(Uint::Cast(nrEnemies));
+	m_Texture = Texture{ Resources::Local(L"FantasyRivals_Texture_01_A.png") };
 
 	//ENEMIES
 	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
@@ -39,21 +43,21 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	//COLLIDABLES
 	EnemiesCollidable& collidable{ GameplaySystems::GetCollisionService().Enemies };
 	collidable.pEnemies = &m_Enemies;
-	collidable.Points = { m_Vertices.GetSize() };
-	collidable.TriangleNormals = { m_Vertices.GetSize() / 3 };
-	for (unsigned i = 0; i < m_Vertices.GetSize(); i++)
-		collidable.Points[i] = m_Vertices[i].Pos;
-	for (unsigned iVertex = 0, iTriangle = 0; iVertex < m_Vertices.GetSize(); iVertex += 3, iTriangle++)
-		collidable.TriangleNormals[iTriangle] = m_Vertices[iVertex].Normal;
+	collidable.Points = { vertices.GetSize() };
+	collidable.TriangleNormals = { vertices.GetSize() / 3 };
+	for (unsigned i = 0; i < vertices.GetSize(); i++)
+		collidable.Points[i] = vertices[i].Pos;
+	for (unsigned iVertex = 0, iTriangle = 0; iVertex < vertices.GetSize(); iVertex += 3, iTriangle++)
+		collidable.TriangleNormals[iTriangle] = vertices[iVertex].Normal;
 }
 
 void EnemySystem::LinkRenderers()
 {
-	RenderSystems::InstanceTransformRenderer& renderer{ RenderSystems::GetInstanceTransformRenderer() };
+	/*RenderSystems::InstanceTransformRenderer& renderer{ RenderSystems::GetInstanceTransformRenderer() };
 	const int modelIdx{ renderer.CreateModel({ Resources::Local(L"FantasyRivals_Texture_01_A.png") }, m_Vertices.GetData(), m_Vertices.GetSize()) };
 
 	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
-		renderer.AddInstance(modelIdx, m_Enemies[i].GetTransform());
+		renderer.AddInstance(modelIdx, m_Enemies[i].GetTransform());*/
 }
 
 void EnemySystem::Update()
@@ -62,6 +66,22 @@ void EnemySystem::Update()
 	{
 		m_Enemies[i].Update(m_Target, 1 * Globals::DeltaTime);
 	}
+}
+
+void EnemySystem::Render(const Float4X4& viewProjection)
+{
+	m_Texture.ActivatePs();
+
+	Instance* pInstances{ m_InstanceArray.BeginUpdateInstances<Instance>() };
+	for (unsigned iEnemy{ 0 }; iEnemy < m_Enemies.GetSize(); ++iEnemy)
+	{
+		const Enemy& enemy{ m_Enemies[iEnemy] };
+		Instance& instance{ pInstances[iEnemy] };
+		instance.model = enemy.GetTransform().AsMatrix();
+		instance.modelViewProj = instance.model * viewProjection;
+	}
+	m_InstanceArray.EndUpdateInstances();
+	m_InstanceArray.Draw();
 }
 
 void EnemySystem::OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy)

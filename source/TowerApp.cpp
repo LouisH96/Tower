@@ -34,7 +34,6 @@ TowerApp::TowerApp()
 
 TowerApp::~TowerApp()
 {
-	delete m_Rendering.pInstanceTransform;
 	delete m_Rendering.pTexture2DRenderer;
 	delete m_Rendering.pUnlitRenderer;
 	delete m_Rendering.pTextureRenderer;
@@ -129,7 +128,6 @@ void TowerApp::InitRendering()
 	r.pTerrainRenderer = new RenderSystems::TerrainRenderer(false);
 	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"unlitTexture.hlsl"));
 	r.pTexture2DRenderer = new Texture2DRenderer();
-	r.pInstanceTransform = new RenderSystems::InstanceTransformRenderer();
 }
 
 void TowerApp::LinkRendering()
