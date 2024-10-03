@@ -34,23 +34,15 @@ void ShadowMapController::Start(ShadowRenderer& shadowMapRenderer)
 	Margin* pMargin{ new Margin(5.f) };
 	pAnchor->AddChild(pMargin, { 1,1 });
 
-	m_pExtender = new Extender(SizeDef{ SizeDef::Mode::Pixels, CalcImageSize() });
-	pMargin->AddChild(m_pExtender);
+	Extender* pExtender{ new Extender(SizeDef{ SizeDef::Mode::Pixels, {200,200} }) };
+	pMargin->AddChild(pExtender);
 
 	const unsigned textureId{ NEW_UI.GetImageRenderer().AddTexture(
 		MakeTexture(shadowMapRenderer)) };
-	m_pImage = new NewUi::Image(textureId);
-	m_pExtender->AddChild(m_pImage);
+	NewUi::Image* pImage{ new NewUi::Image(textureId) };
+	pExtender->AddChild(pImage);
 
 	NEW_UI.AfterEdit();
-}
-
-void ShadowMapController::OnCanvasResized(ShadowRenderer& shadowMapRenderer)
-{
-	NEW_UI.GetImageRenderer().ReplaceTexture(
-		m_pImage->GetTextureId(), MakeTexture(shadowMapRenderer));
-
-	m_pExtender->SetSizeDef(CalcImageSize());
 }
 
 Texture ShadowMapController::MakeTexture(ShadowRenderer& renderer)
@@ -86,13 +78,3 @@ Texture ShadowMapController::MakeTexture(ShadowRenderer& renderer)
 	return Texture{ pShaderResourceView };
 }
 
-Float2 ShadowMapController::CalcImageSize(const float maxSide)
-{
-	const Canvas& canvas{ *Globals::pCanvas };
-	const float ratio{ canvas.GetAspectRatio() };
-
-	if (ratio > 1.f)
-		return { maxSide, maxSide / ratio };
-	else
-		return { maxSide * ratio, maxSide };
-}

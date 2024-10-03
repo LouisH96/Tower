@@ -12,7 +12,7 @@ const Float3 ShadowRenderer::m_LightDir{ { Float3{-1,-1,1}.Normalized() } };
 
 ShadowRenderer::ShadowRenderer()
 {
-	m_DepthStencil.Init(Globals::pCanvas->GetSize(), true);
+	m_DepthStencil.Init({600,600}, true);
 }
 
 void ShadowRenderer::PrepareRendering()
@@ -23,10 +23,5 @@ void ShadowRenderer::PrepareRendering()
 		nullptr
 	};
 	Globals::pGpu->GetContext().OMSetRenderTargets(1, renderTargets, m_DepthStencil.GetView());
-}
-
-void ShadowRenderer::OnCanvasResized(const App::ResizedEvent& event)
-{
-	m_DepthStencil.Update(event.NewSize, true);
 }
 

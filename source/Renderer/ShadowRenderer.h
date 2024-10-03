@@ -10,7 +10,6 @@ namespace TowerGame
 		ShadowRenderer();
 
 		void PrepareRendering();
-		void OnCanvasResized(const App::ResizedEvent& event);
 
 		Rendering::DepthStencilBuffer& GetDepthStencilBuffer() { return m_DepthStencil; }
 
