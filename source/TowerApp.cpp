@@ -75,6 +75,7 @@ void TowerApp::Update()
 
 void TowerApp::PreRender()
 {
+	m_Renderer.GetShadowRenderer().SetTargetPos(m_Gameplay.GetCharacter().GetPosition());
 	m_Renderer.PreRender();
 }
 

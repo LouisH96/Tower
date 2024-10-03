@@ -26,7 +26,8 @@ void TowerGameRenderer::OnCanvasResized(const App::ResizedEvent& event)
 void TowerGameRenderer::PreRender()
 {
 	const Camera& camera{ *Globals::pCamera };
-	const Float4X4& viewProjection{ camera.GetViewProjection() };
+	const Float4X4 viewProjection{ m_ShadowRenderer.MakeViewProjection() };
+
 	m_DepthStencilState_On.Activate();
 	m_Il_V_PosNorUv_I_ModelMatrices.Activate();
 	m_Shader_Tex_Trans_Inst.Activate<Shader::Function::Vertex>();
@@ -35,10 +36,10 @@ void TowerGameRenderer::PreRender()
 
 	m_ShadowRenderer.PrepareRendering();
 	GameplaySystems::GetEnemySystem().Render(viewProjection); //Render
-	GameplaySystems::GetArrowSystem().Render();
+	/*GameplaySystems::GetArrowSystem().Render();
 
 	RenderSystems::GetTerrainRenderer().Render<Shader::Function::Vertex>();
-	RenderSystems::GetTransformRenderer().Render<Shader::Function::Vertex>();
+	RenderSystems::GetTransformRenderer().Render<Shader::Function::Vertex>();*/
 }
 
 void TowerGameRenderer::Render()
