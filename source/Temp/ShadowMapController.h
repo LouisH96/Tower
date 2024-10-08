@@ -13,8 +13,5 @@ public:
 	ShadowMapController() = default;
 
 	void Start(ShadowRenderer& shadowMapRenderer);
-
-private:
-	static Rendering::Texture MakeTexture(ShadowRenderer& shadowMapRenderer);
 };
 }

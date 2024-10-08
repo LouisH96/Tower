@@ -38,43 +38,10 @@ void ShadowMapController::Start(ShadowRenderer& shadowMapRenderer)
 	pMargin->AddChild(pExtender);
 
 	const unsigned textureId{ NEW_UI.GetImageRenderer().AddTexture(
-		MakeTexture(shadowMapRenderer)) };
+		Texture{shadowMapRenderer.GetDepthStencilBuffer().MakeShaderResourceView()}) };
 	NewUi::Image* pImage{ new NewUi::Image(textureId) };
 	pExtender->AddChild(pImage);
 
 	NEW_UI.AfterEdit();
-}
-
-Texture ShadowMapController::MakeTexture(ShadowRenderer& renderer)
-{
-	//Get
-	DepthStencilBuffer& dsBuffer{ renderer.GetDepthStencilBuffer() };
-	ID3D11DepthStencilView* pDsView{ dsBuffer.GetView() };
-
-	CD3D11_DEPTH_STENCIL_VIEW_DESC dsViewDesc;
-	pDsView->GetDesc(&dsViewDesc);
-
-	ID3D11Resource* dsResource;
-	pDsView->GetResource(&dsResource);
-
-	//Make ShaderResourceViewDesc
-	D3D11_SHADER_RESOURCE_VIEW_DESC resourceViewDesc{};
-	resourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	resourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	resourceViewDesc.Texture2D.MipLevels = 1;
-
-	//Make ShaderResourceView
-	ID3D11ShaderResourceView* pShaderResourceView;
-	const HRESULT result{
-		Globals::pGpu->GetDevice().CreateShaderResourceView(dsResource, &resourceViewDesc, &pShaderResourceView)
-	};
-	SAFE_RELEASE(dsResource);
-
-	if (FAILED(result)) {
-		Logger::PrintError("[ShadowMapController::MakeTexture]");
-		SAFE_RELEASE(pShaderResourceView);
-	}
-
-	return Texture{ pShaderResourceView };
 }
 
