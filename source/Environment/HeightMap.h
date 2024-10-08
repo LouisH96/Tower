@@ -22,7 +22,7 @@ public:
 	void Scale(float scale);
 	void Divide(float scale);
 
-	void ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& indices, const Float3& origin) const;
+	void ToVertices(List<Rendering::V_PosNorCol>& vertices, List<int>& indices, const Float3& origin) const;
 	Float2 GetCellSize() const;
 	float GetCellWidth() const;
 	float GetCellHeight() const;

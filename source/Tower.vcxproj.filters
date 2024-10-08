@@ -19,6 +19,7 @@
     <ClCompile Include="Renderer\SkyDomeRenderer.cpp" />
     <ClCompile Include="Renderer\ShadowRenderer.cpp" />
     <ClCompile Include="Temp\ShadowMapController.cpp" />
+    <ClCompile Include="Renderer\TerrainRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Weapons\Bow.h" />
@@ -37,5 +38,6 @@
     <ClInclude Include="Renderer\SkyDomeRenderer.h" />
     <ClInclude Include="Renderer\ShadowRenderer.h" />
     <ClInclude Include="Temp\ShadowMapController.h" />
+    <ClInclude Include="Renderer\TerrainRenderer.h" />
   </ItemGroup>
 </Project>

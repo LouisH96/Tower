@@ -16,20 +16,10 @@ Tower::Tower(const Float3& position, const Float2& roofSize, float height)
 {
 }
 
-Tower::~Tower()
-{
-	delete m_pMesh;
-}
-
 void Tower::LinkGameplay()
 {
 	Generate(GameplaySystems::GetCollisionService().Tower,
 		m_Position, m_RoofSize, m_Height);
-}
-
-void Tower::LinkRenderers()
-{
-	RenderSystems::GetTerrainRenderer().AddEntry(*m_pMesh);
 }
 
 void Tower::Generate(MeshCollidable& collidable,
@@ -41,8 +31,8 @@ void Tower::Generate(MeshCollidable& collidable,
 	const Float3 color{ Float3::Color(248,240,164) };
 
 	constexpr int nrPlanes{ 5 + 4 * 4 };
-	Array<V_PosNorCol> vertices{ 4 * nrPlanes }; //4 per side
-	collidable.Points = { vertices.GetSize() };
+	m_Vertices.EnsureIncrease(4 * nrPlanes);
+	collidable.Points = { 4 * nrPlanes };
 	collidable.Indices = { 3 * 2 * nrPlanes }; //3/triangle, 2/side
 	collidable.TriangleNormals = { collidable.Indices.GetSize() / 3 };
 
@@ -54,78 +44,76 @@ void Tower::Generate(MeshCollidable& collidable,
 	int iVertex = 0;
 	int iIndex = 0;
 	int iTriangle = 0;
-	AddPlane(collidable, right, up, rightUp, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddPlane(collidable, right, up, rightUp, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 
 	//right
 	origin += right;
 	right = Float3{ 0,0,roofSize.y };
 	rightUp = { right + up };
-	AddPlane(collidable, right, up, rightUp, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddPlane(collidable, right, up, rightUp, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 
 	//back
 	origin += right;
 	right = Float3{ -roofSize.x, 0, 0 };
 	rightUp = { right + up };
-	AddPlane(collidable, right, up, rightUp, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddPlane(collidable, right, up, rightUp, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 
 	//left
 	origin += right;
 	right = Float3{ 0,0,-roofSize.y };
 	rightUp = { right + up };
-	AddPlane(collidable, right, up, rightUp, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddPlane(collidable, right, up, rightUp, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 
 	//roof
 	origin = position + Float3{ rampWidth, towerHeight, rampWidth };
 	right = Float3{ roofSize.x, 0,0 };
 	up = Float3{ 0,0,roofSize.y };
 	rightUp = { right + up };
-	AddPlane(collidable, right, up, rightUp, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddPlane(collidable, right, up, rightUp, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 
 	//ramp-front
 	origin = position + Float3{ rampWidth, 0, rampWidth };
 	Float3 rampWidthAxis{ 0,0,-1 };
 	Float3 rampDepthAxis{ 1,0,0 };
-	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.x, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.x, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 
 	//ramp-right
 	origin += rampDepthAxis * roofSize.x + Float3{ 0, rampHeight, 0 };
 	rampWidthAxis = Float3{ 1,0,0 };
 	rampDepthAxis = Float3{ 0,0,1 };
-	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.y, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.y, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 	Float3 rampSideOrigin{ position + Float3{2 * rampWidth + roofSize.x, 0, 0} };
 	right = Float3{ 0,0,rampWidth * 2 + roofSize.y };
 	up = Float3{ 0,rampHeight, 0 };
 	rightUp = right + up;
-	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, vertices, iVertex, iIndex, iTriangle);
+	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, m_Vertices, iVertex, iIndex, iTriangle);
 
 	//ramp-back
 	origin += rampDepthAxis * roofSize.y + Float3{ 0, rampHeight, 0 };
 	rampWidthAxis = Float3{ 0,0,1 };
 	rampDepthAxis = Float3{ -1,0,0 };
-	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.x, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.x, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 	rampSideOrigin = position + Float3{ 2 * rampWidth + roofSize.x, 0, 2 * rampWidth + roofSize.y };
 	right = Float3{ -(rampWidth * 2 + roofSize.x) ,0,0 };
 	up = Float3{ 0, rampHeight * 2, 0 };
 	rightUp = right + up;
-	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, vertices, iVertex, iIndex, iTriangle);
+	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, m_Vertices, iVertex, iIndex, iTriangle);
 
 	//ramp-left
 	origin += rampDepthAxis * roofSize.x + Float3{ 0, rampHeight, 0 };
 	rampWidthAxis = Float3{ -1,0,0 };
 	rampDepthAxis = Float3{ 0,0,-1 };
-	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.y - rampWidth, origin, color, vertices, iVertex, iIndex, iTriangle);
+	AddRamp(collidable, rampWidthAxis, rampDepthAxis, rampWidth, rampHeight, roofSize.y - rampWidth, origin, color, m_Vertices, iVertex, iIndex, iTriangle);
 	rampSideOrigin = position + Float3{ 0, 0, 2 * rampWidth + roofSize.y };
 	right = Float3{ 0,0,-(rampWidth + roofSize.y) };
 	up = Float3{ 0,rampHeight * 3, 0 };
 	rightUp = right + up;
-	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, vertices, iVertex, iIndex, iTriangle);
+	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, m_Vertices, iVertex, iIndex, iTriangle);
 	rampSideOrigin = position + Float3{ 0, 0, rampWidth };
 	right = Float3{ rampWidth, 0, 0 };
 	up = Float3{ 0,rampHeight * 4, 0 };
 	rightUp = right + up;
-	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, vertices, iVertex, iIndex, iTriangle);
-	//MESH
-	m_pMesh = Mesh::Create(vertices, collidable.Indices);
+	AddPlane(collidable, right, up, rightUp, rampSideOrigin, color, m_Vertices, iVertex, iIndex, iTriangle);
 }
 
 void Tower::AddPlane(
@@ -133,30 +121,30 @@ void Tower::AddPlane(
 	const Float3& right, const Float3& up, const Float3& rightUp,
 	const Float3& origin,
 	const Float3& color,
-	Array<V_PosNorCol>& vertices, int& verticesIdx,
+	List<V_PosNorCol>& vertices, int& verticesIdx,
 	int& indicesIdx, int& triangleNormalIdx)
 {
 	const Float3 normal{ up.Cross(right).Normalized() };
 
 	//left-bot
-	vertices[verticesIdx] = { origin, normal, color };
+	vertices.Add({ origin, normal, color });
 	collidable.Points[verticesIdx] = origin;
 	collidable.Indices[indicesIdx] = verticesIdx;
 
 	//left-top
-	vertices[++verticesIdx] = { origin + up, normal, color };
-	collidable.Points[verticesIdx] = origin + up;
+	vertices.Add({ origin + up, normal, color });
+	collidable.Points[++verticesIdx] = origin + up;
 	collidable.Indices[++indicesIdx] = verticesIdx;
 
 	//right-top
-	vertices[++verticesIdx] = { origin + rightUp, normal, color };
-	collidable.Points[verticesIdx] = origin + rightUp;
+	vertices.Add({ origin + rightUp, normal, color });
+	collidable.Points[++verticesIdx] = origin + rightUp;
 	collidable.Indices[++indicesIdx] = verticesIdx;
 	collidable.Indices[++indicesIdx] = verticesIdx;
 
 	//right-bot
-	vertices[++verticesIdx] = { origin + right, normal, color };
-	collidable.Points[verticesIdx] = origin + right;
+	vertices.Add({ origin + right, normal, color });
+	collidable.Points[++verticesIdx] = origin + right;
 	collidable.Indices[++indicesIdx] = verticesIdx;
 	collidable.Indices[++indicesIdx] = verticesIdx - 3;
 
@@ -171,7 +159,7 @@ void Tower::AddRamp(
 	MeshCollidable& collidable,
 	const Float3& width, const Float3& depth,
 	float rampWidth, float rampHeight, float rampDepth,
-	const Float3& position, const Float3& color, Array<V_PosNorCol>& vertices, int& verticesIdx,
+	const Float3& position, const Float3& color, List<V_PosNorCol>& vertices, int& verticesIdx,
 	int& indicesIdx, int& triangleNormalIdx)
 {
 	//ramp
@@ -194,4 +182,10 @@ void Tower::AddRamp(
 	up = depth * rampWidth;
 	rightUp = right + up;
 	AddPlane(collidable, right, up, rightUp, origin, color, vertices, verticesIdx, indicesIdx, triangleNormalIdx);
+}
+
+void Tower::GetDrawData(MeshData<Vertex, TOPOLOGY>& meshData) const
+{
+	meshData.Vertices.Add(m_Vertices);
+	meshData.Indices.Add(GameplaySystems::GetCollisionService().Tower.Indices);
 }

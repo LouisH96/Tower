@@ -184,6 +184,7 @@
     <ClCompile Include="Renderer\SkyDomeRenderer.cpp" />
     <ClCompile Include="Renderer\ShadowRenderer.cpp" />
     <ClCompile Include="Temp\ShadowMapController.cpp" />
+    <ClCompile Include="Renderer\TerrainRenderer.cpp" />
     <ClCompile Include="Weapons\ArrowSystem.cpp" />
     <ClCompile Include="Character\Enemy.cpp" />
     <ClCompile Include="Character\EnemySystem.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="Renderer\SkyDomeRenderer.h" />
     <ClInclude Include="Renderer\ShadowRenderer.h" />
     <ClInclude Include="Temp\ShadowMapController.h" />
+    <ClInclude Include="Renderer\TerrainRenderer.h" />
     <ClInclude Include="Weapons\ArrowSystem.h" />
     <ClInclude Include="Character\Enemy.h" />
     <ClInclude Include="Character\EnemySystem.h" />

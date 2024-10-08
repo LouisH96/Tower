@@ -13,7 +13,9 @@ using namespace Rendering;
 
 TowerGameRenderer::TowerGameRenderer()
 	: m_Shader_Tex_Trans_Inst{ Resources::GlobalShader(L"LambertCam_Tex_Tran_Inst.hlsl") }
+	, m_Shader_Terrain{ Resources::Local(L"Terrain.hlsl") }
 	, m_Il_V_PosNorUv_I_ModelMatrices{ InputLayout::FromTypes<V_PosNorUv, I_ModelMatrices>() }
+	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
 	, m_DepthStencilState_On{ true }
 {
 }
@@ -28,18 +30,15 @@ void TowerGameRenderer::PreRender()
 	const Camera& camera{ *Globals::pCamera };
 	const Float4X4 viewProjection{ m_ShadowRenderer.MakeViewProjection() };
 
+	m_ShadowRenderer.PrepareRendering();
 	m_DepthStencilState_On.Activate();
+
 	m_Il_V_PosNorUv_I_ModelMatrices.Activate();
 	m_Shader_Tex_Trans_Inst.Activate<Shader::Function::Vertex>();
 	m_CameraPosBuffer.Update(CB_CamPos{ camera.GetPosition() });
 	m_CameraPosBuffer.Activate();
 
-	m_ShadowRenderer.PrepareRendering();
 	GameplaySystems::GetEnemySystem().Render(viewProjection); //Render
-	/*GameplaySystems::GetArrowSystem().Render();
-
-	RenderSystems::GetTerrainRenderer().Render<Shader::Function::Vertex>();
-	RenderSystems::GetTransformRenderer().Render<Shader::Function::Vertex>();*/
 }
 
 void TowerGameRenderer::Render()
@@ -48,8 +47,9 @@ void TowerGameRenderer::Render()
 	const Float4X4& viewProjection{ camera.GetViewProjection() };
 
 	m_SkyDomeRenderer.Render(); //Render
-
+	
 	m_DepthStencilState_On.Activate();
+
 	m_Il_V_PosNorUv_I_ModelMatrices.Activate();
 	m_Shader_Tex_Trans_Inst.Activate();
 	m_CameraPosBuffer.Update(CB_CamPos{ camera.GetPosition() });
@@ -57,7 +57,12 @@ void TowerGameRenderer::Render()
 	GameplaySystems::GetEnemySystem().Render(viewProjection); //Render
 	GameplaySystems::GetArrowSystem().Render(); //Render
 
+	m_Shader_Terrain.Activate();
+	m_Il_V_PosNorCol.Activate();
+	m_CameraMatrixPosBuffer.Update({ camera });
+	m_CameraMatrixPosBuffer.Activate();
 	RenderSystems::GetTerrainRenderer().Render();
+
 	RenderSystems::GetTransformRenderer().Render();
 	RenderSystems::GetSimpleRenderer().Render();
 	RenderSystems::GetTexture2DRenderer().Render();

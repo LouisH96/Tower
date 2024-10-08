@@ -76,7 +76,7 @@ void HeightMap::AddCubeWaveY(float period, float magnitude)
 void HeightMap::CubeDisplaceAlongX(float period, float magnitude)
 {
 	const Float2 cellSize{ GetCellSize() };
-	const GridArray<float> copy{m_Grid};
+	const GridArray<float> copy{ m_Grid };
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
 		const int displacement{ Int::Round(CubeFunction(period, magnitude, iRow * cellSize.y) / cellSize.x) };
@@ -93,7 +93,7 @@ void HeightMap::CubeDisplaceAlongX(float period, float magnitude)
 void HeightMap::SinDisplaceAlongX(float period, float magnitude)
 {
 	const Float2 cellSize{ GetCellSize() };
-	const GridArray<float> copy{m_Grid};
+	const GridArray<float> copy{ m_Grid };
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
 		const float displacement{ SinFunction(period, magnitude, iRow * cellSize.y) / cellSize.x };
@@ -116,7 +116,7 @@ void HeightMap::SinDisplaceAlongX(float period, float magnitude)
 void HeightMap::SinDisplaceAlongY(float period, float magnitude)
 {
 	const Float2 cellSize{ GetCellSize() };
-	const GridArray<float> copy{m_Grid};
+	const GridArray<float> copy{ m_Grid };
 	for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 	{
 		const float displacement{ SinFunction(period, magnitude, iCol * cellSize.x) / cellSize.y };
@@ -135,10 +135,10 @@ void HeightMap::SinDisplaceAlongY(float period, float magnitude)
 	}
 }
 
-void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& indices, const
+void HeightMap::ToVertices(List<Rendering::V_PosNorCol>& vertices, List<int>& indices, const
 	Float3& origin) const
 {
-	vertices = { m_Grid.GetNrElements() };
+	vertices.EnsureIncrease(m_Grid.GetNrElements());
 
 	//Positions
 	const Float2 cellSize{ GetCellSize() };
@@ -147,8 +147,10 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& 
 	{
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
-			vertices[idx].Pos = origin + Float3{ iCol* cellSize.x, m_Grid.Get(idx), iRow* cellSize.y };
-			vertices[idx].Color = Float3{ 242 / 255.f,209 / 255.f,107 / 255.f };
+			Rendering::V_PosNorCol vertex{};
+			vertex.Pos = origin + Float3{ iCol * cellSize.x, m_Grid.Get(idx), iRow * cellSize.y };
+			vertex.Color = Float3{ 242 / 255.f,209 / 255.f,107 / 255.f };
+			vertices.Add(vertex);
 			idx++;
 		}
 	}
@@ -190,9 +192,8 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& 
 		vertices[i].Normal.Normalize();
 
 	//Indices
-	indices = { (m_Grid.GetNrCols() - 1) * (m_Grid.GetNrRows() - 1) * 2 * 3 };
+	indices.EnsureIncrease((m_Grid.GetNrCols() - 1) * (m_Grid.GetNrRows() - 1) * 2 * 3);
 	idx = 0;
-	int iIndex = 0;
 	for (int iRow = 0; iRow < m_Grid.GetNrRows() - 1; iRow++)
 	{
 		for (int iCol = 0; iCol < m_Grid.GetNrCols() - 1; iCol++)
@@ -203,14 +204,13 @@ void HeightMap::ToVertices(Array<Rendering::V_PosNorCol>& vertices, Array<int>& 
 			const int topRight = topLeft + 1;
 
 			//Triangle Left
-			indices[iIndex++] = botLeft;
-			indices[iIndex++] = topRight;
-			indices[iIndex++] = botRight;
-
-			//Triangle Right
-			indices[iIndex++] = botLeft;
-			indices[iIndex++] = topLeft;
-			indices[iIndex++] = topRight;
+			indices.Add(botLeft);
+			indices.Add(topRight);
+			indices.Add(botRight);
+			
+			indices.Add(botLeft);
+			indices.Add(topLeft);
+			indices.Add(topRight);
 
 			idx++;
 		}

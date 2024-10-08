@@ -125,17 +125,21 @@ void TowerApp::InitRendering()
 	r.pUnlitRenderer = RendererFactory::CreateUnlitRenderer(false);
 	r.pSimpleRenderer = RendererFactory::CreateSimpleRenderer();
 	r.pTransformRenderer = new R_LambertCam_Tex_Transform();
-	r.pTerrainRenderer = new RenderSystems::TerrainRenderer(false);
+	r.pTerrainRenderer = new TowerGame::TerrainRenderer();
 	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"unlitTexture.hlsl"));
 	r.pTexture2DRenderer = new Texture2DRenderer();
 }
 
 void TowerApp::LinkRendering()
 {
-	m_Gameplay.pTower->LinkRenderers();
 	m_Gameplay.pBow->LinkRenderers();
-	m_Gameplay.pTerrain->LinkRenderers();
 	m_Gameplay.pEnemySystem->LinkRenderers();
+
+	//Terrain
+	List<TowerGame::TerrainRenderComponent*> terrainComponents{};
+	terrainComponents.Add(m_Gameplay.pTerrain);
+	terrainComponents.Add(m_Gameplay.pTower);
+	m_Rendering.pTerrainRenderer->Start({ terrainComponents });
 }
 
 void TowerApp::CreateArrows()

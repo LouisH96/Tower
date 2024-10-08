@@ -6,11 +6,6 @@
 #include <Rendering/Structs/VertexTypes.h>
 #include <Services/RenderSystems.h>
 
-void Terrain::LinkRenderers()
-{
-	RenderSystems::GetTerrainRenderer().AddEntry(*m_pMesh);
-}
-
 float Terrain::GetHeight(const Float2& point) const
 {
 	return m_HeightMap.GetHeight(point);
@@ -18,17 +13,8 @@ float Terrain::GetHeight(const Float2& point) const
 
 Terrain::Terrain(const Float3& position, const Float2& size)
 	: m_HeightMap{ MakeHeightMap(size, {300,300}) }
+	, m_Position{ position }
 {
-	//MESH
-	Array<Rendering::V_PosNorCol> vertices{ 0 };
-	Array<int> indices{0};
-	m_HeightMap.ToVertices(vertices, indices, position);
-	m_pMesh = Rendering::Mesh::Create(vertices, indices);
-}
-
-Terrain::~Terrain()
-{
-	delete m_pMesh;
 }
 
 HeightMap Terrain::MakeHeightMap(const Float2& worldSize, const Int2& nrPoints)
@@ -55,4 +41,9 @@ HeightMap Terrain::MakeHeightMap(const Float2& worldSize, const Int2& nrPoints)
 	heightMap.SinDisplaceAlongY(70, 3);
 
 	return heightMap;
+}
+
+void Terrain::GetDrawData(MeshData<Vertex, TOPOLOGY>& meshData) const
+{
+	m_HeightMap.ToVertices(meshData.Vertices, meshData.Indices, m_Position);
 }
