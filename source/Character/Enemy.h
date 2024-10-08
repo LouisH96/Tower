@@ -1,5 +1,7 @@
 #pragma once
 
+namespace TowerGame
+{
 class Enemy
 {
 public:
@@ -30,3 +32,4 @@ private:
 	void UpdateMove(const Float2& target, float maxMovement);
 	void UpdateFall();
 };
+}

@@ -12,6 +12,8 @@
 #include "Rendering/Structs/InstanceTypes.h"
 #include "Rendering/Structs/VertexTypes.h"
 
+namespace TowerGame
+{
 class ArrowSystem
 {
 public:
@@ -39,3 +41,4 @@ private:
 	static bool IsArrowFinished(const Float3& arrowVelocity);
 	static void SetArrowFinished(Float3& arrowVelocity);
 };
+}

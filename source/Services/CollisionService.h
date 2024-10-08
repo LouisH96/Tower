@@ -2,6 +2,8 @@
 #include <Physics/CollisionDetection.h>
 #include <Character/Enemy.h>
 
+namespace TowerGame
+{
 struct MeshCollidable
 {
 	MeshCollidable() = default;
@@ -39,4 +41,4 @@ struct CollisionService
 	MeshCollidable Tower;
 	EnemiesCollidable Enemies;
 };
-
+}

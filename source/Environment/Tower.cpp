@@ -7,6 +7,7 @@
 #include "Services/GameplaySystems.h"
 #include "Services/RenderSystems.h"
 
+using namespace TowerGame;
 using namespace Rendering;
 
 Tower::Tower(const Float3& position, const Float2& roofSize, float height)

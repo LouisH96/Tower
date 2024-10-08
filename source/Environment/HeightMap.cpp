@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "HeightMap.h"
 
+using namespace TowerGame;
+
 HeightMap::HeightMap(Int2 nrElements, float initHeight, const Float2& size)
 	: m_Grid{ nrElements, initHeight }
 	, m_Size{ size }

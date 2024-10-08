@@ -6,6 +6,8 @@
 #include <Rendering/Structs/VertexTypes.h>
 #include <Services/RenderSystems.h>
 
+using namespace TowerGame;
+
 float Terrain::GetHeight(const Float2& point) const
 {
 	return m_HeightMap.GetHeight(point);

@@ -12,6 +12,7 @@
 #include "Services/GameplaySystems.h"
 #include "Transform/WorldMatrix.h"
 
+using namespace TowerGame;
 using namespace Rendering;
 
 ArrowSystem::ArrowSystem()

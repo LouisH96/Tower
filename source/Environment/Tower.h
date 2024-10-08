@@ -2,8 +2,6 @@
 #include "Rendering/Structs/VertexTypes.h"
 #include <Renderer\TerrainRenderer.h>
 
-struct MeshCollidable;
-
 namespace MyEngine
 {
 	namespace Rendering
@@ -11,6 +9,10 @@ namespace MyEngine
 		class Mesh;
 	}
 }
+
+namespace TowerGame
+{
+struct MeshCollidable;
 
 class Tower
 	: public TowerGame::TerrainRenderComponent
@@ -56,4 +58,4 @@ private:
 	// Inherited via TerrainRenderComponent
 	void GetDrawData(MeshData<Vertex, TOPOLOGY>& meshData) const override;
 };
-
+}

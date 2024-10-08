@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CollisionService.h"
 
+using namespace TowerGame;
+
 bool MeshCollidable::IsColliding(const Float3& begin, const Float3& end) const
 {
 	Physics::CollisionDetection::Collision collision;

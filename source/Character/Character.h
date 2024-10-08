@@ -1,6 +1,8 @@
 #pragma once
 #include <Camera/FpsCameraController.h>
 
+namespace TowerGame
+{
 class Character
 {
 public:
@@ -19,3 +21,4 @@ private:
 	char m_MoveUpKey;
 	char m_MoveDownKey;
 };
+}

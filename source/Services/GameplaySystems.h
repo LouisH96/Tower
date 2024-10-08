@@ -1,8 +1,11 @@
 #pragma once
+
+namespace TowerGame
+{
 class ArrowSystem;
+class Bow;
 class EnemySystem;
 struct CollisionService;
-class Bow;
 class Tower;
 class Terrain;
 class Character;
@@ -31,3 +34,4 @@ public:
 private:
 	static const GameplaySystems* m_pStatic;
 };
+}

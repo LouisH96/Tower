@@ -2,6 +2,8 @@
 #include "DataStructures/GridArray.h"
 #include <Rendering/Structs/VertexTypes.h>
 
+namespace TowerGame
+{
 class HeightMap
 {
 public:
@@ -37,4 +39,4 @@ private:
 	float CubeFunction(float period, float magnitude, float t) const;
 	static float SinFunction(float period, float magnitude, float t);
 };
-
+}

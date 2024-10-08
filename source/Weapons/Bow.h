@@ -5,9 +5,12 @@ namespace MyEngine
 	namespace Rendering
 	{
 		class Texture;
+		class Mesh;
 	}
 }
 
+namespace TowerGame
+{
 class Bow
 {
 public:
@@ -29,3 +32,4 @@ private:
 
 	int m_ArrowIdx{ -1 };
 };
+}

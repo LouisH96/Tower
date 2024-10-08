@@ -7,6 +7,8 @@
 #include <Services/GameplaySystems.h>
 #include <Geometry/Shapes/Sphere.h>
 
+using namespace TowerGame;
+
 Character::Character(const Float3& position)
 	: m_CameraController{ *Globals::pCamera }
 {

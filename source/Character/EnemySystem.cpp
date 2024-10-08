@@ -9,6 +9,7 @@
 #include "Services/GameplaySystems.h"
 #include "Services/RenderSystems.h"
 
+using namespace TowerGame;
 using namespace Rendering;
 
 EnemySystem::EnemySystem(int nrEnemies, const Float2& target)

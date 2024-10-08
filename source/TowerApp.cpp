@@ -16,6 +16,8 @@
 #include "Environment/Terrain.h"
 #include "Weapons/ArrowSystem.h"
 
+using namespace TowerGame;
+
 TowerApp* TowerApp::pApp{ nullptr };
 
 TowerApp::TowerApp()

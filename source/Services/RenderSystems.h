@@ -7,8 +7,6 @@
 #include "Rendering/Structs/VertexTypes.h"
 #include <Renderer\TerrainRenderer.h>
 
-class ArrowSystem;
-
 namespace MyEngine
 {
 namespace Rendering
@@ -18,6 +16,10 @@ class FpsDisplay;
 class Texture2DRenderer;
 }
 }
+
+namespace TowerGame
+{
+class ArrowSystem;
 
 class RenderSystems
 {
@@ -45,3 +47,4 @@ public:
 private:
 	static const RenderSystems* m_pStatic;
 };
+}

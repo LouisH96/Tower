@@ -4,12 +4,14 @@
 
 namespace MyEngine
 {
-	namespace Rendering
-	{
-		class Mesh;
-	}
+namespace Rendering
+{
+class Mesh;
+}
 }
 
+namespace TowerGame
+{
 class Terrain
 	: public TowerGame::TerrainRenderComponent
 {
@@ -33,3 +35,4 @@ private:
 	// Inherited via TerrainRenderComponent
 	void GetDrawData(MeshData<Vertex, TOPOLOGY>& meshData) const override;
 };
+}

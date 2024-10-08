@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GameplaySystems.h"
 
+using namespace TowerGame;
+
 const GameplaySystems* GameplaySystems::m_pStatic = nullptr;
 
 GameplaySystems::GameplaySystems()

@@ -16,6 +16,8 @@
 
 #include "ArrowSystem.h"
 
+using namespace TowerGame;
+
 Bow::Bow()
 {
 	using namespace Rendering;
@@ -57,13 +59,13 @@ void Bow::Update(const Transform& cameraTransform)
 	{
 		m_ArrowIdx = GameplaySystems::GetArrowSystem().Spawn();
 	}
-	else if(Globals::pMouse->IsLeftBtnReleased())
+	else if (Globals::pMouse->IsLeftBtnReleased())
 	{
 		GameplaySystems::GetArrowSystem().Launch(m_ArrowIdx);
 		m_ArrowIdx = -1;
 	}
 
-	if(m_ArrowIdx >= 0)
+	if (m_ArrowIdx >= 0)
 	{
 		GameplaySystems::GetArrowSystem().SetArrowTransform(m_ArrowIdx, m_WorldTransform);
 	}

@@ -5,6 +5,8 @@
 
 #include <Temp\ShadowMapController.h>
 
+namespace TowerGame
+{
 class TowerApp
 {
 public:
@@ -38,6 +40,7 @@ private:
 
 	void CreateArrows();
 };
+}
 
 #define APP (*TowerApp::pApp)
 #define NEW_UI (*Globals::pUi)

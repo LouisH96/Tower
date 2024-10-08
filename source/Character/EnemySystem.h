@@ -5,6 +5,9 @@
 #include <Rendering\Structs\InstanceTypes.h>
 #include <Rendering\DrawData\InstanceArray.h>
 
+namespace TowerGame
+{
+
 class EnemySystem
 {
 public:
@@ -28,3 +31,4 @@ private:
 	Rendering::Texture m_Texture;
 	Rendering::InstanceArray m_InstanceArray;
 };
+}

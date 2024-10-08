@@ -7,6 +7,8 @@
 
 #include "Weapons/ArrowSystem.h"
 
+using namespace TowerGame;
+
 constexpr float MOVING = 2000;
 constexpr float DEAD = 2001;
 
