@@ -27,10 +27,11 @@ void TowerGameRenderer::OnCanvasResized(const App::ResizedEvent& event)
 
 void TowerGameRenderer::PreRender()
 {
+	//Get
 	const Camera& camera{ *Globals::pCamera };
-	const Float4X4 viewProjection{ m_ShadowRenderer.MakeViewProjection() };
+	const Float4X4 viewProjection{ m_ShadowRenderer.GetLightViewProjection() };
 
-	m_ShadowRenderer.PrepareRendering();
+	m_ShadowRenderer.BeginShadowMapRender();
 	m_DepthStencilState_On.Activate();
 
 	m_Il_V_PosNorUv_I_ModelMatrices.Activate();
@@ -47,8 +48,16 @@ void TowerGameRenderer::Render()
 	const Float4X4& viewProjection{ camera.GetViewProjection() };
 
 	m_SkyDomeRenderer.Render(); //Render
-	
+	m_ShadowRenderer.BeginRender();
+
 	m_DepthStencilState_On.Activate();
+	m_Sampler.Activate();
+
+	m_Shader_Terrain.Activate();
+	m_Il_V_PosNorCol.Activate();
+	m_CameraMatrixPosBuffer.Update({ camera });
+	m_CameraMatrixPosBuffer.Activate();
+	RenderSystems::GetTerrainRenderer().Render();
 
 	m_Il_V_PosNorUv_I_ModelMatrices.Activate();
 	m_Shader_Tex_Trans_Inst.Activate();
@@ -57,15 +66,11 @@ void TowerGameRenderer::Render()
 	GameplaySystems::GetEnemySystem().Render(viewProjection); //Render
 	GameplaySystems::GetArrowSystem().Render(); //Render
 
-	m_Shader_Terrain.Activate();
-	m_Il_V_PosNorCol.Activate();
-	m_CameraMatrixPosBuffer.Update({ camera });
-	m_CameraMatrixPosBuffer.Activate();
-	RenderSystems::GetTerrainRenderer().Render();
-
 	RenderSystems::GetTransformRenderer().Render();
 	RenderSystems::GetSimpleRenderer().Render();
 	RenderSystems::GetTexture2DRenderer().Render();
 	RenderSystems::GetUnlitRenderer().Render();
 	RenderSystems::GetTextureRenderer().Render();
+
+	m_ShadowRenderer.EndRender();
 }

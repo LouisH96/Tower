@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Rendering\State\SamplerState.h>
+
 #include "ShadowRenderer.h"
 #include "SkyDomeRenderer.h"
 
@@ -9,7 +11,6 @@ namespace TowerGame
 class TowerGameRenderer
 {
 public:
-
 	TowerGameRenderer();
 
 	void OnCanvasResized(const App::ResizedEvent& event);
@@ -35,6 +36,9 @@ private:
 
 	//DepthStencilStates
 	Rendering::DepthStencilState m_DepthStencilState_On;
+
+	//Samplers
+	Rendering::SamplerState m_Sampler;
 
 	//Renderers
 	ShadowRenderer m_ShadowRenderer;

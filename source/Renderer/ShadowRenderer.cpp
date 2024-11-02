@@ -12,8 +12,8 @@
 using namespace TowerGame;
 using namespace Rendering;
 
-const Float3 ShadowRenderer::m_LightDir{ Float3{-1,-1,1}.Normalized() };
-const Float2 ShadowRenderer::m_TextureSize{ 600 };
+const Float3 ShadowRenderer::m_LightDir{ Float3{0,-1,1}.Normalized() };
+const Float2 ShadowRenderer::m_TextureSize{ 512 };
 
 ShadowRenderer::ShadowRenderer()
 	: m_Viewport{ m_TextureSize }
@@ -21,9 +21,12 @@ ShadowRenderer::ShadowRenderer()
 	, m_Projection{ MakeProjectionMatrix() }
 {
 	m_DepthStencil.Init(m_TextureSize, true);
+	m_ShadowMap = { m_DepthStencil.MakeShaderResourceView() };
+
+
 }
 
-void ShadowRenderer::PrepareRendering()
+void ShadowRenderer::BeginShadowMapRender()
 {
 	m_DepthStencil.Clear();
 	ID3D11RenderTargetView* renderTargets[1]
@@ -32,6 +35,20 @@ void ShadowRenderer::PrepareRendering()
 	};
 	Globals::pGpu->GetContext().OMSetRenderTargets(1, renderTargets, m_DepthStencil.GetView());
 	m_Viewport.Activate();
+
+	m_LightBufferData.ViewProjection = m_View * m_Projection;
+}
+
+void ShadowRenderer::BeginRender()
+{
+	m_ShadowMap.Activate(1);
+	m_LightBuffer.Update(m_LightBufferData);
+	m_LightBuffer.Activate(1);
+}
+
+void ShadowRenderer::EndRender()
+{
+	Texture::Unset(1);
 }
 
 void ShadowRenderer::SetTargetPos(const Float3& pos)
@@ -42,7 +59,7 @@ void ShadowRenderer::SetTargetPos(const Float3& pos)
 Float4X4 ShadowRenderer::MakeProjectionMatrix()
 {
 	const float near{ .01f };
-	const float far{ 400 };
+	const float far{ 15 };
 	return {
 		{1,0,0,0},
 		{0,1,0,0},
