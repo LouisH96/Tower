@@ -20,6 +20,7 @@ ShadowRenderer::ShadowRenderer()
 	: m_Viewport{ m_TextureSize }
 	, m_View{ ViewMatrix::From(m_LightDir) }
 	, m_Projection{ MakeProjectionMatrix() }
+	, m_Sampler{ SamplerState::BorderMode::Value, SamplerState::BorderMode::Value, Float4{Float::MAX} }
 {
 	m_DepthStencil.Init(m_TextureSize, true);
 	m_ShadowMap = { m_DepthStencil.MakeShaderResourceView() };
@@ -56,6 +57,7 @@ void ShadowRenderer::BeginRender()
 	m_ShadowMap.Activate(1);
 	m_LightBuffer.Update(m_LightBufferData);
 	m_LightBuffer.Activate(1);
+	m_Sampler.Activate();
 }
 
 void ShadowRenderer::EndRender()

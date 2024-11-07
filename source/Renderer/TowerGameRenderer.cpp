@@ -52,7 +52,6 @@ void TowerGameRenderer::Render()
 	m_ShadowRenderer.BeginRender();
 
 	m_DepthStencilState_On.Activate();
-	m_Sampler.Activate();
 
 	m_Shader_Terrain.Activate();
 	m_Il_V_PosNorCol.Activate();
@@ -60,6 +59,7 @@ void TowerGameRenderer::Render()
 	m_CameraMatrixPosBuffer.Activate();
 	RenderSystems::GetTerrainRenderer().Render();
 
+	m_Sampler.Activate();
 	m_Il_V_PosNorUv_I_ModelMatrices.Activate();
 	m_Shader_Tex_Trans_Inst.Activate();
 	m_CameraPosBuffer.Update(CB_CamPos{ camera.GetPosition() });

@@ -37,6 +37,7 @@ namespace TowerGame
 		Rendering::Viewport m_Viewport;
 		Rendering::Texture m_ShadowMap;
 		Rendering::ConstantBuffer<LightBuffer> m_LightBuffer;
+		Rendering::SamplerState m_Sampler;
 		Float4X4 m_View;
 		Float4X4 m_Projection;
 		LightBuffer m_LightBufferData;
