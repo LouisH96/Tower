@@ -54,7 +54,9 @@ float4 ps_main(Pixel pixel) : SV_TARGET
     
     //where is my pixel's world pos inside the shadowSpace
     float4 shadowSpace = mul(float4(pixel.worldPos, 1), light_matrix);
+    
     shadowSpace /= shadowSpace.w;
+    
     shadowSpace.xy += float2(1, 1);
     shadowSpace.xy /= float2(2, 2);
     shadowSpace.y = 1 - shadowSpace.y;

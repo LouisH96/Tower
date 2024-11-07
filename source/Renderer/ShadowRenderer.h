@@ -5,18 +5,19 @@
 
 namespace TowerGame
 {
+	class Character;
+
 	class ShadowRenderer
 	{
 	public:
 		ShadowRenderer();
 
+		void MoveShadow(const Character& character);
 		void BeginShadowMapRender();
 		void BeginRender();
 		void EndRender();
 
 		Rendering::DepthStencilBuffer& GetDepthStencilBuffer() { return m_DepthStencil; }
-
-		void SetTargetPos(const Float3& pos);
 
 		const Float4X4& GetLightViewProjection() const { return m_LightBufferData.ViewProjection; }
 
@@ -26,9 +27,10 @@ namespace TowerGame
 			Float4X4 ViewProjection;
 		};
 
+		static constexpr float SHADOW_AREA_SIZE{ 8 };
+		static constexpr float LIGHT_TARGET_DISTANCE{ SHADOW_AREA_SIZE };
 		static const Float3 m_LightDir;
 		static const Float2 m_TextureSize;
-		
 		static Float4X4 MakeProjectionMatrix();
 
 		Rendering::DepthStencilBuffer m_DepthStencil;

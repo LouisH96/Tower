@@ -29,9 +29,10 @@ void TowerGameRenderer::PreRender()
 {
 	//Get
 	const Camera& camera{ *Globals::pCamera };
-	const Float4X4 viewProjection{ m_ShadowRenderer.GetLightViewProjection() };
 
 	m_ShadowRenderer.BeginShadowMapRender();
+	const Float4X4 viewProjection{ m_ShadowRenderer.GetLightViewProjection() };
+	
 	m_DepthStencilState_On.Activate();
 
 	m_Il_V_PosNorUv_I_ModelMatrices.Activate();

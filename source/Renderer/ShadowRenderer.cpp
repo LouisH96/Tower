@@ -5,6 +5,7 @@
 #include <Rendering\State\Shader.h>
 #include <Services\RenderSystems.h>
 #include <Transform\ViewMatrix.h>
+#include <Character\Character.h>
 
 #undef near
 #undef far
@@ -22,8 +23,19 @@ ShadowRenderer::ShadowRenderer()
 {
 	m_DepthStencil.Init(m_TextureSize, true);
 	m_ShadowMap = { m_DepthStencil.MakeShaderResourceView() };
+}
 
+void ShadowRenderer::MoveShadow(const Character& character)
+{
+	const Camera& camera{ character.GetCameraController().GetCamera() };
 
+	const Float3 lightPos{
+		character.GetFeetPosition()
+		+ camera.GetForwardXz().Normalized() * (SHADOW_AREA_SIZE - 1)
+		- m_LightDir * LIGHT_TARGET_DISTANCE
+	};
+
+	ViewMatrix::SetPosition(m_View, lightPos);
 }
 
 void ShadowRenderer::BeginShadowMapRender()
@@ -51,20 +63,17 @@ void ShadowRenderer::EndRender()
 	Texture::Unset(1);
 }
 
-void ShadowRenderer::SetTargetPos(const Float3& pos)
-{
-	ViewMatrix::SetPosition(m_View, pos - m_LightDir * 4);
-}
-
 Float4X4 ShadowRenderer::MakeProjectionMatrix()
 {
 	const float near{ .01f };
-	const float far{ 15 };
+	const float far{
+		20
+	};
 	return {
-		{1,0,0,0},
-		{0,1,0,0},
-		{0,0, far / (far - near), -(far * near) / (far - near)},
-		{0,0,1,0}
+		{1.f / SHADOW_AREA_SIZE,0,0,0},
+		{0, 1.f / SHADOW_AREA_SIZE,0,0},
+		{0,0, 1 / (far - near), -near / (far - near)},
+		{0,0,0,1}
 	};
 }
 
