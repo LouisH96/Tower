@@ -13,7 +13,7 @@
 using namespace TowerGame;
 using namespace Rendering;
 
-const Float3 ShadowRenderer::m_LightDir{ Float3{0,-1,1}.Normalized() };
+const Float3 ShadowRenderer::m_LightDir{ Float3{.432709,-.639439,.635516f}.Normalized() };
 const Float2 ShadowRenderer::m_TextureSize{ 512 };
 
 ShadowRenderer::ShadowRenderer()
