@@ -6,12 +6,15 @@ namespace TowerGame
 class Character
 {
 public:
+	constexpr static float HEIGHT{ 1.8f };
+
 	explicit Character(const Float3& position);
 
 	void Update();
 
 	const FpsCameraController& GetCameraController() const { return m_CameraController; }
 	const Float3& GetPosition() const { return m_CameraController.GetPosition(); }
+	Float3 GetFeetPosition() const;
 
 private:
 	FpsCameraController m_CameraController;

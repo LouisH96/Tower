@@ -30,17 +30,16 @@ void Character::Update()
 	const Float3 newPos{ m_CameraController.GetPosition() };
 
 	//ground collision
-	constexpr float height{ 1.8f };
 	const Float3 head{ oldHead };
-	const Float3 feet{ newPos - Float3{0, height, 0} };
+	const Float3 feet{ GetFeetPosition() };
 	Physics::CollisionDetection::Collision collision{};
 	if (GameplaySystems::GetCollisionService().Tower.IsColliding(head, feet, collision))
-		m_CameraController.SetPositionY(collision.position.y + height);
+		m_CameraController.SetPositionY(collision.position.y + HEIGHT);
 	else
 	{
 		const float terrainHeight{ GameplaySystems::GetTerrain().GetHeight(feet.Xz()) };
 		if (feet.y < terrainHeight)
-			m_CameraController.SetPositionY(terrainHeight + height);
+			m_CameraController.SetPositionY(terrainHeight + HEIGHT);
 	}
 
 	Float3 overlap;
@@ -49,4 +48,11 @@ void Character::Update()
 
 	//cam & bow
 	m_CameraController.Update();
+}
+
+Float3 Character::GetFeetPosition() const
+{
+	Float3 pos{ GetPosition() };
+	pos.y -= HEIGHT;
+	return pos;
 }
