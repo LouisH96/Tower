@@ -48,9 +48,9 @@ float4 ps_main(Pixel pixel) : SV_TARGET
     const float maxLam = 1.f;
     const float rangeLam = maxLam - minLam;
     
-    float lambert = dot(normalize(camera_pos - pixel.worldPos), normalize(pixel.norm));
-    lambert *= rangeLam;
-    lambert += minLam;
+    float brightness = dot(normalize(camera_pos - pixel.worldPos), normalize(pixel.norm));
+    brightness *= rangeLam;
+    brightness += minLam;
     
     //where is my pixel's world pos inside the shadowSpace
     float4 shadowSpace = mul(float4(pixel.worldPos, 1), light_matrix);
@@ -62,17 +62,8 @@ float4 ps_main(Pixel pixel) : SV_TARGET
     shadowSpace.y = 1 - shadowSpace.y;
     const float shadowMapValue = shadowMap.Sample(sampler_main, shadowSpace.xy).r;
     
-    if (
-        shadowSpace.x >= 0 && shadowSpace.x <= 1
-        && shadowSpace.y >= 0 && shadowSpace.y <= 1
-        && shadowSpace.z >= 0 && shadowSpace.z <= 1
-        )
-    {
-        if (shadowSpace.z > shadowMapValue)
-            return float4(0, 1, 0, 1);
-        else
-            return float4(1, 0, 0, 1);
-    }
+    if (shadowSpace.z <= 1 && shadowSpace.z > shadowMapValue)
+        brightness *= 0.7f;
     
-    return float4(pixel.color * lambert, 1);
+    return float4(pixel.color * brightness, 1);
 }
