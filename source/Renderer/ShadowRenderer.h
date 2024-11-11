@@ -28,7 +28,7 @@ namespace TowerGame
 		};
 
 		static constexpr float SHADOW_AREA_SIZE{ 8 };
-		static constexpr float LIGHT_TARGET_DISTANCE{ SHADOW_AREA_SIZE };
+		static constexpr float LIGHT_TARGET_DISTANCE{ SHADOW_AREA_SIZE * 1.25f };
 		static const Float3 m_LightDir;
 		static const Float2 m_TextureSize;
 		static Float4X4 MakeProjectionMatrix();
