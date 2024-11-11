@@ -13,14 +13,14 @@
 using namespace TowerGame;
 using namespace Rendering;
 
-const Float3 ShadowRenderer::m_LightDir{ Float3{.432709,-.639439,.635516f}.Normalized() };
-const Float2 ShadowRenderer::m_TextureSize{ 512 };
+const Float3 ShadowRenderer::m_LightDir{ Float3{.432709f,-.639439f,.635516f}.Normalized() };
+const Float2 ShadowRenderer::m_TextureSize{ 512 * 2 };
 
 ShadowRenderer::ShadowRenderer()
 	: m_Viewport{ m_TextureSize }
 	, m_View{ ViewMatrix::From(m_LightDir) }
 	, m_Projection{ MakeProjectionMatrix() }
-	, m_Sampler{ SamplerState::BorderMode::Value, SamplerState::BorderMode::Value, Float4{Float::MAX} }
+	, m_Sampler{ SamplerState::BorderMode::Value, SamplerState::BorderMode::Value, Float4{Float::MAX}, SamplerState::Filter::Linear, SamplerState::Comparison::Greater }
 {
 	m_DepthStencil.Init(m_TextureSize, true);
 	m_ShadowMap = { m_DepthStencil.MakeShaderResourceView() };
