@@ -34,6 +34,7 @@ SamplerComparisonState sampler_main : register(s0);
 
 static const uint nrSamples = 4;
 static const uint nrRandomOffsets = 16;
+static const float edgeThickness = 1.f / 900; //how 'thick' the soft edge of the shadow is (random unit)
 static const float2 randomOffsets[nrRandomOffsets] =
 {
     float2(-0.16997, -0.82578),
@@ -99,7 +100,7 @@ float4 ps_main(Pixel pixel) : SV_TARGET
             random = frac(sin(random / 16.f)) * 971.123;
             
             uint index = ((uint) (random * nrRandomOffsets)) % nrRandomOffsets;
-            float2 coord = shadowSpace.xy + randomOffsets[index] / 1000.f;
+            float2 coord = shadowSpace.xy + randomOffsets[index] * edgeThickness;
             
             sum += shadowMap.SampleCmpLevelZero(sampler_main, coord, shadowSpace.z).r;
         }
