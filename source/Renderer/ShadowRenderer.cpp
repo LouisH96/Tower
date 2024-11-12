@@ -26,13 +26,25 @@ ShadowRenderer::ShadowRenderer()
 	m_ShadowMap = { m_DepthStencil.MakeShaderResourceView() };
 }
 
+void ShadowRenderer::InitShadow(const Character& character)
+{
+	m_PrevYaw = GetYaw(character);
+	m_PrevForward = GetForward(character);
+}
+
 void ShadowRenderer::MoveShadow(const Character& character)
 {
-	const Camera& camera{ character.GetCameraController().GetCamera() };
+	const float yaw{ GetYaw(character) };
+
+	if (abs(yaw - m_PrevYaw) >= YAW_UPDATE_INTERVAL)
+	{
+		m_PrevYaw = yaw;
+		m_PrevForward = GetForward(character);
+	}
 
 	const Float3 lightPos{
 		character.GetFeetPosition()
-		+ camera.GetForwardXz().Normalized() * (SHADOW_AREA_SIZE - 1)
+		+ m_PrevForward * (SHADOW_AREA_SIZE - 1)
 		- m_LightDir * LIGHT_TARGET_DISTANCE
 	};
 
@@ -77,5 +89,18 @@ Float4X4 ShadowRenderer::MakeProjectionMatrix()
 		{0,0, 1 / (far - near), -near / (far - near)},
 		{0,0,0,1}
 	};
+}
+
+float ShadowRenderer::GetYaw(const Character& character)
+{
+	const Camera& camera{ character.GetCameraController().GetCamera() };
+	const Float3& forward{ camera.GetForward() };
+	return atan2f(forward.z, forward.x);
+}
+
+Float3 ShadowRenderer::GetForward(const Character& character)
+{
+	const Camera& camera{ character.GetCameraController().GetCamera() };
+	return camera.GetForwardXz().Normalized();
 }
 

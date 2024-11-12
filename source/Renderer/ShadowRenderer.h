@@ -12,6 +12,7 @@ namespace TowerGame
 	public:
 		ShadowRenderer();
 
+		void InitShadow(const Character& character);
 		void MoveShadow(const Character& character);
 		void BeginShadowMapRender();
 		void BeginRender();
@@ -29,6 +30,7 @@ namespace TowerGame
 
 		static constexpr float SHADOW_AREA_SIZE{ 8 };
 		static constexpr float LIGHT_TARGET_DISTANCE{ SHADOW_AREA_SIZE * 1.25f };
+		static constexpr float YAW_UPDATE_INTERVAL{ ToRad(30) };
 		static const Float3 m_LightDir;
 		static const Float2 m_TextureSize;
 		static Float4X4 MakeProjectionMatrix();
@@ -41,5 +43,10 @@ namespace TowerGame
 		Float4X4 m_View;
 		Float4X4 m_Projection;
 		LightBuffer m_LightBufferData;
-	};
+		float m_PrevYaw; //inverse (lhs<->rhs)
+		Float3 m_PrevForward;
+
+		static float GetYaw(const Character& character);
+		static Float3 GetForward(const Character& character);
+};
 }

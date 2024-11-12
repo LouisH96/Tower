@@ -130,6 +130,8 @@ void TowerApp::InitRendering()
 	r.pTerrainRenderer = new TowerGame::TerrainRenderer();
 	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"unlitTexture.hlsl"));
 	r.pTexture2DRenderer = new Texture2DRenderer();
+
+	m_Renderer.GetShadowRenderer().InitShadow(m_Gameplay.GetCharacter());
 }
 
 void TowerApp::LinkRendering()
