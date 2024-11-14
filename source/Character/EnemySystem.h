@@ -19,7 +19,7 @@ public:
 
 	void LinkRenderers();
 	void Update();
-	void Render(const Float4X4& viewProjection);
+	void Render();
 
 	void OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy);
 

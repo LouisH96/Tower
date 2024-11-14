@@ -21,7 +21,7 @@ public:
 	~ArrowSystem() = default;
 
 	void Update();
-	void Render();
+	void Render(bool hideCharging = false);
 
 	int Spawn();
 	void Launch(int arrowIdx);
@@ -29,7 +29,7 @@ public:
 
 private:
 	using Vertex = Rendering::V_PosNorUv;
-	using Instance = Rendering::I_ModelMatrices;
+	using Instance = Rendering::I_ModelMatrix;
 
 	static constexpr float ARROW_FINISHED = 2000;
 
@@ -37,6 +37,7 @@ private:
 	Rendering::InstanceList<Vertex, Instance> m_Instances;
 
 	List<Float3> m_Velocities;
+	unsigned m_IsCharging{ 0 };
 
 	static bool IsArrowFinished(const Float3& arrowVelocity);
 	static void SetArrowFinished(Float3& arrowVelocity);

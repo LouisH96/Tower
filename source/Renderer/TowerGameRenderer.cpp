@@ -12,9 +12,9 @@ using namespace TowerGame;
 using namespace Rendering;
 
 TowerGameRenderer::TowerGameRenderer()
-	: m_Shader_Tex_Trans_Inst{ Resources::GlobalShader(L"LambertCam_Tex_Tran_Inst.hlsl") }
+	: m_Shader_Entity{ Resources::Local(L"Entity.hlsl") }
 	, m_Shader_Terrain{ Resources::Local(L"Terrain.hlsl") }
-	, m_Il_V_PosNorUv_I_ModelMatrices{ InputLayout::FromTypes<V_PosNorUv, I_ModelMatrices>() }
+	, m_Il_V_PosNorUv_I_ModelMatrix{ InputLayout::FromTypes<V_PosNorUv, I_ModelMatrix>() }
 	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
 	, m_DepthStencilState_On{ true }
 {
@@ -32,15 +32,16 @@ void TowerGameRenderer::PreRender()
 
 	m_ShadowRenderer.BeginShadowMapRender();
 	const Float4X4 viewProjection{ m_ShadowRenderer.GetLightViewProjection() };
-	
+
 	m_DepthStencilState_On.Activate();
 
-	m_Il_V_PosNorUv_I_ModelMatrices.Activate();
-	m_Shader_Tex_Trans_Inst.Activate<Shader::Function::Vertex>();
-	m_CameraPosBuffer.Update(CB_CamPos{ camera.GetPosition() });
-	m_CameraPosBuffer.Activate();
-
-	GameplaySystems::GetEnemySystem().Render(viewProjection); //Render
+	//Entity
+	m_Shader_Entity.Activate<Shader::Function::Vertex>();
+	m_CameraMatrixPosBuffer.Update(CB_CamMatPos{ Float3{}, viewProjection });
+	m_CameraMatrixPosBuffer.Activate();
+	m_Il_V_PosNorUv_I_ModelMatrix.Activate();
+	GameplaySystems::GetArrowSystem().Render(true);
+	GameplaySystems::GetEnemySystem().Render(); //Render
 }
 
 void TowerGameRenderer::Render()
@@ -53,20 +54,22 @@ void TowerGameRenderer::Render()
 
 	m_DepthStencilState_On.Activate();
 
+	//Terrain
 	m_Shader_Terrain.Activate();
 	m_Il_V_PosNorCol.Activate();
 	m_CameraMatrixPosBuffer.Update({ camera });
 	m_CameraMatrixPosBuffer.Activate();
 	RenderSystems::GetTerrainRenderer().Render();
 
+	//Entity
 	m_Sampler.Activate();
-	m_Il_V_PosNorUv_I_ModelMatrices.Activate();
-	m_Shader_Tex_Trans_Inst.Activate();
-	m_CameraPosBuffer.Update(CB_CamPos{ camera.GetPosition() });
-	m_CameraPosBuffer.Activate();
-	GameplaySystems::GetEnemySystem().Render(viewProjection); //Render
-	GameplaySystems::GetArrowSystem().Render(); //Render
+	m_Il_V_PosNorUv_I_ModelMatrix.Activate();
+	m_Shader_Entity.Activate();
+	m_CameraMatrixPosBuffer.Activate();
+	GameplaySystems::GetArrowSystem().Render();
+	GameplaySystems::GetEnemySystem().Render();
 
+	//Other
 	RenderSystems::GetTransformRenderer().Render();
 	RenderSystems::GetSimpleRenderer().Render();
 	RenderSystems::GetTexture2DRenderer().Render();

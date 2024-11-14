@@ -40,7 +40,7 @@ void ArrowSystem::Update()
 		Float4X4& world{ m_Instances[i].model };
 		if (IsArrowFinished(velocity))
 		{
-			m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
+			//m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
 			continue;
 		}
 
@@ -57,7 +57,7 @@ void ArrowSystem::Update()
 		const Float3 newPosition{ position + velocity * Globals::DeltaTime };
 		WorldMatrix::SetRotation(world, velocity.Normalized());
 		WorldMatrix::SetPosition(world, newPosition);
-		m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
+		//m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
 
 		//IS IN TOWER?
 		const CollisionService& collisions{ GameplaySystems::GetCollisionService() };
@@ -82,6 +82,7 @@ int ArrowSystem::Spawn()
 {
 	m_Instances.Add({  });
 	m_Velocities.Add({ ARROW_FINISHED, 0, 0 });
+	m_IsCharging = 1;
 	return m_Velocities.GetSize() - 1;
 }
 
@@ -89,13 +90,14 @@ void ArrowSystem::SetArrowTransform(int arrowIdx, const Transform& newArrowWorld
 {
 	const Float4X4 world{ newArrowWorld.AsMatrix() };
 	const Float4X4 worldViewProjection{ world * Globals::pCamera->GetViewProjection() };
-	m_Instances[arrowIdx] = { world, worldViewProjection };
+	m_Instances[arrowIdx] = { world };
 }
 
 void ArrowSystem::Launch(int arrowIdx)
 {
 	const Instance& instance{ m_Instances[arrowIdx] };
 	m_Velocities[arrowIdx] = WorldMatrix::GetForward(instance.model) * 20;
+	m_IsCharging = 0;
 }
 
 bool ArrowSystem::IsArrowFinished(const Float3& arrowVelocity)
@@ -108,8 +110,9 @@ void ArrowSystem::SetArrowFinished(Float3& arrowVelocity)
 	arrowVelocity.x = ARROW_FINISHED;
 }
 
-void ArrowSystem::Render()
+void ArrowSystem::Render(bool hideCharging)
 {
 	m_Texture.Activate();
-	m_Instances.Draw();
+	m_Instances.Draw(m_Instances.GetSize() - 
+		(hideCharging ? m_IsCharging : 0));
 }

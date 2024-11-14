@@ -63,25 +63,24 @@ void EnemySystem::LinkRenderers()
 
 void EnemySystem::Update()
 {
+	//Update cpu data
 	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
-	{
-		m_Enemies[i].Update(m_Target, 1 * Globals::DeltaTime);
-	}
-}
+		m_Enemies[i].Update(m_Target, 50 * Globals::DeltaTime);
 
-void EnemySystem::Render(const Float4X4& viewProjection)
-{
-	m_Texture.ActivatePs();
-
+	//Update gpu data
 	Instance* pInstances{ m_InstanceArray.BeginUpdateInstances<Instance>() };
 	for (unsigned iEnemy{ 0 }; iEnemy < m_Enemies.GetSize(); ++iEnemy)
 	{
 		const Enemy& enemy{ m_Enemies[iEnemy] };
 		Instance& instance{ pInstances[iEnemy] };
 		instance.model = enemy.GetTransform().AsMatrix();
-		instance.modelViewProj = instance.model * viewProjection;
 	}
 	m_InstanceArray.EndUpdateInstances();
+}
+
+void EnemySystem::Render()
+{
+	m_Texture.ActivatePs();
 	m_InstanceArray.Draw();
 }
 
