@@ -69,7 +69,7 @@ void ShadowRenderer::BeginRender()
 	m_ShadowMap.Activate(1);
 	m_LightBuffer.Update(m_LightBufferData);
 	m_LightBuffer.Activate(1);
-	m_Sampler.Activate();
+	m_Sampler.Activate(1);
 }
 
 void ShadowRenderer::EndRender()
@@ -81,7 +81,7 @@ Float4X4 ShadowRenderer::MakeProjectionMatrix()
 {
 	const float near{ .01f };
 	const float far{
-		20
+		LIGHT_TARGET_DISTANCE + 20
 	};
 	return {
 		{1.f / SHADOW_AREA_SIZE,0,0,0},

@@ -1,3 +1,5 @@
+#include "Shadow.hlsl"
+
 cbuffer Camera : register(b0)
 {
     float4x4 camera_view_projection;
@@ -40,5 +42,9 @@ float4 ps_main(Pixel pixel) : SV_TARGET
 {
     const float lambert = dot(normalize(camera_position - pixel.worldPos), normalize(pixel.normal));
     const float3 color = (float3) diffuse.Sample(default_sampler, pixel.uv);
-    return float4(color * lambert, 1);
+    
+    float brightness = lambert;
+    brightness *= GetShadowFactor(pixel.worldPos);
+    
+    return float4(color * brightness, 1);
 }

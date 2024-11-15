@@ -5,7 +5,6 @@ using namespace TowerGame;
 using namespace Rendering;
 
 TerrainRenderer::TerrainRenderer()
-	: m_Shader{ Resources::Local(L"Terrain.hlsl") }
 {
 }
 
@@ -26,7 +25,7 @@ void TerrainRenderer::Start(PtrRangeConst<TerrainRenderComponent*> components)
 	m_MeshBuffers.CreateBuffers(allData);
 }
 
-void TerrainRenderer::Render_Internal()
+void TerrainRenderer::Render()
 {
 	m_MeshBuffers.ActivateAndDraw();
 }

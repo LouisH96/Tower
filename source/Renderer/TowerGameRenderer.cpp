@@ -42,6 +42,10 @@ void TowerGameRenderer::PreRender()
 	m_Il_V_PosNorUv_I_ModelMatrix.Activate();
 	GameplaySystems::GetArrowSystem().Render(true);
 	GameplaySystems::GetEnemySystem().Render(); //Render
+
+	m_Shader_Terrain.Activate<Shader::Function::Vertex>();
+	m_Il_V_PosNorCol.Activate();
+	RenderSystems::GetTerrainRenderer().Render();
 }
 
 void TowerGameRenderer::Render()
