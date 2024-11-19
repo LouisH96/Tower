@@ -62,6 +62,7 @@ void ShadowRenderer::BeginShadowMapRender()
 	m_Viewport.Activate();
 
 	m_LightBufferData.ViewProjection = m_View * m_Projection;
+	m_LightBufferData.Forward = m_LightDir;
 }
 
 void ShadowRenderer::BeginRender()

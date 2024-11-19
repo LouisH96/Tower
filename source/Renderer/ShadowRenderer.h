@@ -26,6 +26,8 @@ namespace TowerGame
 		struct LightBuffer
 		{
 			Float4X4 ViewProjection;
+			Float3 Forward;
+			float Padding[13]{};
 		};
 
 		static constexpr float SHADOW_AREA_SIZE{ 8 };

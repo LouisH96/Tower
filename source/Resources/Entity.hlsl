@@ -44,7 +44,7 @@ float4 ps_main(Pixel pixel) : SV_TARGET
     const float3 color = (float3) diffuse.Sample(default_sampler, pixel.uv);
     
     float brightness = lambert;
-    brightness *= GetShadowFactor(pixel.worldPos);
+    brightness *= GetShadowFactor(pixel.worldPos, normalize(pixel.normal));
     
     return float4(color * brightness, 1);
 }

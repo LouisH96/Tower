@@ -45,7 +45,7 @@ float4 ps_main(Pixel pixel) : SV_TARGET
     float brightness = dot(normalize(camera_pos - pixel.worldPos), normalize(pixel.norm));
     brightness *= rangeLam;
     brightness += minLam;
-    brightness *= GetShadowFactor(pixel.worldPos);
+    brightness *= GetShadowFactor(pixel.worldPos, normalize(pixel.norm));
     
     return float4(pixel.color * brightness, 1);
 }

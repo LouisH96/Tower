@@ -27,17 +27,22 @@ static const float2 randomOffsets[nrRandomOffsets] =
 cbuffer ShadowMap : register(b1)
 {
     float4x4 shadow_map_view_projection;
+    float3 shadow_forward;
+    float shadow_padding[13];
 }
 
 Texture2D shadow_map_texture : register(t1);
 SamplerComparisonState shadow_sampler : register(s1);
 
-float GetShadowFactor(float3 worldPos)
+float GetShadowFactor(float3 worldPos, float3 forward)
 {
     float factor = 1; //1 means no shadow, 0 means full shadow
     float4 shadowSpace = mul(float4(worldPos, 1), shadow_map_view_projection);
     
-    if (shadowSpace.x < -shadowSpace.w || shadowSpace.x > shadowSpace.w 
+    if (dot(shadow_forward, forward) >= 0)
+        factor = 1.0f - maxShadowImpact;
+    else 
+        if (shadowSpace.x < -shadowSpace.w || shadowSpace.x > shadowSpace.w 
         || shadowSpace.z < 0 || shadowSpace.z > shadowSpace.w)
         factor = 1;
     else
@@ -59,7 +64,7 @@ float GetShadowFactor(float3 worldPos)
             uint index = ((uint) (random * nrRandomOffsets)) % nrRandomOffsets;
             float2 coord = shadowSpace.xy + randomOffsets[index] * edgeThickness;
             
-            sum += shadow_map_texture.SampleCmpLevelZero(shadow_sampler, coord, shadowSpace.z-0.0035f).r;
+            sum += shadow_map_texture.SampleCmpLevelZero(shadow_sampler, coord, shadowSpace.z-0.002f).r;
         }
         sum /= nrSamples;
         factor = 1.0f - maxShadowImpact * sum;
