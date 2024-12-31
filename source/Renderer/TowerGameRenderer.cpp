@@ -6,6 +6,7 @@
 #include <Services\GameplaySystems.h>
 #include <Services\RenderSystems.h>
 #include <Weapons\ArrowSystem.h>
+#include <Weapons\Bow.h>
 #include <Character\EnemySystem.h>
 
 using namespace TowerGame;
@@ -13,9 +14,11 @@ using namespace Rendering;
 
 TowerGameRenderer::TowerGameRenderer()
 	: m_Shader_Entity{ Resources::Local(L"Entity.hlsl") }
+	, m_Shader_Weapon{ Resources::Local(L"Weapon.hlsl") }
 	, m_Shader_Terrain{ Resources::Local(L"Terrain.hlsl") }
 	, m_Il_V_PosNorUv_I_ModelMatrix{ InputLayout::FromTypes<V_PosNorUv, I_ModelMatrix>() }
 	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
+	, m_Il_V_PosNorUv{ InputLayout::FromType<V_PosNorUv>() }
 	, m_DepthStencilState_On{ true }
 {
 }
@@ -73,8 +76,14 @@ void TowerGameRenderer::Render()
 	GameplaySystems::GetArrowSystem().Render();
 	GameplaySystems::GetEnemySystem().Render();
 
+	//Weapon
+	m_Shader_Weapon.Activate();
+	m_Il_V_PosNorUv.Activate();
+	m_ModelBuffer.Update(CB_ModelBuffer{ GameplaySystems::GetBow().GetWorldTransform().AsMatrix() });
+	m_ModelBuffer.Activate(1);
+	GameplaySystems::GetBow().Render();
+
 	//Other
-	RenderSystems::GetTransformRenderer().Render();
 	RenderSystems::GetSimpleRenderer().Render();
 	RenderSystems::GetTexture2DRenderer().Render();
 	RenderSystems::GetUnlitRenderer().Render();

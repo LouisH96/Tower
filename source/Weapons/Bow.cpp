@@ -35,17 +35,13 @@ Bow::Bow()
 	for (unsigned i = 0; i < geom.Points.GetSize(); i++)
 		vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
 
-	m_pBowMesh = Mesh::Create(vertices);
+	MeshData<Vertex, TOPOLOGY> meshData{ };
+	meshData.Vertices.Add(vertices);
+	m_Buffers.CreateBuffers(meshData);
 
 	//TEXTURE
 	const std::wstring texturePath{ Resources::Local(L"Texture_01.png") };
-	m_pTexture = new Texture(texturePath);
-}
-
-Bow::~Bow()
-{
-	delete m_pBowMesh;
-	delete m_pTexture;
+	m_Texture = Texture{ texturePath };
 }
 
 void Bow::Update(const Transform& cameraTransform)
@@ -71,7 +67,13 @@ void Bow::Update(const Transform& cameraTransform)
 	}
 }
 
+void Bow::Render()
+{
+	m_Texture.Activate();
+	m_Buffers.ActivateAndDraw();
+}
+
 void Bow::LinkRenderers()
 {
-	RenderSystems::GetTransformRenderer().AddEntry(*m_pBowMesh, *m_pTexture, m_WorldTransform);
+	//RenderSystems::GetTransformRenderer().AddEntry(*m_pBowMesh, *m_pTexture, m_WorldTransform);
 }
