@@ -1,6 +1,8 @@
 #pragma once
 #include <Rendering\Mesh\MeshBuffers.h>
 #include <Rendering\Structs\VertexTypes.h>
+#include <Animations\Animation.h>
+#include <Animations\Animator.h>
 
 namespace MyEngine
 {
@@ -15,7 +17,7 @@ namespace TowerGame
 class Bow
 {
 public:
-	using Vertex = Rendering::V_PosNorUv;
+	using Vertex = Rendering::V_PosNorUvSkin;
 	static constexpr ModelTopology TOPOLOGY{ ModelTopology::TriangleList };
 
 	Bow();
@@ -26,6 +28,7 @@ public:
 	void LinkRenderers();
 
 	const Transform& GetWorldTransform() const { return m_WorldTransform; }
+	const Rendering::CB_BonesBuffer& GetBonesBuffer() const { return m_Animator.GetBonesBuffer(); }
 
 private:
 	Transform m_LocalTransform{};
@@ -33,6 +36,9 @@ private:
 
 	Rendering::Texture m_Texture{};
 	MeshBuffers<Vertex, TOPOLOGY> m_Buffers{};
+
+	Animations::Animation m_Animation;
+	Animations::Animator m_Animator;
 
 	int m_ArrowIdx{ -1 };
 };

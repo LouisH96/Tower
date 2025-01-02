@@ -1,4 +1,5 @@
 #include "Shared.hlsl"
+#include <Skinning.hlsl>
 
 cbuffer ModelBuffer : register(b1)
 {
@@ -11,6 +12,8 @@ struct Vertex
     float3 pos : POSITION;
     float3 norm : NORMAL;
     float2 uv : TEXCOORD;
+    int4 boneIds : BLENDINDICES;
+    float4 boneWeights : BLENDWEIGHT;
 };
 
 struct Pixel
@@ -29,10 +32,14 @@ SamplerState sampler_main : register(s0);
 Pixel vs_main(Vertex vertex)
 {
     Pixel pixel;
-    pixel.worldPos = (float3) mul(float4(vertex.pos, 1), model_matrix);
+    
+    float4x4 bone = MakeBonesMatrix(vertex.boneIds, vertex.boneWeights);
+    bone = mul(bone, model_matrix);
+    
+    pixel.worldPos = (float3) mul(float4(vertex.pos, 1), bone);
     pixel.pos = mul(float4(pixel.worldPos, 1), camera_view_projection);
     pixel.uv = vertex.uv;
-    pixel.norm = mul(vertex.norm, (float3x3) model_matrix);
+    pixel.norm = mul(vertex.norm, (float3x3) bone);
     return pixel;
 }
 

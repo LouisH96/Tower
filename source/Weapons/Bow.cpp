@@ -17,6 +17,7 @@
 #include "ArrowSystem.h"
 
 using namespace TowerGame;
+using namespace Animations;
 
 Bow::Bow()
 {
@@ -28,12 +29,21 @@ Bow::Bow()
 
 	//BOW-MESH
 	const std::wstring meshPath{ Resources::Local(L"Rigged_Bow_Testing.fbx") };
-	Io::Fbx::FbxClass fbxModel{ meshPath, 1.f };
+	Io::Fbx::FbxClass fbxModel{ meshPath, .01f };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
-	Array<V_PosNorUv> vertices{ geom.Points.GetSize() };
+	Array<Vertex> vertices{ geom.Points.GetSize() };
 	for (unsigned i = 0; i < geom.Points.GetSize(); i++)
-		vertices[i] = V_PosNorUv{ geom.Points[i] * 0.01f, geom.Normals[i], geom.Uvs[i] };
+	{
+		Vertex& vertex{ vertices[i] };
+		vertex.Pos = geom.Points[i];
+		vertex.Normal = geom.Normals[i];
+		vertex.Uv = geom.Uvs[i];
+
+		const Io::Fbx::FbxClass::BlendData& blendData{ geom.Weights[i] };
+		vertex.BoneIds = blendData.IndicesAsInt4();
+		vertex.BoneWeights = blendData.WeightsAsFloat4();
+	}
 
 	MeshData<Vertex, TOPOLOGY> meshData{ };
 	meshData.Vertices.Add(vertices);
@@ -42,6 +52,10 @@ Bow::Bow()
 	//TEXTURE
 	const std::wstring texturePath{ Resources::Local(L"Texture_01.png") };
 	m_Texture = Texture{ texturePath };
+
+	//ANIMATION
+	m_Animation = Animation{ fbxModel, fbxModel.GetAnimations().First() };
+	m_Animator = { m_Animation };
 }
 
 void Bow::Update(const Transform& cameraTransform)
@@ -65,6 +79,8 @@ void Bow::Update(const Transform& cameraTransform)
 	{
 		GameplaySystems::GetArrowSystem().SetArrowTransform(m_ArrowIdx, m_WorldTransform);
 	}
+
+	m_Animator.ProgressTime(m_Animation);
 }
 
 void Bow::Render()

@@ -19,6 +19,7 @@ TowerGameRenderer::TowerGameRenderer()
 	, m_Il_V_PosNorUv_I_ModelMatrix{ InputLayout::FromTypes<V_PosNorUv, I_ModelMatrix>() }
 	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
 	, m_Il_V_PosNorUv{ InputLayout::FromType<V_PosNorUv>() }
+	, m_Il_V_PosNorUvSkin{ InputLayout::FromType<V_PosNorUvSkin>() }
 	, m_DepthStencilState_On{ true }
 {
 }
@@ -77,10 +78,13 @@ void TowerGameRenderer::Render()
 	GameplaySystems::GetEnemySystem().Render();
 
 	//Weapon
+	const Bow& bow{ GameplaySystems::GetBow() };
 	m_Shader_Weapon.Activate();
-	m_Il_V_PosNorUv.Activate();
-	m_ModelBuffer.Update(CB_ModelBuffer{ GameplaySystems::GetBow().GetWorldTransform().AsMatrix() });
+	m_Il_V_PosNorUvSkin.Activate();
+	m_ModelBuffer.Update(CB_ModelBuffer{ bow.GetWorldTransform().AsMatrix() });
 	m_ModelBuffer.Activate(1);
+	m_BonesBuffer.Update(CB_BonesBuffer{ bow.GetBonesBuffer() });
+	m_BonesBuffer.Activate(2);
 	GameplaySystems::GetBow().Render();
 
 	//Other
