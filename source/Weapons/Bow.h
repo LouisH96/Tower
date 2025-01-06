@@ -45,6 +45,6 @@ private:
 	int m_ArrowIdx{ -1 };
 
 	static constexpr float CHARGE_ARROW_TIMESCALE{ 1.f / .5f };
-	static constexpr float RELEASE_ARROW_TIMESCALE{ 1.f / .1f };
+	static float RELEASE_ARROW_TIMESCALE;
 };
 }

@@ -96,7 +96,7 @@ void ArrowSystem::SetArrowTransform(int arrowIdx, const Transform& newArrowWorld
 void ArrowSystem::Launch(int arrowIdx)
 {
 	const Instance& instance{ m_Instances[arrowIdx] };
-	m_Velocities[arrowIdx] = WorldMatrix::GetForward(instance.model) * 20;
+	m_Velocities[arrowIdx] = WorldMatrix::GetForward(instance.model) * LAUNCH_SPEED;
 	m_IsCharging = 0;
 }
 

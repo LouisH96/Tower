@@ -27,6 +27,8 @@ public:
 	void Launch(int arrowIdx);
 	void SetArrowTransform(int arrowIdx, const Transform& newArrowWorld);
 
+	static constexpr float LAUNCH_SPEED{ 20 };
+
 private:
 	using Vertex = Rendering::V_PosNorUv;
 	using Instance = Rendering::I_ModelMatrix;

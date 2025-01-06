@@ -19,18 +19,21 @@
 using namespace TowerGame;
 using namespace Animations;
 
+float Bow::RELEASE_ARROW_TIMESCALE{ 1 };
+
 Bow::Bow()
 {
 	using namespace Rendering;
 	using namespace DirectX;
+	using namespace Io::Fbx;
 
 	m_LocalTransform.Position = Float3{ .5f, -.1f, 1.0f };
 	m_LocalTransform.Rotation = Quaternion::FromAxis({ 1,0,0 }, -25 * Constants::TO_RAD);
 
 	//BOW-MESH
 	const std::wstring meshPath{ Resources::Local(L"Rigged_Bow_Testing.fbx") };
-	Io::Fbx::FbxClass fbxModel{ meshPath, .01f };
-	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
+	FbxClass fbxModel{ meshPath, .01f };
+	FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
 	Array<Vertex> vertices{ geom.Points.GetSize() };
 	for (unsigned i = 0; i < geom.Points.GetSize(); i++)
@@ -56,6 +59,19 @@ Bow::Bow()
 	//ANIMATION
 	m_Animation = Animation{ fbxModel, fbxModel.GetAnimations().First() };
 	m_Animator = Animator{ m_Animation };
+
+	constexpr unsigned JOINT_STRING_IDX{ 1 };
+	const FbxJoint& bowStringJoint{ fbxModel.GetSkeleton().GetJoints()[JOINT_STRING_IDX] };
+
+	const SkeletonData& skeleton{ m_Animation.GetSkeleton() };
+
+	const Float3 initPos{ m_Animation.GetModelPosition(JOINT_STRING_IDX, 0.f) };
+	const Float3 chargedPos{ m_Animation.GetModelPosition(JOINT_STRING_IDX, .5f) };
+	const float launchDistance{ initPos.Distance(chargedPos) };
+	const float launchSpeed{ ArrowSystem::LAUNCH_SPEED };
+
+	const float invShootDuration{ launchSpeed / launchDistance };
+	RELEASE_ARROW_TIMESCALE =  invShootDuration;
 }
 
 void Bow::Update(const Transform& cameraTransform)
