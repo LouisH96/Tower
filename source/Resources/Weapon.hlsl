@@ -13,7 +13,7 @@ struct Vertex
     float3 norm : NORMAL;
     float2 uv : TEXCOORD;
     int4 boneIds : BLENDINDICES;
-    float4 boneWeights : BLENDWEIGHT;
+    float4 boneWeights : BLENDWEIGHTS;
 };
 
 struct Pixel
