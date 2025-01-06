@@ -55,7 +55,7 @@ Bow::Bow()
 
 	//ANIMATION
 	m_Animation = Animation{ fbxModel, fbxModel.GetAnimations().First() };
-	m_Animator = { m_Animation };
+	m_Animator = Animator{ m_Animation };
 }
 
 void Bow::Update(const Transform& cameraTransform)
@@ -65,22 +65,52 @@ void Bow::Update(const Transform& cameraTransform)
 
 	m_WorldTransform = Transform::LocalToWorld(m_LocalTransform, cameraTransform);
 
-	if (Globals::pMouse->IsLeftBtnPressed())
+	if (IsLoaded())
 	{
-		m_ArrowIdx = GameplaySystems::GetArrowSystem().Spawn();
+		constexpr float maxChargeTime{ .5f };
+
+		if (m_Animator.GetNormalizedTime() == maxChargeTime)
+		{
+			if (!Globals::pMouse->IsLeftBtnDown())
+			{
+				//Release Arrow
+				GameplaySystems::GetArrowSystem().Launch(m_ArrowIdx);
+				m_ArrowIdx = -1;
+
+				//Update Animator TimeScale
+				m_Animator.SetTimeScale(RELEASE_ARROW_TIMESCALE);
+			}
+		}
+		else
+		{
+			//Update Bow Animation (Charge)
+			m_Animator.ProgressTimeUntil(m_Animation, maxChargeTime);
+		}
 	}
-	else if (Globals::pMouse->IsLeftBtnReleased())
+	else
 	{
-		GameplaySystems::GetArrowSystem().Launch(m_ArrowIdx);
-		m_ArrowIdx = -1;
+		if (m_Animator.GetNormalizedTime() == 0)
+		{
+			if (Globals::pMouse->IsLeftBtnDown())
+			{
+				m_ArrowIdx = GameplaySystems::GetArrowSystem().Spawn();
+
+				//Update Animator TimeScale
+				m_Animator.SetTimeScale(CHARGE_ARROW_TIMESCALE);
+			}
+		}
+		else
+		{
+			//Update Bow Animation (Release)
+			m_Animator.ProgressTimeUntil(m_Animation, 0);
+		}
 	}
 
-	if (m_ArrowIdx >= 0)
+	if (IsLoaded())
 	{
+		//Update Arrow Position
 		GameplaySystems::GetArrowSystem().SetArrowTransform(m_ArrowIdx, m_WorldTransform);
 	}
-
-	m_Animator.ProgressTime(m_Animation);
 }
 
 void Bow::Render()

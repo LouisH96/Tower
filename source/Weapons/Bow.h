@@ -6,10 +6,10 @@
 
 namespace MyEngine
 {
-	namespace Rendering
-	{
-		class Texture;
-	}
+namespace Rendering
+{
+class Texture;
+}
 }
 
 namespace TowerGame
@@ -30,6 +30,8 @@ public:
 	const Transform& GetWorldTransform() const { return m_WorldTransform; }
 	const Rendering::CB_BonesBuffer& GetBonesBuffer() const { return m_Animator.GetBonesBuffer(); }
 
+	bool IsLoaded() const { return m_ArrowIdx != -1; }
+
 private:
 	Transform m_LocalTransform{};
 	Transform m_WorldTransform{};
@@ -41,5 +43,8 @@ private:
 	Animations::Animator m_Animator;
 
 	int m_ArrowIdx{ -1 };
+
+	static constexpr float CHARGE_ARROW_TIMESCALE{ 1.f / .5f };
+	static constexpr float RELEASE_ARROW_TIMESCALE{ 1.f / .1f };
 };
 }
