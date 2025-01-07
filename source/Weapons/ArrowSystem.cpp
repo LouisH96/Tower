@@ -86,6 +86,11 @@ int ArrowSystem::Spawn()
 	return m_Velocities.GetSize() - 1;
 }
 
+void ArrowSystem::SetArrowTransform(int arrowIdx, const Float4X4& newArrowWorld)
+{
+	m_Instances[arrowIdx] = { newArrowWorld };
+}
+
 void ArrowSystem::SetArrowTransform(int arrowIdx, const Transform& newArrowWorld)
 {
 	const Float4X4 world{ newArrowWorld.AsMatrix() };

@@ -25,6 +25,7 @@ public:
 
 	int Spawn();
 	void Launch(int arrowIdx);
+	void SetArrowTransform(int arrowIdx, const Float4X4& newArrowWorld);
 	void SetArrowTransform(int arrowIdx, const Transform& newArrowWorld);
 
 	static constexpr float LAUNCH_SPEED{ 20 };

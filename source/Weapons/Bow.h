@@ -43,7 +43,9 @@ private:
 	Animations::Animator m_Animator;
 
 	int m_ArrowIdx{ -1 };
+	float m_ArrowToBow{};
 
+	static constexpr unsigned BOW_STRING_JOINT_IDX{ 1 };
 	static constexpr float CHARGE_ARROW_TIMESCALE{ 1.f / .5f };
 	static float RELEASE_ARROW_TIMESCALE;
 };

@@ -13,6 +13,7 @@
 #include <Rendering/Structs/VertexTypes.h>
 #include <Services/GameplaySystems.h>
 #include <Services/RenderSystems.h>
+#include <Transform\WorldMatrix.h>
 
 #include "ArrowSystem.h"
 
@@ -60,18 +61,18 @@ Bow::Bow()
 	m_Animation = Animation{ fbxModel, fbxModel.GetAnimations().First() };
 	m_Animator = Animator{ m_Animation };
 
-	constexpr unsigned JOINT_STRING_IDX{ 1 };
-	const FbxJoint& bowStringJoint{ fbxModel.GetSkeleton().GetJoints()[JOINT_STRING_IDX] };
+	const FbxJoint& bowStringJoint{ fbxModel.GetSkeleton().GetJoints()[BOW_STRING_JOINT_IDX] };
 
 	const SkeletonData& skeleton{ m_Animation.GetSkeleton() };
 
-	const Float3 initPos{ m_Animation.GetModelPosition(JOINT_STRING_IDX, 0.f) };
-	const Float3 chargedPos{ m_Animation.GetModelPosition(JOINT_STRING_IDX, .5f) };
+	const Float3 initPos{ m_Animation.GetModelPosition(BOW_STRING_JOINT_IDX, 0.f) };
+	const Float3 chargedPos{ m_Animation.GetModelPosition(BOW_STRING_JOINT_IDX, .5f) };
 	const float launchDistance{ initPos.Distance(chargedPos) };
 	const float launchSpeed{ ArrowSystem::LAUNCH_SPEED };
+	m_ArrowToBow = initPos.z - chargedPos.z;
 
 	const float invShootDuration{ launchSpeed / launchDistance };
-	RELEASE_ARROW_TIMESCALE =  invShootDuration;
+	RELEASE_ARROW_TIMESCALE = invShootDuration / 2;
 }
 
 void Bow::Update(const Transform& cameraTransform)
@@ -122,10 +123,12 @@ void Bow::Update(const Transform& cameraTransform)
 		}
 	}
 
+	auto a = m_Animator.GetBonesBuffer().BoneTransforms[BOW_STRING_JOINT_IDX];
+	WorldMatrix::Translate(a, Float3{ 0,0,m_ArrowToBow });
 	if (IsLoaded())
 	{
 		//Update Arrow Position
-		GameplaySystems::GetArrowSystem().SetArrowTransform(m_ArrowIdx, m_WorldTransform);
+		GameplaySystems::GetArrowSystem().SetArrowTransform(m_ArrowIdx, a * m_WorldTransform.AsMatrix());
 	}
 }
 
