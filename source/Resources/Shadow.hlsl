@@ -24,7 +24,7 @@ static const float2 randomOffsets[nrRandomOffsets] =
     float2(0.23037, 0.77172),
 };
 
-cbuffer ShadowMap : register(b1)
+cbuffer ShadowMap : register(b2)
 {
     float4x4 shadow_map_view_projection;
     float3 shadow_forward;

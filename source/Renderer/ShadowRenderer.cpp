@@ -69,7 +69,7 @@ void ShadowRenderer::BeginRender()
 {
 	m_ShadowMap.Activate(1);
 	m_LightBuffer.Update(m_LightBufferData);
-	m_LightBuffer.Activate(1);
+	m_LightBuffer.Activate(2);
 	m_Sampler.Activate(1);
 }
 
