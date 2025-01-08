@@ -11,6 +11,8 @@ namespace TowerGame
 class TowerGameRenderer
 {
 public:
+	static constexpr unsigned BONES_BUFFER_SIZE{ 1024 };
+
 	TowerGameRenderer();
 
 	void OnCanvasResized(const App::ResizedEvent& event);
@@ -25,7 +27,7 @@ private:
 	//CamBuffers
 	Rendering::ConstantBuffer<Rendering::CB_CamMatPos> m_CameraMatrixPosBuffer;
 	Rendering::ConstantBuffer<Rendering::CB_ModelBuffer> m_ModelBuffer;
-	Rendering::ConstantBuffer<Rendering::CB_BonesBuffer> m_BonesBuffer;
+	Rendering::ConstantBuffer<Float4X4> m_BonesBuffer;
 
 	//InputLayouts
 	Rendering::InputLayout m_Il_V_PosNorUv;

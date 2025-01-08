@@ -28,7 +28,7 @@ public:
 	void LinkRenderers();
 
 	const Transform& GetWorldTransform() const { return m_WorldTransform; }
-	const Rendering::CB_BonesBuffer& GetBonesBuffer() const { return m_Animator.GetBonesBuffer(); }
+	const Array<Float4X4>& GetBones() const { return m_Animator.GetBones(); }
 
 	bool IsLoaded() const { return m_ArrowIdx != -1; }
 

@@ -123,7 +123,7 @@ void Bow::Update(const Transform& cameraTransform)
 		}
 	}
 
-	auto a = m_Animator.GetBonesBuffer().BoneTransforms[BOW_STRING_JOINT_IDX];
+	auto a = m_Animator.GetBones()[BOW_STRING_JOINT_IDX];
 	WorldMatrix::Translate(a, Float3{ 0,0,m_ArrowToBow });
 	if (IsLoaded())
 	{

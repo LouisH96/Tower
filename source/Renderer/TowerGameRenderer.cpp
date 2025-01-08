@@ -21,6 +21,7 @@ TowerGameRenderer::TowerGameRenderer()
 	, m_Il_V_PosNorUv{ InputLayout::FromType<V_PosNorUv>() }
 	, m_Il_V_PosNorUvSkin{ InputLayout::FromType<V_PosNorUvSkin>() }
 	, m_DepthStencilState_On{ true }
+	, m_BonesBuffer{ BONES_BUFFER_SIZE }
 {
 }
 
@@ -83,7 +84,7 @@ void TowerGameRenderer::Render()
 	m_Il_V_PosNorUvSkin.Activate();
 	m_ModelBuffer.Update(CB_ModelBuffer{ bow.GetWorldTransform().AsMatrix() });
 	m_ModelBuffer.Activate(1);
-	m_BonesBuffer.Update(CB_BonesBuffer{ bow.GetBonesBuffer() });
+	m_BonesBuffer.Update(bow.GetBones());
 	m_BonesBuffer.Activate(2);
 	GameplaySystems::GetBow().Render();
 
