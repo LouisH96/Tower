@@ -45,8 +45,10 @@ void TowerGameRenderer::PreRender()
 	m_CameraMatrixPosBuffer.Update(CB_CamMatPos{ Float3{}, viewProjection });
 	m_CameraMatrixPosBuffer.Activate();
 	m_Il_V_PosNorUv_I_ModelMatrix.Activate();
+	m_BonesBuffer.Activate(3);
 	GameplaySystems::GetArrowSystem().Render(true);
-	GameplaySystems::GetEnemySystem().Render(); //Render
+	GameplaySystems::GetEnemySystem()
+		.Render<Shader::Function::Vertex>(m_BonesBuffer); //Render
 
 	m_Shader_Terrain.Activate<Shader::Function::Vertex>();
 	m_Il_V_PosNorCol.Activate();
@@ -75,8 +77,9 @@ void TowerGameRenderer::Render()
 	m_Il_V_PosNorUv_I_ModelMatrix.Activate();
 	m_Shader_Entity.Activate();
 	m_CameraMatrixPosBuffer.Activate();
+	m_BonesBuffer.Activate(3);
 	GameplaySystems::GetArrowSystem().Render();
-	GameplaySystems::GetEnemySystem().Render();
+	GameplaySystems::GetEnemySystem().Render(m_BonesBuffer);
 
 	//Weapon
 	const Bow& bow{ GameplaySystems::GetBow() };
@@ -85,7 +88,6 @@ void TowerGameRenderer::Render()
 	m_ModelBuffer.Update(CB_ModelBuffer{ bow.GetWorldTransform().AsMatrix() });
 	m_ModelBuffer.Activate(1);
 	m_BonesBuffer.Update(bow.GetBones());
-	m_BonesBuffer.Activate(2);
 	GameplaySystems::GetBow().Render();
 
 	//Other

@@ -17,13 +17,16 @@ Enemy::Enemy()
 {
 }
 
-Enemy::Enemy(const Float3& initPos)
-	: m_World{ initPos, {} }
+Enemy::Enemy(const Animations::Animation& animation, const Float3& initPos)
+	: m_Animator{ animation }
+	, m_World{ initPos, {} }
 	, m_FallOverAxis{ MOVING }
 {
 }
 
-void Enemy::Update(const Float2& target, float maxMovement)
+void Enemy::Update(
+	const Float2& target, float maxMovement,
+	const Animations::Animation& animation)
 {
 	if (m_FallOverAxis.x < DEAD)
 	{
@@ -31,6 +34,7 @@ void Enemy::Update(const Float2& target, float maxMovement)
 			UpdateMove(target, maxMovement);
 		else
 			UpdateFall();
+		m_Animator.ProgressTime(animation);
 	}
 	for (int i = 0; i < m_Arrows.size(); i++)
 		GameplaySystems::GetArrowSystem().SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
