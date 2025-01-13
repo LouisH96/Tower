@@ -11,6 +11,7 @@
 #include "Renderer/TowerGameRenderer.h"
 
 #include <Timing\Counter.h>
+#include <Io\Fbx\Wrapping\FbxData.h>
 
 using namespace Animations;
 using namespace Io::Fbx;
@@ -29,8 +30,9 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	, m_Shader{ Resources::Local(L"Enemy.hlsl") }
 {
 	//MESH
+	constexpr float modelScale{ .01f };
 	const std::wstring meshPath{ Resources::Local(L"SK_Character_DarkElf_01.fbx") };
-	Io::Fbx::FbxClass fbxModel{ meshPath, .01f };
+	Io::Fbx::FbxClass fbxModel{ meshPath, modelScale };
 	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
 	Array<Vertex> vertices{ geom.Points.GetSize() };
@@ -51,8 +53,11 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	m_Texture = Texture{ Resources::Local(L"FantasyRivals_Texture_01_A.png") };
 
 	//ANIMATIONS
-	const FbxAnimation& animation{ fbxModel.GetAnimations().First() };
-	m_Animation = Animation{ fbxModel, animation };
+	const std::wstring animationPath{ Resources::Local(L"Zombie Running.fbx") };
+	Io::Fbx::FbxClass animationFbx{ animationPath, modelScale };
+
+	const FbxAnimation& animation{ animationFbx.GetAnimations().First() };
+	m_Animation = Animation{ animationFbx, animation };
 	m_BatchLimit = TowerGameRenderer::BONES_BUFFER_SIZE / m_Animation.GetNrBones();
 
 	//ENEMIES
