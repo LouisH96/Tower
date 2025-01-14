@@ -12,6 +12,7 @@
 
 #include <Timing\Counter.h>
 #include <Io\Fbx\Wrapping\FbxData.h>
+#include <Transform\WorldMatrix.h>
 
 using namespace Animations;
 using namespace Io::Fbx;
@@ -59,6 +60,7 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	const FbxAnimation& animation{ animationFbx.GetAnimations().First() };
 	m_Animation = Animation{ animationFbx, animation };
 	m_BatchLimit = TowerGameRenderer::BONES_BUFFER_SIZE / m_Animation.GetNrBones();
+	Enemy::FullAnimationMovement = m_Animation.GetFullRootMotionXz();
 
 	//ENEMIES
 	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
@@ -98,7 +100,7 @@ void EnemySystem::Update()
 {
 	//Update cpu data
 	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
-		m_Enemies[i].Update(m_Target, 50 * Globals::DeltaTime, m_Animation);
+		m_Enemies[i].Update(m_Target, m_Animation);
 
 	//Update gpu data
 	Instance* pInstances{ m_InstanceArray.BeginUpdateInstances<Instance>() };
@@ -107,6 +109,7 @@ void EnemySystem::Update()
 		const Enemy& enemy{ m_Enemies[iEnemy] };
 		Instance& instance{ pInstances[iEnemy] };
 		instance.World = enemy.GetTransform().AsMatrix();
+		WorldMatrix::TranslateRelativeXz(instance.World, -enemy.GetRootPos()); //Root-Motion
 		instance.BoneIdOffset = (iEnemy % m_BatchLimit) * m_Animation.GetNrBones();
 	}
 	m_InstanceArray.EndUpdateInstances();

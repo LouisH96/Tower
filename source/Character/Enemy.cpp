@@ -6,11 +6,14 @@
 #include <Weapons/Bow.h>
 
 #include "Weapons/ArrowSystem.h"
+#include <Transform\WorldMatrix.h>
 
 using namespace TowerGame;
 
 constexpr float MOVING = 2000;
 constexpr float DEAD = 2001;
+
+Float2 Enemy::FullAnimationMovement{};
 
 Enemy::Enemy()
 	: m_FallOverAxis{ MOVING }
@@ -25,19 +28,31 @@ Enemy::Enemy(const Animations::Animation& animation, const Float3& initPos)
 }
 
 void Enemy::Update(
-	const Float2& target, float maxMovement,
+	const Float2& target,
 	const Animations::Animation& animation)
 {
 	if (m_FallOverAxis.x < DEAD)
 	{
 		if (m_FallOverAxis.x == MOVING)
-			UpdateMove(target, maxMovement);
+		{
+			const unsigned nrLoops{ m_Animator.ProgressTime(animation) };
+
+			const Float2 newRootPos{ m_Animator.GetRootXz() };
+			const Float2 rootMotion{
+				(newRootPos - m_RootPos)
+				+ FullAnimationMovement * nrLoops
+			};
+
+			m_RootPos = newRootPos;
+			UpdateMove(target, rootMotion);
+		}
 		else
+		{
 			UpdateFall();
-		m_Animator.ProgressTime(animation);
+			for (int i = 0; i < m_Arrows.size(); i++)
+				GameplaySystems::GetArrowSystem().SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
+		}
 	}
-	for (int i = 0; i < m_Arrows.size(); i++)
-		GameplaySystems::GetArrowSystem().SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
 }
 
 void Enemy::HitByArrow(const Transform& worldArrowTransform, int arrowIdx)
@@ -54,18 +69,14 @@ void Enemy::HitByArrow(const Transform& worldArrowTransform, int arrowIdx)
 		Float3{ 0,1,0 }.Cross(worldArrowTransform.Rotation.GetForward()).Normalized();
 }
 
-void Enemy::UpdateMove(const Float2& target, float maxMovement)
+void Enemy::UpdateMove(const Float2& target, const Float2& movement)
 {
 	constexpr float minTargetDistanceSq = 6 * 6;
 
-	const Float2 toTarget{ Float2{target - m_World.Position.Xz()} };
-	const float toTargetLengthSq{ toTarget.LengthSq() };
-	if (toTargetLengthSq > minTargetDistanceSq)
-	{
-		const Float2 movement{ toTarget * (maxMovement / sqrt(toTargetLengthSq)) };
-		m_World.Position += Float3::FromXz(movement);
-	}
+	if (m_World.Position.Xz().DistanceSq(target) <= minTargetDistanceSq)
+		return;
 
+	m_World.MoveRelativeXz(movement);
 	m_World.Position.y = GameplaySystems::GetTerrain().GetHeight(m_World.Position.Xz());
 }
 
