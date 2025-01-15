@@ -8,6 +8,10 @@ namespace TowerGame
 class Enemy
 {
 public:
+	enum class State {
+		Running, Falling, Dead, Completed
+	};
+
 	Enemy();
 	Enemy(const Animations::Animation& animation, const Float3& initPos);
 
@@ -36,7 +40,7 @@ private:
 	Transform m_World;
 	Float3 m_FallOverAxis;
 	Float2 m_RootPos;
-
+	State m_State;
 	std::vector<AttachedArrow> m_Arrows{};
 
 	void UpdateMove(const Float2& target, const Float2& maxMovement);
