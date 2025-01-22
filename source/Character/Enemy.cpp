@@ -67,6 +67,13 @@ void Enemy::HitByArrow(const Transform& worldArrowTransform, int arrowIdx)
 	m_State = State::Falling;
 }
 
+Float3 Enemy::ToAnimationSpace(const Float3& worldSpace) const
+{
+	Float3 local{ m_World.WorldToLocal(worldSpace) };
+	local.AddXz(m_RootPos);
+	return local;
+}
+
 void Enemy::UpdateMove(const Float2& target, const Float2& movement)
 {
 	constexpr float minTargetDistanceSq = 6 * 6;

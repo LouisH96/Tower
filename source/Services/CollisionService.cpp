@@ -1,7 +1,11 @@
 #include "pch.h"
 #include "CollisionService.h"
 
+#include <Animations\AnimationUtils.h>
+#include <Geometry\Shapes\Triangle.h>
+
 using namespace TowerGame;
+using namespace Physics;
 
 bool MeshCollidable::IsColliding(const Float3& begin, const Float3& end) const
 {
@@ -51,11 +55,38 @@ bool EnemiesCollidable::IsColliding(const Float3& begin, const Float3& end, cons
 	if (distanceSq > cylinderRadius * cylinderRadius)
 		return false;
 
-	const Float3 localBegin{ enemy.GetTransform().WorldToLocal(begin) };
-	const Float3 localEnd{ enemy.GetTransform().WorldToLocal(end) };
+	const Float3 localBegin{ enemy.ToAnimationSpace(begin) };
+	const Float3 localEnd{ enemy.ToAnimationSpace(end) };
 
 	Physics::CollisionDetection::Collision collision;
-	return Physics::CollisionDetection::Detect(localBegin, localEnd, Points, TriangleNormals, collision);
+
+	const Array<Float4X4>& bones{ enemy.GetAnimator().GetBones() };
+
+	for (
+		unsigned iVertex{ 2 };
+		iVertex < Vertices.GetSize();
+		iVertex += 3)
+	{
+		const Vertex& v0{ Vertices[iVertex - 2] };
+		const Vertex& v1{ Vertices[iVertex - 1] };
+		const Vertex& v2{ Vertices[iVertex] };
+
+		const Float3 pb0{ AnimationUtils::Blend(v0.Point, v0.BoneIndices, v0.BoneWeights, bones) };
+		const Float3 pb1{ AnimationUtils::Blend(v1.Point, v1.BoneIndices, v1.BoneWeights, bones) };
+		const Float3 pb2{ AnimationUtils::Blend(v2.Point, v2.BoneIndices, v2.BoneWeights, bones) };
+		const Float3 tbNormal{ Triangle::FindNormal(pb0,pb1,pb2) };
+
+		CollisionDetection::Collision collision{};
+		if (Physics::CollisionDetection::IsLineInTriangle(
+			localBegin, localEnd,
+			pb0, pb1, pb2,
+			tbNormal,
+			collision))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 bool EnemiesCollidable::HasOverlap(float aMin, float aMax, float bMin, float bMax)

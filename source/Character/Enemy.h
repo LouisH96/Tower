@@ -26,7 +26,9 @@ public:
 
 	void HitByArrow(const Transform& worldArrowTransform, int arrowIdx);
 
-	static constexpr float HEIGHT = 2.f;
+	Float3 ToAnimationSpace(const Float3& worldSpace) const;
+
+	static constexpr float HEIGHT = 1.6f;
 	static Float2 FullAnimationMovement;
 
 private:

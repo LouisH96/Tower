@@ -79,12 +79,16 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	//COLLIDABLES
 	EnemiesCollidable& collidable{ GameplaySystems::GetCollisionService().Enemies };
 	collidable.pEnemies = &m_Enemies;
-	collidable.Points = { vertices.GetSize() };
-	collidable.TriangleNormals = { vertices.GetSize() / 3 };
+	collidable.Vertices = { vertices.GetSize() };
 	for (unsigned i = 0; i < vertices.GetSize(); i++)
-		collidable.Points[i] = vertices[i].Pos;
-	for (unsigned iVertex = 0, iTriangle = 0; iVertex < vertices.GetSize(); iVertex += 3, iTriangle++)
-		collidable.TriangleNormals[iTriangle] = vertices[iVertex].Normal;
+	{
+		EnemiesCollidable::Vertex& colVertex{ collidable.Vertices[i] };
+		EnemySystem::Vertex& modelVertex{ vertices[i] };
+
+		colVertex.Point = modelVertex.Pos;
+		colVertex.BoneIndices = modelVertex.BoneIds;
+		colVertex.BoneWeights = modelVertex.BoneWeights;
+	}
 }
 
 void EnemySystem::LinkRenderers()

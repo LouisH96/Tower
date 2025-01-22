@@ -25,12 +25,17 @@ struct MeshCollidable
 
 struct EnemiesCollidable
 {
+	struct Vertex
+	{
+		Float3 Point;
+		Int4 BoneIndices;
+		Float4 BoneWeights;
+	};
+
 	Enemy* IsColliding(const Float3& begin, const Float3& end) const;
 
 	Array<Enemy>* pEnemies{};
-
-	Array<Float3> Points;
-	Array<Float3> TriangleNormals;
+	Array<Vertex> Vertices;
 
 private:
 	bool IsColliding(const Float3& begin, const Float3& end, const Enemy& enemy) const;
