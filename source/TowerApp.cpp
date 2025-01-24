@@ -34,11 +34,7 @@ TowerApp::TowerApp()
 
 TowerApp::~TowerApp()
 {
-	delete m_Rendering.pTexture2DRenderer;
-	delete m_Rendering.pUnlitRenderer;
-	delete m_Rendering.pTextureRenderer;
 	delete m_Rendering.pTerrainRenderer;
-	delete m_Rendering.pTransformRenderer;
 	delete m_Rendering.pSimpleRenderer;
 
 	delete m_Gameplay.pArrowSystem;
@@ -122,12 +118,8 @@ void TowerApp::InitRendering()
 	using namespace Rendering;
 	RenderSystems& r{ m_Rendering };
 
-	r.pUnlitRenderer = RendererFactory::CreateUnlitRenderer(false);
-	r.pSimpleRenderer = RendererFactory::CreateSimpleRenderer();
-	r.pTransformRenderer = new R_LambertCam_Tex_Transform();
 	r.pTerrainRenderer = new TowerGame::TerrainRenderer();
-	r.pTextureRenderer = new RenderSystems::TextureRenderer(Resources::GlobalShader(L"unlitTexture.hlsl"));
-	r.pTexture2DRenderer = new Texture2DRenderer();
+	r.pSimpleRenderer = RendererFactory::CreateSimpleRenderer();
 
 	m_Renderer.GetShadowRenderer().InitShadow(m_Gameplay.GetCharacter());
 }

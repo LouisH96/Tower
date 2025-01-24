@@ -92,9 +92,6 @@ void TowerGameRenderer::Render()
 
 	//Other
 	RenderSystems::GetSimpleRenderer().Render();
-	RenderSystems::GetTexture2DRenderer().Render();
-	RenderSystems::GetUnlitRenderer().Render();
-	RenderSystems::GetTextureRenderer().Render();
 
 	m_ShadowRenderer.EndRender();
 }
