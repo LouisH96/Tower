@@ -30,8 +30,6 @@ TowerApp::TowerApp()
 	LinkRendering();
 
 	CreateArrows();
-
-	m_ShadowMapController.Start(m_Renderer.GetShadowRenderer());
 }
 
 TowerApp::~TowerApp()

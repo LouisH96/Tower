@@ -3,8 +3,6 @@
 #include "Services/RenderSystems.h"
 #include <Renderer\TowerGameRenderer.h>
 
-#include <Temp\ShadowMapController.h>
-
 namespace TowerGame
 {
 class TowerApp
@@ -29,9 +27,6 @@ private:
 	GameplaySystems m_Gameplay;
 	RenderSystems m_Rendering;
 	TowerGame::TowerGameRenderer m_Renderer;
-
-	//Temp
-	TowerGame::ShadowMapController m_ShadowMapController;
 
 	void InitGameplay();
 	void LinkGameplay();
