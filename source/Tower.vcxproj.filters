@@ -14,7 +14,7 @@
     <ClCompile Include="Systems\Collisions\CollisionSystem.cpp" />
     <ClCompile Include="Systems\Arrows\ArrowSystem.cpp" />
     <ClCompile Include="TowerGameRenderer.cpp" />
-    <ClCompile Include="Systems\Skydome\SkyDomeRenderer.cpp" />
+    <ClCompile Include="Systems\Skydome\SkyDomeSystem.cpp" />
     <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
     <ClCompile Include="Systems\Terrain\TerrainRenderer.cpp" />
     <ClCompile Include="Systems\Systems.cpp" />
@@ -31,7 +31,7 @@
     <ClInclude Include="Systems\Collisions\CollisionSystem.h" />
     <ClInclude Include="Systems\Arrows\ArrowSystem.h" />
     <ClInclude Include="TowerGameRenderer.h" />
-    <ClInclude Include="Systems\Skydome\SkyDomeRenderer.h" />
+    <ClInclude Include="Systems\Skydome\SkyDomeSystem.h" />
     <ClInclude Include="Systems\Shadows\ShadowSystem.h" />
     <ClInclude Include="Systems\Terrain\TerrainRenderer.h" />
     <ClInclude Include="Systems\Systems.h" />

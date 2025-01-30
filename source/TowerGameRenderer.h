@@ -4,7 +4,7 @@
 
 #include <Systems\Terrain\TerrainRenderer.h>
 #include <Systems\Shadows\ShadowSystem.h>
-#include <Systems\Skydome\SkyDomeRenderer.h>
+#include <Systems\Skydome\SkyDomeSystem.h>
 
 namespace TowerGame
 {
@@ -49,7 +49,7 @@ private:
 
 	//Renderers
 	ShadowSystem m_ShadowRenderer;
-	SkyDomeRenderer m_SkyDomeRenderer;
+	SkyDomeSystem m_SkyDomeRenderer;
 	TerrainRenderer m_TerrainRenderer;
 
 };

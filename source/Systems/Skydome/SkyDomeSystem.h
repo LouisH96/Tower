@@ -7,10 +7,10 @@
 
 namespace TowerGame
 {
-class SkyDomeRenderer
+class SkyDomeSystem
 {
 public:
-	SkyDomeRenderer();
+	SkyDomeSystem();
 
 	void OnCanvasResized(const App::ResizedEvent& event);
 

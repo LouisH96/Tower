@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "SkyDomeRenderer.h"
+#include "SkyDomeSystem.h"
 #include <Framework\Globals.h>
 
 using namespace TowerGame;
 using namespace Rendering;
 
-SkyDomeRenderer::SkyDomeRenderer()
+SkyDomeSystem::SkyDomeSystem()
 	: m_Shader{ Resources::Local(L"SkyDome.hlsl") }
 	, m_InputLayout{ InputLayout::FromType<Vertex>() }
 	, m_DepthStencil{ false }
@@ -15,12 +15,12 @@ SkyDomeRenderer::SkyDomeRenderer()
 	InitDomeBuffer();
 }
 
-void SkyDomeRenderer::OnCanvasResized(const App::ResizedEvent& event)
+void SkyDomeSystem::OnCanvasResized(const App::ResizedEvent& event)
 {
 	InitDomeBuffer();
 }
 
-void SkyDomeRenderer::Render()
+void SkyDomeSystem::Render()
 {
 	UpdateDomeBufferCameraData();
 	m_PanelBuffer.Activate(1);
@@ -37,7 +37,7 @@ void SkyDomeRenderer::Render()
 	m_VertexBuffer.Draw();
 }
 
-void SkyDomeRenderer::InitVertexBuffer()
+void SkyDomeSystem::InitVertexBuffer()
 {
 	constexpr unsigned nrVertices{ 6 };
 	Vertex vertices[nrVertices];
@@ -53,14 +53,14 @@ void SkyDomeRenderer::InitVertexBuffer()
 	m_VertexBuffer = Buffer<Vertex>{ PtrRangeConst<Vertex>{vertices, nrVertices}, false };
 }
 
-void SkyDomeRenderer::InitDomeBuffer()
+void SkyDomeSystem::InitDomeBuffer()
 {
 	const float aspectRatio{ Globals::pCamera->GetAspectRatio() };
 	m_DomeBuffer.FovTan.y = Globals::pCamera->GetTanHalfFov();
 	m_DomeBuffer.FovTan.x = m_DomeBuffer.FovTan.y * aspectRatio;
 }
 
-void SkyDomeRenderer::UpdateDomeBufferCameraData()
+void SkyDomeSystem::UpdateDomeBufferCameraData()
 {
 	const Float3 cameraForward{ Globals::pCamera->GetForward() };
 	const float cameraPitch{ asinf(cameraForward.y) };
