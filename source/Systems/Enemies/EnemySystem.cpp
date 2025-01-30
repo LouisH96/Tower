@@ -2,7 +2,7 @@
 #include "EnemySystem.h"
 
 #include <Systems\Terrain\Terrain.h>
-#include <Systems\Collisions\CollisionService.h>
+#include <Systems\Collisions\CollisionSystem.h>
 
 #include "Framework/Resources.h"
 #include "Io/Fbx/FbxClass.h"

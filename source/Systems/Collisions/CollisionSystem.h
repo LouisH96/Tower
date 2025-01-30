@@ -42,7 +42,7 @@ private:
 	bool IsColliding(const Float3& begin, const Float3& end, const Enemy& enemy) const;
 	static bool HasOverlap(float aMin, float aMax, float bMin, float bMax);
 };
-struct CollisionService
+struct CollisionSystem
 {
 	MeshCollidable Tower;
 	EnemiesCollidable Enemies;

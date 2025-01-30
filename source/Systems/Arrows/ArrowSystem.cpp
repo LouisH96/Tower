@@ -4,7 +4,7 @@
 #include <Systems\Bow\Bow.h>
 #include <Systems\Enemies\EnemySystem.h>
 #include <Systems\Terrain\Terrain.h>
-#include <Systems\Collisions\CollisionService.h>
+#include <Systems\Collisions\CollisionSystem.h>
 
 #include "Camera/Camera.h"
 #include "Generation/PlaneGeneration.h"
@@ -60,7 +60,7 @@ void ArrowSystem::Update()
 		//m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
 
 		//IS IN TOWER?
-		const CollisionService& collisions{ SYSTEMS.Collisions };
+		const CollisionSystem& collisions{ SYSTEMS.Collisions };
 		if (collisions.Tower.IsColliding(position, newPosition))
 		{
 			SetArrowFinished(velocity);

@@ -3,7 +3,7 @@
  
 #include <Geometry/Shapes/Sphere.h>
 #include <Physics/CollisionDetection.h>
-#include <Systems\Collisions\CollisionService.h>
+#include <Systems\Collisions\CollisionSystem.h>
 #include <Systems\Terrain\Terrain.h>
 #include <TowerApp.h>
 

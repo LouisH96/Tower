@@ -3,7 +3,7 @@
 
 #include "Rendering/State/Mesh.h"
 #include "Rendering/Structs/VertexTypes.h"
-#include <Systems\Collisions\CollisionService.h>
+#include <Systems\Collisions\CollisionSystem.h>
 
 using namespace TowerGame;
 using namespace Rendering;

@@ -3,7 +3,7 @@
 #include <Systems\Arrows\ArrowSystem.h>
 #include <Systems\Bow\Bow.h>
 #include <Systems\Character\Character.h>
-#include <Systems\Collisions\CollisionService.h>
+#include <Systems\Collisions\CollisionSystem.h>
 #include <Systems\Enemies\EnemySystem.h>
 #include <Systems\Shadows\ShadowRenderer.h>
 #include <Systems\Skydome\SkyDomeRenderer.h>
@@ -30,7 +30,7 @@ public:
 	ArrowSystem Arrows;
 	Bow Bow;
 	Character Character;
-	CollisionService Collisions;
+	CollisionSystem Collisions;
 	EnemySystem Enemies;
 	ShadowRenderer Shadows;
 	SkyDomeRenderer Skydome;
