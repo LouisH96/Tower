@@ -27,7 +27,7 @@ TowerGameRenderer::TowerGameRenderer()
 
 void TowerGameRenderer::OnCanvasResized(const App::ResizedEvent& event)
 {
-	m_SkyDomeRenderer.OnCanvasResized(event);
+	SYSTEMS.Skydome.OnCanvasResized(event);
 }
 
 void TowerGameRenderer::PreRender()
@@ -35,8 +35,8 @@ void TowerGameRenderer::PreRender()
 	//Get
 	const Camera& camera{ *Globals::pCamera };
 
-	m_ShadowRenderer.BeginShadowMapRender();
-	const Float4X4 viewProjection{ m_ShadowRenderer.GetLightViewProjection() };
+	SYSTEMS.Shadows.BeginShadowMapRender();
+	const Float4X4 viewProjection{ SYSTEMS.Shadows.GetLightViewProjection() };
 
 	m_DepthStencilState_On.Activate();
 
@@ -60,8 +60,8 @@ void TowerGameRenderer::Render()
 	const Camera& camera{ *Globals::pCamera };
 	const Float4X4& viewProjection{ camera.GetViewProjection() };
 
-	m_SkyDomeRenderer.Render(); //Render
-	m_ShadowRenderer.BeginRender();
+	SYSTEMS.Skydome.Render(); //Render
+	SYSTEMS.Shadows.BeginRender();
 
 	m_DepthStencilState_On.Activate();
 
@@ -93,5 +93,5 @@ void TowerGameRenderer::Render()
 	//Other
 	SYSTEMS.pSimpleRenderer->Render();
 
-	m_ShadowRenderer.EndRender();
+	SYSTEMS.Shadows.EndRender();
 }

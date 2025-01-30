@@ -21,9 +21,6 @@ public:
 	void PreRender();
 	void Render();
 
-	ShadowSystem& GetShadowRenderer() { return m_ShadowRenderer; }
-	const ShadowSystem& GetShadowRenderer() const { return m_ShadowRenderer; }
-
 private:
 	//CamBuffers
 	Rendering::ConstantBuffer<Rendering::CB_CamMatPos> m_CameraMatrixPosBuffer;
@@ -46,10 +43,5 @@ private:
 
 	//Samplers
 	Rendering::SamplerState m_Sampler;
-
-	//Renderers
-	ShadowSystem m_ShadowRenderer;
-	SkyDomeSystem m_SkyDomeRenderer;
 };
-
 }
