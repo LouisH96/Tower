@@ -52,7 +52,7 @@ void TowerGameRenderer::PreRender()
 
 	m_Shader_Terrain.Activate<Shader::Function::Vertex>();
 	m_Il_V_PosNorCol.Activate();
-	SYSTEMS.TerrainRenderer.Render();
+	SYSTEMS.StaticMeshes.Render();
 }
 
 void TowerGameRenderer::Render()
@@ -70,7 +70,7 @@ void TowerGameRenderer::Render()
 	m_Il_V_PosNorCol.Activate();
 	m_CameraMatrixPosBuffer.Update({ camera });
 	m_CameraMatrixPosBuffer.Activate();
-	SYSTEMS.TerrainRenderer.Render();
+	SYSTEMS.StaticMeshes.Render();
 
 	//Entity
 	m_Sampler.Activate();

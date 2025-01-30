@@ -16,10 +16,10 @@ void Tower::Init(Desc& desc)
 }
 
 void Tower::GenerateMeshIn(
-	TerrainRenderer::MeshData& staticMeshData,
+	StaticMeshSystem::MeshData& staticMeshData,
 	MeshCollidable& collidable)
 {
-	TerrainRenderer::MeshData towerMeshData{};
+	StaticMeshSystem::MeshData towerMeshData{};
 
 	//todo: clean
 	Generate(collidable, m_Position, m_RoofSize, m_Height);

@@ -3,7 +3,6 @@
 
 #include <Generation/Shapes/ArrowGenerator.h>
 
-
 using namespace TowerGame;
 
 Systems::~Systems()
@@ -39,10 +38,10 @@ void Systems::Init()
 	Shadows.Init(Character);
 
 	//TERRAIN-RENDERER
-	TerrainRenderer::MeshData staticMeshData{};
+	StaticMeshSystem::MeshData staticMeshData{};
 	Terrain.GenerateMeshIn(staticMeshData);
 	Tower.GenerateMeshIn(staticMeshData, Collisions.Tower);
-	TerrainRenderer.Init(staticMeshData);
+	StaticMeshes.Init(staticMeshData);
 
 	//PIVOT-ARROWS
 	Array<Rendering::V_PosColNorm> pivotVertices{};

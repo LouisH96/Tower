@@ -11,9 +11,9 @@ float Terrain::GetHeight(const Float2& point) const
 	return m_HeightMap.GetHeight(point);
 }
 
-void Terrain::GenerateMeshIn(TerrainRenderer::MeshData& data)
+void Terrain::GenerateMeshIn(StaticMeshSystem::MeshData& data)
 {
-	TerrainRenderer::MeshData terrainMesh{};
+	StaticMeshSystem::MeshData terrainMesh{};
 	m_HeightMap.ToVertices(terrainMesh.Vertices, terrainMesh.Indices, m_Position);
 	data.StartShape();
 	data.Add(terrainMesh);

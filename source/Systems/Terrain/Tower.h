@@ -1,6 +1,6 @@
 #pragma once
 #include "Rendering/Structs/VertexTypes.h"
-#include "TerrainRenderer.h"
+#include <Systems\StaticMeshes\StaticMeshSystem.h>
 
 namespace MyEngine
 {
@@ -30,7 +30,7 @@ public:
 	~Tower() = default;
 
 	void GenerateMeshIn(
-		TerrainRenderer::MeshData& staticMeshData,
+		StaticMeshSystem::MeshData& staticMeshData,
 		MeshCollidable& collidable);
 
 private:

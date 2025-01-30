@@ -2,7 +2,7 @@
 
 #include <Rendering\State\SamplerState.h>
 
-#include <Systems\Terrain\TerrainRenderer.h>
+#include <Systems\StaticMeshes\StaticMeshSystem.h>
 #include <Systems\Shadows\ShadowSystem.h>
 #include <Systems\Skydome\SkyDomeSystem.h>
 
@@ -50,8 +50,6 @@ private:
 	//Renderers
 	ShadowSystem m_ShadowRenderer;
 	SkyDomeSystem m_SkyDomeRenderer;
-	TerrainRenderer m_TerrainRenderer;
-
 };
 
 }

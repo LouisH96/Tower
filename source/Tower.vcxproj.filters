@@ -16,8 +16,8 @@
     <ClCompile Include="TowerGameRenderer.cpp" />
     <ClCompile Include="Systems\Skydome\SkyDomeSystem.cpp" />
     <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
-    <ClCompile Include="Systems\Terrain\TerrainRenderer.cpp" />
     <ClCompile Include="Systems\Systems.cpp" />
+    <ClCompile Include="Systems\StaticMeshes\StaticMeshSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Bow\Bow.h" />
@@ -33,7 +33,7 @@
     <ClInclude Include="TowerGameRenderer.h" />
     <ClInclude Include="Systems\Skydome\SkyDomeSystem.h" />
     <ClInclude Include="Systems\Shadows\ShadowSystem.h" />
-    <ClInclude Include="Systems\Terrain\TerrainRenderer.h" />
     <ClInclude Include="Systems\Systems.h" />
+    <ClInclude Include="Systems\StaticMeshes\StaticMeshSystem.h" />
   </ItemGroup>
 </Project>

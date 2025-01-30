@@ -1,6 +1,6 @@
 #pragma once
 #include "HeightMap.h"
-#include <Systems\Terrain\TerrainRenderer.h>
+#include <Systems\StaticMeshes\StaticMeshSystem.h>
 
 namespace MyEngine
 {
@@ -27,7 +27,7 @@ public:
 	float GetHeight(const Float2& point) const; //xz
 	const Float2& GetSize() const { return m_HeightMap.GetSize(); }
 
-	void GenerateMeshIn(TerrainRenderer::MeshData& data);
+	void GenerateMeshIn(StaticMeshSystem::MeshData& data);
 
 private:
 	HeightMap m_HeightMap;
