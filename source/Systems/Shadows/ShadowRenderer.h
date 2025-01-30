@@ -12,7 +12,7 @@ namespace TowerGame
 	public:
 		ShadowRenderer();
 
-		void InitShadow(const Character& character);
+		void Init(const Character& character);
 		void MoveShadow(const Character& character);
 		void BeginShadowMapRender();
 		void BeginRender();

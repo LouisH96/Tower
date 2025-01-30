@@ -3,19 +3,17 @@
 #include "Bow.h"
 
 #include <App/Win32/Mouse.h>
-#include <Framework/Resources.h>
 #include <Framework/Globals.h>
+#include <Framework/Resources.h>
 #include <Io/Fbx/FbxClass.h>
 #include <Math/Quaternion.h>
 #include <Rendering/Renderers/R_LambertCam_Tex_Transform.h>
 #include <Rendering/State/Mesh.h>
 #include <Rendering/State/Texture.h>
 #include <Rendering/Structs/VertexTypes.h>
-#include <Services/GameplaySystems.h>
-#include <Services/RenderSystems.h>
+#include <Systems\Arrows\ArrowSystem.h>
 #include <Transform\WorldMatrix.h>
-
-#include "ArrowSystem.h"
+#include <TowerApp.h>
 
 using namespace TowerGame;
 using namespace Animations;
@@ -91,7 +89,7 @@ void Bow::Update(const Transform& cameraTransform)
 			if (!Globals::pMouse->IsLeftBtnDown())
 			{
 				//Release Arrow
-				GameplaySystems::GetArrowSystem().Launch(m_ArrowIdx);
+				SYSTEMS.Arrows.Launch(m_ArrowIdx);
 				m_ArrowIdx = -1;
 
 				//Update Animator TimeScale
@@ -110,7 +108,7 @@ void Bow::Update(const Transform& cameraTransform)
 		{
 			if (Globals::pMouse->IsLeftBtnDown())
 			{
-				m_ArrowIdx = GameplaySystems::GetArrowSystem().Spawn();
+				m_ArrowIdx = SYSTEMS.Arrows.Spawn();
 
 				//Update Animator TimeScale
 				m_Animator.SetTimeScale(CHARGE_ARROW_TIMESCALE);
@@ -128,7 +126,7 @@ void Bow::Update(const Transform& cameraTransform)
 	if (IsLoaded())
 	{
 		//Update Arrow Position
-		GameplaySystems::GetArrowSystem().SetArrowTransform(m_ArrowIdx, a * m_WorldTransform.AsMatrix());
+		SYSTEMS.Arrows.SetArrowTransform(m_ArrowIdx, a * m_WorldTransform.AsMatrix());
 	}
 }
 
@@ -136,9 +134,4 @@ void Bow::Render()
 {
 	m_Texture.Activate();
 	m_Buffers.ActivateAndDraw();
-}
-
-void Bow::LinkRenderers()
-{
-	//RenderSystems::GetTransformRenderer().AddEntry(*m_pBowMesh, *m_pTexture, m_WorldTransform);
 }

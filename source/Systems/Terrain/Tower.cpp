@@ -3,24 +3,30 @@
 
 #include "Rendering/State/Mesh.h"
 #include "Rendering/Structs/VertexTypes.h"
-#include "Services/CollisionService.h"
-#include "Services/GameplaySystems.h"
-#include "Services/RenderSystems.h"
+#include <Systems\Collisions\CollisionService.h>
 
 using namespace TowerGame;
 using namespace Rendering;
 
-Tower::Tower(const Float3& position, const Float2& roofSize, float height)
-	: m_Position{ position }
-	, m_RoofSize{ roofSize }
-	, m_Height{ height }
+void Tower::Init(Desc& desc)
 {
+	m_Position = desc.Position;
+	m_RoofSize = desc.RoofSize;
+	m_Height = desc.Height;
 }
 
-void Tower::LinkGameplay()
+void Tower::GenerateMeshIn(
+	TerrainRenderer::MeshData& staticMeshData,
+	MeshCollidable& collidable)
 {
-	Generate(GameplaySystems::GetCollisionService().Tower,
-		m_Position, m_RoofSize, m_Height);
+	TerrainRenderer::MeshData towerMeshData{};
+
+	//todo: clean
+	Generate(collidable, m_Position, m_RoofSize, m_Height);
+	towerMeshData.Vertices.Add(m_Vertices);
+	towerMeshData.Indices.Add(collidable.Indices);
+
+	staticMeshData.Add(towerMeshData);
 }
 
 void Tower::Generate(MeshCollidable& collidable,
@@ -183,10 +189,4 @@ void Tower::AddRamp(
 	up = depth * rampWidth;
 	rightUp = right + up;
 	AddPlane(collidable, right, up, rightUp, origin, color, vertices, verticesIdx, indicesIdx, triangleNormalIdx);
-}
-
-void Tower::GetDrawData(MeshData<Vertex, TOPOLOGY>& meshData) const
-{
-	meshData.Vertices.Add(m_Vertices);
-	meshData.Indices.Add(GameplaySystems::GetCollisionService().Tower.Indices);
 }

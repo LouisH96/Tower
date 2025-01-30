@@ -8,7 +8,8 @@ class Character
 public:
 	constexpr static float HEIGHT{ 1.8f };
 
-	explicit Character(const Float3& position);
+	Character() = default;
+	void Init(const Float3& position);
 
 	void Update();
 

@@ -23,10 +23,10 @@ public:
 	};
 	using Vertex = Rendering::V_PosNorUvSkin;
 
-	EnemySystem(int nrEnemies, const Float2& target);
+	EnemySystem();
+	void Init(int nrEnemies, const Float2& target);
 	~EnemySystem() = default;
 
-	void LinkRenderers();
 	void Update();
 	void OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy);
 
@@ -37,7 +37,7 @@ public:
 
 private:
 	Array<Enemy> m_Enemies;
-	const Float2 m_Target;
+	Float2 m_Target;
 	unsigned m_BatchLimit;
 
 	//Rendering

@@ -8,6 +8,7 @@ class HeightMap
 {
 public:
 	//---| Constructor/Destructor |---
+	HeightMap() = default;
 	explicit HeightMap(Int2 nrElements, float initHeight, const Float2& size);
 
 	void AddSinWaveX(float wavePeriod, float waveMagnitude);

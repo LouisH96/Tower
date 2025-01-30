@@ -1,18 +1,18 @@
 #include "pch.h"
 #include "EnemySystem.h"
 
-#include "Environment/Terrain.h"
+#include <Systems\Terrain\Terrain.h>
+#include <Systems\Collisions\CollisionService.h>
+
 #include "Framework/Resources.h"
 #include "Io/Fbx/FbxClass.h"
 #include "Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h"
-#include "Services/CollisionService.h"
-#include "Services/GameplaySystems.h"
-#include "Services/RenderSystems.h"
-#include "Renderer/TowerGameRenderer.h"
+#include <TowerGameRenderer.h>
 
 #include <Timing\Counter.h>
 #include <Io\Fbx\Wrapping\FbxData.h>
 #include <Transform\WorldMatrix.h>
+#include <TowerApp.h>
 
 using namespace Animations;
 using namespace Io::Fbx;
@@ -24,12 +24,17 @@ const InputLayout::Element EnemySystem::Instance::ELEMENTS[]{
 	{"BONE_OFFSET", InputLayout::ElementType::Uint}
 };
 
-EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
+EnemySystem::EnemySystem()
 	: m_InputLayout{ InputLayout::FromTypes2<Vertex, Instance>() }
-	, m_Enemies{ nrEnemies }
-	, m_Target{ target }
 	, m_Shader{ Resources::Local(L"Enemy.hlsl") }
 {
+}
+
+void EnemySystem::Init(int nrEnemies, const Float2& target)
+{
+	m_Enemies = { nrEnemies };
+	m_Target = target;
+
 	//MESH
 	constexpr float modelScale{ .01f };
 	const std::wstring meshPath{ Resources::Local(L"SK_Character_DarkElf_01.fbx") };
@@ -66,8 +71,8 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
 	{
 		const float angle = (rand() % 360) * Constants::TO_RAD;
-		float x = cos(angle) * GameplaySystems::GetTerrain().GetSize().x / 2.f;
-		float y = sin(angle) * GameplaySystems::GetTerrain().GetSize().y / 2.f;
+		float x = cos(angle) * SYSTEMS.Terrain.GetSize().x / 2.f;
+		float y = sin(angle) * SYSTEMS.Terrain.GetSize().y / 2.f;
 		if (abs(x) < 5.f) x = x < 0.f ? -5.f : 5.f;
 		if (abs(y) < 5.f) y = y < 0.f ? -5.f : 5.f;
 		const Float3 initPos{ target.x + x, 0, target.y + y };
@@ -77,7 +82,7 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 	}
 
 	//COLLIDABLES
-	EnemiesCollidable& collidable{ GameplaySystems::GetCollisionService().Enemies };
+	EnemiesCollidable& collidable{ SYSTEMS.Collisions.Enemies };
 	collidable.pEnemies = &m_Enemies;
 	collidable.Vertices = { vertices.GetSize() };
 	for (unsigned i = 0; i < vertices.GetSize(); i++)
@@ -89,15 +94,6 @@ EnemySystem::EnemySystem(int nrEnemies, const Float2& target)
 		colVertex.BoneIndices = modelVertex.BoneIds;
 		colVertex.BoneWeights = modelVertex.BoneWeights;
 	}
-}
-
-void EnemySystem::LinkRenderers()
-{
-	/*RenderSystems::InstanceTransformRenderer& renderer{ RenderSystems::GetInstanceTransformRenderer() };
-	const int modelIdx{ renderer.CreateModel({ Resources::Local(L"FantasyRivals_Texture_01_A.png") }, m_Vertices.GetData(), m_Vertices.GetSize()) };
-
-	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
-		renderer.AddInstance(modelIdx, m_Enemies[i].GetTransform());*/
 }
 
 void EnemySystem::Update()

@@ -1,6 +1,7 @@
 #pragma once
 #include <Physics/CollisionDetection.h>
-#include <Character/Enemy.h>
+
+#include <Systems\Enemies\Enemy.h>
 
 namespace TowerGame
 {

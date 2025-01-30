@@ -3,11 +3,11 @@
 
 #include <Rendering\Renderers\R_LambertCam_Tex_Tran_Inst.h>
 #include <Rendering\Renderers\Texture2DRenderer.h>
-#include <Services\GameplaySystems.h>
-#include <Services\RenderSystems.h>
-#include <Weapons\ArrowSystem.h>
-#include <Weapons\Bow.h>
-#include <Character\EnemySystem.h>
+
+#include <Systems\Arrows\ArrowSystem.h>
+#include <Systems\Bow\Bow.h>
+#include <Systems\Enemies\EnemySystem.h>
+#include <TowerApp.h>
 
 using namespace TowerGame;
 using namespace Rendering;
@@ -46,13 +46,13 @@ void TowerGameRenderer::PreRender()
 	m_CameraMatrixPosBuffer.Activate();
 	m_Il_V_PosNorUv_I_ModelMatrix.Activate();
 	m_BonesBuffer.Activate(3);
-	GameplaySystems::GetArrowSystem().Render(true);
-	GameplaySystems::GetEnemySystem()
+	SYSTEMS.Arrows.Render(true);
+	SYSTEMS.Enemies
 		.Render<Shader::Function::Vertex>(m_BonesBuffer); //Render
 
 	m_Shader_Terrain.Activate<Shader::Function::Vertex>();
 	m_Il_V_PosNorCol.Activate();
-	RenderSystems::GetTerrainRenderer().Render();
+	SYSTEMS.TerrainRenderer.Render();
 }
 
 void TowerGameRenderer::Render()
@@ -70,7 +70,7 @@ void TowerGameRenderer::Render()
 	m_Il_V_PosNorCol.Activate();
 	m_CameraMatrixPosBuffer.Update({ camera });
 	m_CameraMatrixPosBuffer.Activate();
-	RenderSystems::GetTerrainRenderer().Render();
+	SYSTEMS.TerrainRenderer.Render();
 
 	//Entity
 	m_Sampler.Activate();
@@ -78,20 +78,20 @@ void TowerGameRenderer::Render()
 	m_Shader_Entity.Activate();
 	m_CameraMatrixPosBuffer.Activate();
 	m_BonesBuffer.Activate(3);
-	GameplaySystems::GetArrowSystem().Render();
-	GameplaySystems::GetEnemySystem().Render(m_BonesBuffer);
+	SYSTEMS.Arrows.Render();
+	SYSTEMS.Enemies.Render(m_BonesBuffer);
 
 	//Weapon
-	const Bow& bow{ GameplaySystems::GetBow() };
+	const Bow& bow{ SYSTEMS.Bow };
 	m_Shader_Weapon.Activate();
 	m_Il_V_PosNorUvSkin.Activate();
 	m_ModelBuffer.Update(CB_ModelBuffer{ bow.GetWorldTransform().AsMatrix() });
 	m_ModelBuffer.Activate(1);
 	m_BonesBuffer.Update(bow.GetBones());
-	GameplaySystems::GetBow().Render();
+	SYSTEMS.Bow.Render();
 
 	//Other
-	RenderSystems::GetSimpleRenderer().Render();
+	SYSTEMS.pSimpleRenderer->Render();
 
 	m_ShadowRenderer.EndRender();
 }

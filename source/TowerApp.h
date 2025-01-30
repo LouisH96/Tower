@@ -1,7 +1,7 @@
 #pragma once
-#include "Services/GameplaySystems.h"
-#include "Services/RenderSystems.h"
-#include <Renderer\TowerGameRenderer.h>
+#include "TowerGameRenderer.h"
+#include <Systems\Systems.h>
+
 
 namespace TowerGame
 {
@@ -21,21 +21,15 @@ public:
 	void Render();
 	void RenderUi();
 
-	const TowerGame::TowerGameRenderer& GetRenderer() const { return m_Renderer; }
+	TowerGameRenderer& GetRenderer() { return m_Renderer; }
+	Systems& GetSystems() { return m_Systems; }
 
 private:
-	GameplaySystems m_Gameplay;
-	RenderSystems m_Rendering;
-	TowerGame::TowerGameRenderer m_Renderer;
-
-	void InitGameplay();
-	void LinkGameplay();
-	void InitRendering();
-	void LinkRendering();
-
-	void CreateArrows();
+	TowerGameRenderer m_Renderer;
+	Systems m_Systems;
 };
 }
 
 #define APP (*TowerApp::pApp)
 #define NEW_UI (*Globals::pUi)
+#define SYSTEMS (APP.GetSystems())

@@ -25,7 +25,6 @@ public:
 
 	void Update(const Transform& cameraTransform);
 	void Render();
-	void LinkRenderers();
 
 	const Transform& GetWorldTransform() const { return m_WorldTransform; }
 	const Array<Float4X4>& GetBones() const { return m_Animator.GetBones(); }

@@ -1,17 +1,17 @@
 #include "pch.h"
 #include "Character.h"
-
-#include <Environment/Terrain.h>
-#include <Physics/CollisionDetection.h>
-#include <Services/CollisionService.h>
-#include <Services/GameplaySystems.h>
+ 
 #include <Geometry/Shapes/Sphere.h>
+#include <Physics/CollisionDetection.h>
+#include <Systems\Collisions\CollisionService.h>
+#include <Systems\Terrain\Terrain.h>
+#include <TowerApp.h>
 
 using namespace TowerGame;
 
-Character::Character(const Float3& position)
-	: m_CameraController{ *Globals::pCamera }
+void Character::Init(const Float3& position)
 {
+	m_CameraController = FpsCameraController{ *Globals::pCamera };
 	m_CameraController.SetPosition(position);
 
 	m_MoveDownKey = Keyboard::ScanCodeToVk(ScanCode::S);
@@ -33,17 +33,17 @@ void Character::Update()
 	const Float3 head{ oldHead };
 	const Float3 feet{ GetFeetPosition() };
 	Physics::CollisionDetection::Collision collision{};
-	if (GameplaySystems::GetCollisionService().Tower.IsColliding(head, feet, collision))
+	if (SYSTEMS.Collisions.Tower.IsColliding(head, feet, collision))
 		m_CameraController.SetPositionY(collision.position.y + HEIGHT);
 	else
 	{
-		const float terrainHeight{ GameplaySystems::GetTerrain().GetHeight(feet.Xz()) };
+		const float terrainHeight{ SYSTEMS.Terrain.GetHeight(feet.Xz()) };
 		if (feet.y < terrainHeight)
 			m_CameraController.SetPositionY(terrainHeight + HEIGHT);
 	}
 
 	Float3 overlap;
-	if (GameplaySystems::GetCollisionService().Tower.IsColliding(Sphere{ newPos, .1f }, overlap))
+	if (SYSTEMS.Collisions.Tower.IsColliding(Sphere{ newPos, .1f }, overlap))
 		m_CameraController.SetPosition(m_CameraController.GetPosition() - overlap);
 
 	//cam & bow

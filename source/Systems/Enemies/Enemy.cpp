@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "Enemy.h"
 
-#include <Environment/Terrain.h>
-#include <Services/GameplaySystems.h>
-#include <Weapons/Bow.h>
+#include <Systems\Arrows\ArrowSystem.h>
+#include <Systems\Bow\Bow.h>
+#include <Systems\Terrain\Terrain.h>
 
-#include "Weapons/ArrowSystem.h"
 #include <Transform\WorldMatrix.h>
+#include <TowerApp.h>
 
 using namespace TowerGame;
 
@@ -48,7 +48,7 @@ void Enemy::Update(
 	{
 		UpdateFall();
 		for (int i = 0; i < m_Arrows.size(); i++)
-			GameplaySystems::GetArrowSystem().SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
+			SYSTEMS.Arrows.SetArrowTransform(m_Arrows[i].arrowIdx, Transform::LocalToWorld(m_Arrows[i].Local, m_World));
 	}
 }
 
@@ -85,7 +85,7 @@ void Enemy::UpdateMove(const Float2& target, const Float2& movement)
 	}
 
 	m_World.MoveRelativeXz(movement);
-	m_World.Position.y = GameplaySystems::GetTerrain().GetHeight(m_World.Position.Xz());
+	m_World.Position.y = SYSTEMS.Terrain.GetHeight(m_World.Position.Xz());
 }
 
 void Enemy::UpdateFall()
@@ -94,7 +94,7 @@ void Enemy::UpdateFall()
 	m_World.Rotation.RotateBy(rotation);
 
 	const Float3 head{ m_World.LocalToWorld({0, 1.8f,0}) };
-	const float terrainHeight{ GameplaySystems::GetTerrain().GetHeight(head.Xz()) };
+	const float terrainHeight{ SYSTEMS.Terrain.GetHeight(head.Xz()) };
 
 	if (head.y <= terrainHeight)
 	{

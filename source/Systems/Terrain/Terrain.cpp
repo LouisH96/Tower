@@ -1,10 +1,8 @@
 #include "pch.h"
 #include "Terrain.h"
 
-#include <Environment/HeightMap.h>
 #include <Rendering/State/Mesh.h>
 #include <Rendering/Structs/VertexTypes.h>
-#include <Services/RenderSystems.h>
 
 using namespace TowerGame;
 
@@ -13,10 +11,18 @@ float Terrain::GetHeight(const Float2& point) const
 	return m_HeightMap.GetHeight(point);
 }
 
-Terrain::Terrain(const Float3& position, const Float2& size)
-	: m_HeightMap{ MakeHeightMap(size, {300,300}) }
-	, m_Position{ position }
+void Terrain::GenerateMeshIn(TerrainRenderer::MeshData& data)
 {
+	TerrainRenderer::MeshData terrainMesh{};
+	m_HeightMap.ToVertices(terrainMesh.Vertices, terrainMesh.Indices, m_Position);
+	data.StartShape();
+	data.Add(terrainMesh);
+}
+
+void Terrain::Init(const Float3& position, const Float2& size)
+{
+	m_HeightMap = MakeHeightMap(size, { 300,300 });
+	m_Position = position;
 }
 
 HeightMap Terrain::MakeHeightMap(const Float2& worldSize, const Int2& nrPoints)
@@ -43,9 +49,4 @@ HeightMap Terrain::MakeHeightMap(const Float2& worldSize, const Int2& nrPoints)
 	heightMap.SinDisplaceAlongY(70, 3);
 
 	return heightMap;
-}
-
-void Terrain::GetDrawData(MeshData<Vertex, TOPOLOGY>& meshData) const
-{
-	m_HeightMap.ToVertices(meshData.Vertices, meshData.Indices, m_Position);
 }

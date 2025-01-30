@@ -1,41 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Weapons\Bow.cpp" />
+    <ClCompile Include="Systems\Bow\Bow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="TowerApp.cpp" />
-    <ClCompile Include="Environment\Terrain.cpp" />
-    <ClCompile Include="Environment\HeightMap.cpp" />
-    <ClCompile Include="Character\Character.cpp" />
-    <ClCompile Include="Environment\Tower.cpp" />
-    <ClCompile Include="Character\Enemy.cpp" />
-    <ClCompile Include="Character\EnemySystem.cpp" />
-    <ClCompile Include="Services\CollisionService.cpp" />
-    <ClCompile Include="Weapons\ArrowSystem.cpp" />
-    <ClCompile Include="Services\GameplaySystems.cpp" />
-    <ClCompile Include="Services\RenderSystems.cpp" />
-    <ClCompile Include="Renderer\TowerGameRenderer.cpp" />
-    <ClCompile Include="Renderer\SkyDomeRenderer.cpp" />
-    <ClCompile Include="Renderer\ShadowRenderer.cpp" />
-    <ClCompile Include="Renderer\TerrainRenderer.cpp" />
+    <ClCompile Include="Systems\Terrain\Terrain.cpp" />
+    <ClCompile Include="Systems\Terrain\HeightMap.cpp" />
+    <ClCompile Include="Systems\Character\Character.cpp" />
+    <ClCompile Include="Systems\Terrain\Tower.cpp" />
+    <ClCompile Include="Systems\Enemies\Enemy.cpp" />
+    <ClCompile Include="Systems\Enemies\EnemySystem.cpp" />
+    <ClCompile Include="Systems\Collisions\CollisionService.cpp" />
+    <ClCompile Include="Systems\Arrows\ArrowSystem.cpp" />
+    <ClCompile Include="TowerGameRenderer.cpp" />
+    <ClCompile Include="Systems\Skydome\SkyDomeRenderer.cpp" />
+    <ClCompile Include="Systems\Shadows\ShadowRenderer.cpp" />
+    <ClCompile Include="Systems\Terrain\TerrainRenderer.cpp" />
+    <ClCompile Include="Systems\Systems.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Weapons\Bow.h" />
+    <ClInclude Include="Systems\Bow\Bow.h" />
     <ClInclude Include="TowerApp.h" />
-    <ClInclude Include="Environment\Terrain.h" />
-    <ClInclude Include="Environment\HeightMap.h" />
-    <ClInclude Include="Character\Character.h" />
-    <ClInclude Include="Environment\Tower.h" />
-    <ClInclude Include="Character\Enemy.h" />
-    <ClInclude Include="Character\EnemySystem.h" />
-    <ClInclude Include="Services\CollisionService.h" />
-    <ClInclude Include="Weapons\ArrowSystem.h" />
-    <ClInclude Include="Services\GameplaySystems.h" />
-    <ClInclude Include="Services\RenderSystems.h" />
-    <ClInclude Include="Renderer\TowerGameRenderer.h" />
-    <ClInclude Include="Renderer\SkyDomeRenderer.h" />
-    <ClInclude Include="Renderer\ShadowRenderer.h" />
-    <ClInclude Include="Renderer\TerrainRenderer.h" />
+    <ClInclude Include="Systems\Terrain\Terrain.h" />
+    <ClInclude Include="Systems\Terrain\HeightMap.h" />
+    <ClInclude Include="Systems\Character\Character.h" />
+    <ClInclude Include="Systems\Terrain\Tower.h" />
+    <ClInclude Include="Systems\Enemies\Enemy.h" />
+    <ClInclude Include="Systems\Enemies\EnemySystem.h" />
+    <ClInclude Include="Systems\Collisions\CollisionService.h" />
+    <ClInclude Include="Systems\Arrows\ArrowSystem.h" />
+    <ClInclude Include="TowerGameRenderer.h" />
+    <ClInclude Include="Systems\Skydome\SkyDomeRenderer.h" />
+    <ClInclude Include="Systems\Shadows\ShadowRenderer.h" />
+    <ClInclude Include="Systems\Terrain\TerrainRenderer.h" />
+    <ClInclude Include="Systems\Systems.h" />
   </ItemGroup>
 </Project>

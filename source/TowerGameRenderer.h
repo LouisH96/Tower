@@ -2,15 +2,16 @@
 
 #include <Rendering\State\SamplerState.h>
 
-#include "ShadowRenderer.h"
-#include "SkyDomeRenderer.h"
+#include <Systems\Terrain\TerrainRenderer.h>
+#include <Systems\Shadows\ShadowRenderer.h>
+#include <Systems\Skydome\SkyDomeRenderer.h>
 
 namespace TowerGame
 {
-
 class TowerGameRenderer
 {
 public:
+
 	static constexpr unsigned BONES_BUFFER_SIZE{ 1024 };
 
 	TowerGameRenderer();
@@ -49,6 +50,8 @@ private:
 	//Renderers
 	ShadowRenderer m_ShadowRenderer;
 	SkyDomeRenderer m_SkyDomeRenderer;
+	TerrainRenderer m_TerrainRenderer;
+
 };
 
 }

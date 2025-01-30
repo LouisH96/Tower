@@ -3,9 +3,8 @@
 
 #include <Rendering\Canvas.h>
 #include <Rendering\State\Shader.h>
-#include <Services\RenderSystems.h>
 #include <Transform\ViewMatrix.h>
-#include <Character\Character.h>
+#include <Systems\Character\Character.h>
 
 #undef near
 #undef far
@@ -26,7 +25,7 @@ ShadowRenderer::ShadowRenderer()
 	m_ShadowMap = { m_DepthStencil.MakeShaderResourceView() };
 }
 
-void ShadowRenderer::InitShadow(const Character& character)
+void ShadowRenderer::Init(const Character& character)
 {
 	m_PrevYaw = GetYaw(character);
 	m_PrevForward = GetForward(character);

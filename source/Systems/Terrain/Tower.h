@@ -1,6 +1,6 @@
 #pragma once
 #include "Rendering/Structs/VertexTypes.h"
-#include <Renderer\TerrainRenderer.h>
+#include "TerrainRenderer.h"
 
 namespace MyEngine
 {
@@ -15,19 +15,29 @@ namespace TowerGame
 struct MeshCollidable;
 
 class Tower
-	: public TowerGame::TerrainRenderComponent
 {
 public:
-	explicit Tower(const Float3& position, const Float2& roofSize, float height);
+	struct Desc {
+		Float3 Position;
+		Float2 RoofSize;
+		float Height;
+	};
+
+public:
+	Tower() = default;
+	void Init(Desc& desc);
+
 	~Tower() = default;
 
-	void LinkGameplay();
+	void GenerateMeshIn(
+		TerrainRenderer::MeshData& staticMeshData,
+		MeshCollidable& collidable);
 
 private:
 	List<Rendering::V_PosNorCol> m_Vertices;
 	Float3 m_Position;
 	Float2 m_RoofSize;
-	float m_Height;
+	float m_Height{};
 
 	void Generate(MeshCollidable& collidable,
 		const Float3& position, const Float2& roofSize,
@@ -54,8 +64,5 @@ private:
 		const Float3& color,
 		List<Rendering::V_PosNorCol>& vertices, int& verticesIdx,
 		int& indicesIdx, int& triangleNormalIdx);
-
-	// Inherited via TerrainRenderComponent
-	void GetDrawData(MeshData<Vertex, TOPOLOGY>& meshData) const override;
 };
 }

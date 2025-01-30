@@ -1,16 +1,16 @@
 #include "pch.h"
 #include "ArrowSystem.h"
 
-#include "Bow.h"
-#include "Character/EnemySystem.h"
-#include "Environment/Terrain.h"
-#include "Framework/Resources.h"
+#include <Systems\Bow\Bow.h>
+#include <Systems\Enemies\EnemySystem.h>
+#include <Systems\Terrain\Terrain.h>
+#include <Systems\Collisions\CollisionService.h>
+
 #include "Camera/Camera.h"
 #include "Generation/PlaneGeneration.h"
 #include "Io/Fbx/FbxClass.h"
-#include "Services/CollisionService.h"
-#include "Services/GameplaySystems.h"
 #include "Transform/WorldMatrix.h"
+#include <TowerApp.h>
 
 using namespace TowerGame;
 using namespace Rendering;
@@ -46,7 +46,7 @@ void ArrowSystem::Update()
 
 		//IS UNDER TERRAIN ?
 		const Float3 position{ WorldMatrix::GetPosition(world) };
-		if (GameplaySystems::GetTerrain().GetHeight(position.Xz()) >= position.y)
+		if (SYSTEMS.Terrain.GetHeight(position.Xz()) >= position.y)
 		{
 			SetArrowFinished(velocity);
 			continue;
@@ -60,7 +60,7 @@ void ArrowSystem::Update()
 		//m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
 
 		//IS IN TOWER?
-		const CollisionService& collisions{ GameplaySystems::GetCollisionService() };
+		const CollisionService& collisions{ SYSTEMS.Collisions };
 		if (collisions.Tower.IsColliding(position, newPosition))
 		{
 			SetArrowFinished(velocity);
@@ -71,7 +71,7 @@ void ArrowSystem::Update()
 		Enemy* pEnemy{ collisions.Enemies.IsColliding(position, newPosition) };
 		if (pEnemy)
 		{
-			GameplaySystems::GetEnemySystem().OnCollision(Transform{ newPosition, Quaternion{world} }, i, *pEnemy);
+			SYSTEMS.Enemies.OnCollision(Transform{ newPosition, Quaternion{world} }, i, *pEnemy);
 			SetArrowFinished(velocity);
 			continue;
 		}
