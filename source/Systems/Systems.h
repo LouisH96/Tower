@@ -5,7 +5,7 @@
 #include <Systems\Character\Character.h>
 #include <Systems\Collisions\CollisionSystem.h>
 #include <Systems\Enemies\EnemySystem.h>
-#include <Systems\Shadows\ShadowRenderer.h>
+#include <Systems\Shadows\ShadowSystem.h>
 #include <Systems\Skydome\SkyDomeRenderer.h>
 #include <Systems\Terrain\TerrainRenderer.h>
 #include <Systems\Terrain\Terrain.h>
@@ -32,7 +32,7 @@ public:
 	Character Character;
 	CollisionSystem Collisions;
 	EnemySystem Enemies;
-	ShadowRenderer Shadows;
+	ShadowSystem Shadows;
 	SkyDomeRenderer Skydome;
 	Terrain Terrain;
 	Tower Tower;

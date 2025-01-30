@@ -183,7 +183,7 @@
     <ClCompile Include="Systems\Systems.cpp" />
     <ClCompile Include="TowerGameRenderer.cpp" />
     <ClCompile Include="Systems\Skydome\SkyDomeRenderer.cpp" />
-    <ClCompile Include="Systems\Shadows\ShadowRenderer.cpp" />
+    <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
     <ClCompile Include="Systems\Terrain\TerrainRenderer.cpp" />
     <ClCompile Include="Systems\Arrows\ArrowSystem.cpp" />
     <ClCompile Include="Systems\Enemies\Enemy.cpp" />
@@ -207,7 +207,7 @@
     <ClInclude Include="Systems\Systems.h" />
     <ClInclude Include="TowerGameRenderer.h" />
     <ClInclude Include="Systems\Skydome\SkyDomeRenderer.h" />
-    <ClInclude Include="Systems\Shadows\ShadowRenderer.h" />
+    <ClInclude Include="Systems\Shadows\ShadowSystem.h" />
     <ClInclude Include="Systems\Terrain\TerrainRenderer.h" />
     <ClInclude Include="Systems\Arrows\ArrowSystem.h" />
     <ClInclude Include="Systems\Enemies\Enemy.h" />

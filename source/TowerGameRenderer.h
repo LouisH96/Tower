@@ -3,7 +3,7 @@
 #include <Rendering\State\SamplerState.h>
 
 #include <Systems\Terrain\TerrainRenderer.h>
-#include <Systems\Shadows\ShadowRenderer.h>
+#include <Systems\Shadows\ShadowSystem.h>
 #include <Systems\Skydome\SkyDomeRenderer.h>
 
 namespace TowerGame
@@ -21,8 +21,8 @@ public:
 	void PreRender();
 	void Render();
 
-	ShadowRenderer& GetShadowRenderer() { return m_ShadowRenderer; }
-	const ShadowRenderer& GetShadowRenderer() const { return m_ShadowRenderer; }
+	ShadowSystem& GetShadowRenderer() { return m_ShadowRenderer; }
+	const ShadowSystem& GetShadowRenderer() const { return m_ShadowRenderer; }
 
 private:
 	//CamBuffers
@@ -48,7 +48,7 @@ private:
 	Rendering::SamplerState m_Sampler;
 
 	//Renderers
-	ShadowRenderer m_ShadowRenderer;
+	ShadowSystem m_ShadowRenderer;
 	SkyDomeRenderer m_SkyDomeRenderer;
 	TerrainRenderer m_TerrainRenderer;
 

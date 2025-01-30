@@ -7,10 +7,10 @@ namespace TowerGame
 {
 	class Character;
 
-	class ShadowRenderer
+	class ShadowSystem
 	{
 	public:
-		ShadowRenderer();
+		ShadowSystem();
 
 		void Init(const Character& character);
 		void MoveShadow(const Character& character);

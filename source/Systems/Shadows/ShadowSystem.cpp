@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ShadowRenderer.h"
+#include "ShadowSystem.h"
 
 #include <Rendering\Canvas.h>
 #include <Rendering\State\Shader.h>
@@ -12,10 +12,10 @@
 using namespace TowerGame;
 using namespace Rendering;
 
-const Float3 ShadowRenderer::m_LightDir{ Float3{.432709f,-.639439f,.635516f}.Normalized() };
-const Float2 ShadowRenderer::m_TextureSize{ 512 * 2 };
+const Float3 ShadowSystem::m_LightDir{ Float3{.432709f,-.639439f,.635516f}.Normalized() };
+const Float2 ShadowSystem::m_TextureSize{ 512 * 2 };
 
-ShadowRenderer::ShadowRenderer()
+ShadowSystem::ShadowSystem()
 	: m_Viewport{ m_TextureSize }
 	, m_View{ ViewMatrix::From(m_LightDir) }
 	, m_Projection{ MakeProjectionMatrix() }
@@ -25,13 +25,13 @@ ShadowRenderer::ShadowRenderer()
 	m_ShadowMap = { m_DepthStencil.MakeShaderResourceView() };
 }
 
-void ShadowRenderer::Init(const Character& character)
+void ShadowSystem::Init(const Character& character)
 {
 	m_PrevYaw = GetYaw(character);
 	m_PrevForward = GetForward(character);
 }
 
-void ShadowRenderer::MoveShadow(const Character& character)
+void ShadowSystem::MoveShadow(const Character& character)
 {
 	const float yaw{ GetYaw(character) };
 
@@ -50,7 +50,7 @@ void ShadowRenderer::MoveShadow(const Character& character)
 	ViewMatrix::SetPosition(m_View, lightPos);
 }
 
-void ShadowRenderer::BeginShadowMapRender()
+void ShadowSystem::BeginShadowMapRender()
 {
 	m_DepthStencil.Clear();
 	ID3D11RenderTargetView* renderTargets[1]
@@ -64,7 +64,7 @@ void ShadowRenderer::BeginShadowMapRender()
 	m_LightBufferData.Forward = m_LightDir;
 }
 
-void ShadowRenderer::BeginRender()
+void ShadowSystem::BeginRender()
 {
 	m_ShadowMap.Activate(1);
 	m_LightBuffer.Update(m_LightBufferData);
@@ -72,12 +72,12 @@ void ShadowRenderer::BeginRender()
 	m_Sampler.Activate(1);
 }
 
-void ShadowRenderer::EndRender()
+void ShadowSystem::EndRender()
 {
 	Texture::Unset(1);
 }
 
-Float4X4 ShadowRenderer::MakeProjectionMatrix()
+Float4X4 ShadowSystem::MakeProjectionMatrix()
 {
 	const float near{ .01f };
 	const float far{
@@ -91,14 +91,14 @@ Float4X4 ShadowRenderer::MakeProjectionMatrix()
 	};
 }
 
-float ShadowRenderer::GetYaw(const Character& character)
+float ShadowSystem::GetYaw(const Character& character)
 {
 	const Camera& camera{ character.GetCameraController().GetCamera() };
 	const Float3& forward{ camera.GetForward() };
 	return atan2f(forward.z, forward.x);
 }
 
-Float3 ShadowRenderer::GetForward(const Character& character)
+Float3 ShadowSystem::GetForward(const Character& character)
 {
 	const Camera& camera{ character.GetCameraController().GetCamera() };
 	return camera.GetForwardXz().Normalized();
