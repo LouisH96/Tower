@@ -9,7 +9,7 @@
 #include <Systems\Skydome\SkyDomeSystem.h>
 #include <Systems\StaticMeshes\StaticMeshSystem.h>
 #include <Systems\Terrain\Terrain.h>
-#include <Systems\Terrain\Tower.h>
+#include <Systems\Tower\Tower.h>
 #include <TowerGameRenderer.h>
 
 namespace TowerGame

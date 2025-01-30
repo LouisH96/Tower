@@ -200,7 +200,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='PartialDebug_Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Systems\Terrain\Terrain.cpp" />
-    <ClCompile Include="Systems\Terrain\Tower.cpp" />
+    <ClCompile Include="Systems\Tower\Tower.cpp" />
     <ClCompile Include="TowerApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -217,7 +217,7 @@
     <ClInclude Include="Systems\Character\Character.h" />
     <ClInclude Include="Systems\Terrain\Terrain.h" />
     <ClInclude Include="Systems\Terrain\HeightMap.h" />
-    <ClInclude Include="Systems\Terrain\Tower.h" />
+    <ClInclude Include="Systems\Tower\Tower.h" />
     <ClInclude Include="TowerApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

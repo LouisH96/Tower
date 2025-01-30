@@ -8,7 +8,7 @@
     <ClCompile Include="Systems\Terrain\Terrain.cpp" />
     <ClCompile Include="Systems\Terrain\HeightMap.cpp" />
     <ClCompile Include="Systems\Character\Character.cpp" />
-    <ClCompile Include="Systems\Terrain\Tower.cpp" />
+    <ClCompile Include="Systems\Tower\Tower.cpp" />
     <ClCompile Include="Systems\Enemies\Enemy.cpp" />
     <ClCompile Include="Systems\Enemies\EnemySystem.cpp" />
     <ClCompile Include="Systems\Collisions\CollisionSystem.cpp" />
@@ -25,7 +25,7 @@
     <ClInclude Include="Systems\Terrain\Terrain.h" />
     <ClInclude Include="Systems\Terrain\HeightMap.h" />
     <ClInclude Include="Systems\Character\Character.h" />
-    <ClInclude Include="Systems\Terrain\Tower.h" />
+    <ClInclude Include="Systems\Tower\Tower.h" />
     <ClInclude Include="Systems\Enemies\Enemy.h" />
     <ClInclude Include="Systems\Enemies\EnemySystem.h" />
     <ClInclude Include="Systems\Collisions\CollisionSystem.h" />
