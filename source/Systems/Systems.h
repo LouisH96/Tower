@@ -26,7 +26,7 @@ public:
 	void Init();
 	void EarlyUpdate();
 	void Update();
-
+	
 	ArrowSystem Arrows;
 	Bow Bow;
 	Character Character;
@@ -37,6 +37,6 @@ public:
 	Terrain Terrain;
 	Tower Tower;
 	StaticMeshSystem StaticMeshes;
-	SimpleRenderer* pSimpleRenderer;
+	SimpleRenderer* pSimpleRenderer{};
 };
 }

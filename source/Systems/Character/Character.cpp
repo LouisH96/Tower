@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Character.h"
- 
+
 #include <Geometry/Shapes/Sphere.h>
 #include <Physics/CollisionDetection.h>
 #include <Systems\Collisions\CollisionSystem.h>
@@ -9,15 +9,18 @@
 
 using namespace TowerGame;
 
+Character::Character()
+	: m_MoveDownKey{ Keyboard::ScanCodeToVk(ScanCode::S) }
+	, m_MoveUpKey{ Keyboard::ScanCodeToVk(ScanCode::W) }
+	, m_MoveLeftKey{ Keyboard::ScanCodeToVk(ScanCode::A) }
+	, m_MoveRightKey{ Keyboard::ScanCodeToVk(ScanCode::D) }
+{
+}
+
 void Character::Init(const Float3& position)
 {
 	m_CameraController = FpsCameraController{ *Globals::pCamera };
 	m_CameraController.SetPosition(position);
-
-	m_MoveDownKey = Keyboard::ScanCodeToVk(ScanCode::S);
-	m_MoveUpKey = Keyboard::ScanCodeToVk(ScanCode::W);
-	m_MoveLeftKey = Keyboard::ScanCodeToVk(ScanCode::A);
-	m_MoveRightKey = Keyboard::ScanCodeToVk(ScanCode::D);
 }
 
 void Character::Update()
