@@ -182,6 +182,7 @@
   <ItemGroup>
     <ClCompile Include="Systems\StaticMeshes\StaticMeshSystem.cpp" />
     <ClCompile Include="Systems\Systems.cpp" />
+    <ClCompile Include="Systems\Ui\TowerUi.cpp" />
     <ClCompile Include="TowerGameRenderer.cpp" />
     <ClCompile Include="Systems\Skydome\SkyDomeSystem.cpp" />
     <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
@@ -206,6 +207,7 @@
   <ItemGroup>
     <ClInclude Include="Systems\StaticMeshes\StaticMeshSystem.h" />
     <ClInclude Include="Systems\Systems.h" />
+    <ClInclude Include="Systems\Ui\TowerUi.h" />
     <ClInclude Include="TowerGameRenderer.h" />
     <ClInclude Include="Systems\Skydome\SkyDomeSystem.h" />
     <ClInclude Include="Systems\Shadows\ShadowSystem.h" />

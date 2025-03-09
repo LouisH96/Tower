@@ -18,6 +18,7 @@
     <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
     <ClCompile Include="Systems\Systems.cpp" />
     <ClCompile Include="Systems\StaticMeshes\StaticMeshSystem.cpp" />
+    <ClCompile Include="Systems\Ui\TowerUi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Bow\Bow.h" />
@@ -35,5 +36,6 @@
     <ClInclude Include="Systems\Shadows\ShadowSystem.h" />
     <ClInclude Include="Systems\Systems.h" />
     <ClInclude Include="Systems\StaticMeshes\StaticMeshSystem.h" />
+    <ClInclude Include="Systems\Ui\TowerUi.h" />
   </ItemGroup>
 </Project>

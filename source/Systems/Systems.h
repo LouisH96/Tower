@@ -11,6 +11,7 @@
 #include <Systems\Terrain\Terrain.h>
 #include <Systems\Tower\Tower.h>
 #include <TowerGameRenderer.h>
+#include "Ui\TowerUi.h"
 
 namespace TowerGame
 {
@@ -36,6 +37,7 @@ public:
 	SkyDomeSystem Skydome;
 	Terrain Terrain;
 	Tower Tower;
+	TowerUi Ui;
 	StaticMeshSystem StaticMeshes;
 	SimpleRenderer* pSimpleRenderer{};
 };

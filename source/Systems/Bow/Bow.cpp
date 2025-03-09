@@ -89,7 +89,7 @@ void Bow::Update(const Transform& cameraTransform)
 			if (!Globals::pMouse->IsLeftBtnDown())
 			{
 				//Release Arrow
-				SYSTEMS.Arrows.Launch(m_ArrowIdx);
+				SYSTEMS.Arrows.Launch(m_ArrowIdx, cameraTransform.Position);
 				m_ArrowIdx = -1;
 
 				//Update Animator TimeScale

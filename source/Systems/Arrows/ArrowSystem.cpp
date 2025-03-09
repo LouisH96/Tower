@@ -73,6 +73,12 @@ void ArrowSystem::Update()
 		{
 			SYSTEMS.Enemies.OnCollision(Transform{ newPosition, Quaternion{world} }, i, *pEnemy);
 			SetArrowFinished(velocity);
+
+			const Float3& launchedPosition{ m_LaunchedPosition[i] };
+			const Float3& hitPosition{ newPosition };
+			const float travelDistance{ launchedPosition.Distance(hitPosition) };
+			const unsigned score{ static_cast<unsigned>(travelDistance * 10) };
+			SYSTEMS.Ui.AddScore(score);
 			continue;
 		}
 	}
@@ -98,10 +104,11 @@ void ArrowSystem::SetArrowTransform(int arrowIdx, const Transform& newArrowWorld
 	m_Instances[arrowIdx] = { world };
 }
 
-void ArrowSystem::Launch(int arrowIdx)
+void ArrowSystem::Launch(int arrowIdx, const Float3& launchedPosition)
 {
 	const Instance& instance{ m_Instances[arrowIdx] };
 	m_Velocities[arrowIdx] = WorldMatrix::GetForward(instance.model) * LAUNCH_SPEED;
+	m_LaunchedPosition.Add(launchedPosition);
 	m_IsCharging = 0;
 }
 
@@ -118,6 +125,6 @@ void ArrowSystem::SetArrowFinished(Float3& arrowVelocity)
 void ArrowSystem::Render(bool hideCharging)
 {
 	m_Texture.Activate();
-	m_Instances.Draw(m_Instances.GetSize() - 
+	m_Instances.Draw(m_Instances.GetSize() -
 		(hideCharging ? m_IsCharging : 0));
 }

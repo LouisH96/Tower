@@ -24,7 +24,7 @@ public:
 	void Render(bool hideCharging = false);
 
 	int Spawn();
-	void Launch(int arrowIdx);
+	void Launch(int arrowIdx, const Float3& launchedPosition);
 	void SetArrowTransform(int arrowIdx, const Float4X4& newArrowWorld);
 	void SetArrowTransform(int arrowIdx, const Transform& newArrowWorld);
 
@@ -40,6 +40,7 @@ private:
 	Rendering::InstanceList<Vertex, Instance> m_Instances;
 
 	List<Float3> m_Velocities;
+	List<Float3> m_LaunchedPosition;
 	unsigned m_IsCharging{ 0 };
 
 	static bool IsArrowFinished(const Float3& arrowVelocity);

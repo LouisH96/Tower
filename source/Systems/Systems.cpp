@@ -61,4 +61,5 @@ void Systems::Update()
 	Enemies.Update();
 	Arrows.Update();
 	Shadows.MoveShadow(Character);
+	Ui.Update();
 }
