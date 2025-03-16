@@ -28,7 +28,7 @@ void Character::Update()
 	const Float3 oldHead{ m_CameraController.GetPosition() };
 	const Float2 movement{ Globals::pKeyboard->GetArrowInput(
 			m_MoveLeftKey, m_MoveRightKey, m_MoveUpKey, m_MoveDownKey,
-			Globals::DeltaTime * 5) };
+			Globals::DeltaTime * SPEED) };
 	m_CameraController.MoveRelative({ movement.x, -9.81f * Globals::DeltaTime, movement.y });
 	const Float3 newPos{ m_CameraController.GetPosition() };
 
