@@ -1,6 +1,7 @@
 #pragma once
-#include "Rendering/Structs/VertexTypes.h"
+#include <Rendering\Structs\VertexTypes.h>
 #include <Systems\StaticMeshes\StaticMeshSystem.h>
+#include <Systems\StaticMeshes\StaticModelSystem.h>
 
 namespace MyEngine
 {
@@ -32,6 +33,9 @@ public:
 	void GenerateMeshIn(
 		StaticMeshSystem::MeshData& staticMeshData,
 		MeshCollidable& collidable);
+
+	void AddModelsIn(
+		StaticModelSystem::InitData& staticModelData);
 
 private:
 	List<Rendering::V_PosNorCol> m_Vertices;

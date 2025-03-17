@@ -91,6 +91,7 @@ void TowerGameRenderer::Render()
 	SYSTEMS.Bow.Render();
 
 	//Other
+	SYSTEMS.StaticModels.Render();
 	SYSTEMS.pSimpleRenderer->Render();
 
 	SYSTEMS.Shadows.EndRender();

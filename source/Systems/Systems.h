@@ -1,5 +1,7 @@
 #pragma once
 
+#include "StaticMeshes\StaticModelSystem.h"
+#include "Ui\TowerUi.h"
 #include <Systems\Arrows\ArrowSystem.h>
 #include <Systems\Bow\Bow.h>
 #include <Systems\Character\Character.h>
@@ -11,7 +13,6 @@
 #include <Systems\Terrain\Terrain.h>
 #include <Systems\Tower\Tower.h>
 #include <TowerGameRenderer.h>
-#include "Ui\TowerUi.h"
 
 namespace TowerGame
 {
@@ -39,6 +40,7 @@ public:
 	Tower Tower;
 	TowerUi Ui;
 	StaticMeshSystem StaticMeshes;
+	StaticModelSystem StaticModels;
 	SimpleRenderer* pSimpleRenderer{};
 };
 }

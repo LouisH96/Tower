@@ -43,6 +43,11 @@ void Systems::Init()
 	Tower.GenerateMeshIn(staticMeshData, Collisions.Tower);
 	StaticMeshes.Init(staticMeshData);
 
+	StaticModelSystem::InitData staticModelData{};
+	Tower.AddModelsIn(staticModelData);
+
+	StaticModels.Init(staticModelData);
+
 	//PIVOT-ARROWS
 	Array<Rendering::V_PosColNorm> pivotVertices{};
 	Array<int> pivotIndices{};
