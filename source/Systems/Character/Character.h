@@ -18,7 +18,7 @@ public:
 	Float3 GetFeetPosition() const;
 
 private:
-	static constexpr float SPEED{ 25.f };
+	static constexpr float SPEED{ 5.f };
 	FpsCameraController m_CameraController;
 
 	char m_MoveLeftKey;
