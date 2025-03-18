@@ -1,7 +1,11 @@
 #include "pch.h"
 #include "StaticModelSystem.h"
 
+#include "..\Collisions\CollisionSystem.h"
+#include <Geometry\PointUtils.h>
+#include <Geometry\Shapes\Triangle.h>
 #include <Rendering\ModelLoaders\ModelLoader.h>
+#include <TowerApp.h>
 #include <Transform\WorldMatrix.h>
 
 using namespace TowerGame;
@@ -36,12 +40,14 @@ void StaticModelSystem::Init(const InitData& initData)
 				for (unsigned iPoint{ 0 }; iPoint < modelMesh.Vertices.GetSize(); ++iPoint)
 				{
 					Vertex& vertex{ modelMesh.Vertices[iPoint] };
-					
+
 					vertex.Pos *= initModelGroup.Scale;
 					vertex.Normal *= invScale;
 					vertex.Normal.Normalize();
 				}
 			}
+
+			CreateCollidables(modelMesh, initModelGroup.Matrices);
 
 			textureMesh.Vertices.EnsureIncrease(
 				modelMesh.Vertices.GetSize() * initModelGroup.Matrices.GetSize());
@@ -56,7 +62,7 @@ void StaticModelSystem::Init(const InitData& initData)
 					Vertex& vertex{ textureMesh.Vertices.Last() };
 
 					WorldMatrix::TransformPoint(world, vertex.Pos);
-					vertex.Normal = WorldMatrix::RotatePoint(world, vertex.Normal);
+					WorldMatrix::RotatePoint(world, vertex.Normal);
 				}
 			}
 		}
@@ -80,4 +86,56 @@ void StaticModelSystem::Render()
 		texture.Texture.Activate();
 		texture.Buffers.ActivateAndDraw();
 	}
+
+	//temp
+	//SYSTEMS.Collisions.Models.RenderDebugBoundingBoxes();
+}
+
+void StaticModelSystem::CreateCollidables(
+	const MeshData<Vertex, TOPOLOGY>& mesh, const List<Float4X4>& instances)
+{
+	ModelCollidable collidable{};
+	collidable.Points = { mesh.Vertices.GetSize() };
+	collidable.TriangleNormals = { mesh.Vertices.GetSize() / 3 };
+	collidable.Instances.EnsureIncrease(instances.GetSize());
+
+	for (
+		unsigned iPoint{ 2 }, iTriangle{ 0 };
+		iPoint < mesh.Vertices.GetSize();
+		iPoint += 3, ++iTriangle)
+	{
+		const Float3& p0{ mesh.Vertices[iPoint - 2].Pos };
+		const Float3& p1{ mesh.Vertices[iPoint - 1].Pos };
+		const Float3& p2{ mesh.Vertices[iPoint - 0].Pos };
+
+		//Point & Normal
+		collidable.Points[iPoint - 2] = p0;
+		collidable.Points[iPoint - 1] = p1;
+		collidable.Points[iPoint - 0] = p2;
+		collidable.TriangleNormals[iTriangle] =
+			Triangle::FindNormal(p0, p1, p2);
+	}
+
+	//Bounds
+	Float3 minBounds{ Float::MAX };
+	Float3 maxBounds{ -Float::MAX };
+	for (unsigned iPoint{ 0 }; iPoint < mesh.Vertices.GetSize(); ++iPoint)
+		Geometry::PointUtils::UpdateBounds(
+			mesh.Vertices[iPoint].Pos, minBounds, maxBounds);
+	collidable.Size = maxBounds - minBounds;
+
+	for (unsigned iPoint{ 0 }; iPoint < collidable.Points.GetSize(); ++iPoint)
+		collidable.Points[iPoint] -= minBounds;
+
+	//Instances
+	for (unsigned iInstance{ 0 }; iInstance < instances.GetSize(); ++iInstance)
+	{
+		ModelCollidable::Instance instance{};
+		instance.World = instances[iInstance];
+		WorldMatrix::TranslateRelative(instance.World, minBounds);
+		instance.WorldInverse = WorldMatrix::GetInversed(instance.World);
+		collidable.Instances.Add(instance);
+	}
+
+	SYSTEMS.Collisions.Models.Models.Add(collidable);
 }

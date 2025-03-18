@@ -1,6 +1,7 @@
 #pragma once
 #include <Physics/CollisionDetection.h>
 
+#include <Geometry\Shapes\Line.h>
 #include <Systems\Enemies\Enemy.h>
 
 namespace TowerGame
@@ -24,6 +25,40 @@ struct MeshCollidable
 	Array<int> Indices;
 };
 
+struct ModelCollidable
+{
+	struct Instance
+	{
+		Float4X4 World;
+		Float4X4 WorldInverse;
+	};
+
+	Float3 Size;
+	Array<Float3> Points;
+	Array<Float3> TriangleNormals;
+
+	List<Instance> Instances{};
+
+	bool IsColliding(const Ray& ray,
+		Physics::CollisionDetection::Collision& collision) const;
+
+	const Instance* GetBoundsCollision(const Ray& ray) const;
+};
+
+struct ModelCollidables
+{
+	List<ModelCollidable> Models{};
+
+	bool GetBoundsCollision(
+		const Ray& ray, 
+		const ModelCollidable*& pModel, const ModelCollidable::Instance*& pInstance) const;
+
+	bool IsColliding(const Ray& ray,
+		Physics::CollisionDetection::Collision& collision) const;
+
+	void RenderDebugBoundingBoxes();
+};
+
 struct EnemiesCollidable
 {
 	struct Vertex
@@ -42,9 +77,11 @@ private:
 	bool IsColliding(const Float3& begin, const Float3& end, const Enemy& enemy) const;
 	static bool HasOverlap(float aMin, float aMax, float bMin, float bMax);
 };
+
 struct CollisionSystem
 {
 	MeshCollidable Tower;
 	EnemiesCollidable Enemies;
+	ModelCollidables Models;
 };
 }

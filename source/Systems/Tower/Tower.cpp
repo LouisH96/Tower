@@ -20,6 +20,8 @@ void Tower::GenerateMeshIn(
 	StaticMeshSystem::MeshData& staticMeshData,
 	MeshCollidable& collidable)
 {
+	return;
+
 	StaticMeshSystem::MeshData towerMeshData{};
 
 	//todo: clean

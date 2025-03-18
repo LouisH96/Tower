@@ -1,19 +1,21 @@
 #include "pch.h"
 #include "ArrowSystem.h"
 
-#include <Systems\Bow\Bow.h>
-#include <Systems\Enemies\EnemySystem.h>
-#include <Systems\Terrain\Terrain.h>
-#include <Systems\Collisions\CollisionSystem.h>
-
 #include "Camera/Camera.h"
 #include "Generation/PlaneGeneration.h"
 #include "Io/Fbx/FbxClass.h"
 #include "Transform/WorldMatrix.h"
+#include <Geometry\Shapes\Ray.h>
+#include <Physics\CollisionDetection.h>
+#include <Systems\Bow\Bow.h>
+#include <Systems\Collisions\CollisionSystem.h>
+#include <Systems\Enemies\EnemySystem.h>
+#include <Systems\Terrain\Terrain.h>
 #include <TowerApp.h>
 
 using namespace TowerGame;
 using namespace Rendering;
+using namespace Physics;
 
 ArrowSystem::ArrowSystem()
 	: m_Texture{ Resources::Local(L"Texture_01.png") }
@@ -54,18 +56,20 @@ void ArrowSystem::Update()
 
 		//UPDATE WORLD-MATRIX
 		velocity.y += -9.81f * Globals::DeltaTime;
-		const Float3 newPosition{ position + velocity * Globals::DeltaTime };
-		WorldMatrix::SetRotation(world, velocity.Normalized());
+
+		float movementAmount{};
+		const Float3 movementDirection{ velocity.Normalized(movementAmount) };
+		movementAmount *= Globals::DeltaTime;
+
+		const Float3 newPosition{ position + movementDirection * movementAmount };
+
+		WorldMatrix::SetRotation(world, movementDirection);
 		WorldMatrix::SetPosition(world, newPosition);
 		//m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
 
-		//IS IN TOWER?
+		//COLLISIONS
 		const CollisionSystem& collisions{ SYSTEMS.Collisions };
-		if (collisions.Tower.IsColliding(position, newPosition))
-		{
-			SetArrowFinished(velocity);
-			continue;
-		}
+		const Ray arrowMovement{ position, movementDirection, movementAmount };
 
 		//IS IN ENEMY?
 		Enemy* pEnemy{ collisions.Enemies.IsColliding(position, newPosition) };
@@ -79,6 +83,22 @@ void ArrowSystem::Update()
 			const float travelDistance{ launchedPosition.Distance(hitPosition) };
 			const unsigned score{ static_cast<unsigned>(travelDistance * 10) };
 			SYSTEMS.Ui.AddScore(score);
+			continue;
+		}
+
+		//IS IN TOWER?
+		const ModelCollidable* pHitModel{};
+		const ModelCollidable::Instance* pHitInstance{};
+		CollisionDetection::Collision collision{};
+		if (collisions.Models.IsColliding(arrowMovement, collision))
+		{
+			SetArrowFinished(velocity);
+			continue;
+		}
+
+		if (collisions.Tower.IsColliding(position, newPosition))
+		{
+			SetArrowFinished(velocity);
 			continue;
 		}
 	}

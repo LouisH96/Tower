@@ -46,5 +46,7 @@ private:
 	List<TextureGroup> m_TextureGroups{};
 	Rendering::InputLayout m_InputLayout;
 	Rendering::Shader m_Shader;
+
+	void CreateCollidables(const MeshData<Vertex, TOPOLOGY>& mesh, const List<Float4X4>& instances);
 };
 }
