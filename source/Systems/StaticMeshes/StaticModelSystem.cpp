@@ -86,9 +86,6 @@ void StaticModelSystem::Render()
 		texture.Texture.Activate();
 		texture.Buffers.ActivateAndDraw();
 	}
-
-	//temp
-	//SYSTEMS.Collisions.Models.RenderDebugBoundingBoxes();
 }
 
 void StaticModelSystem::CreateCollidables(
@@ -109,11 +106,14 @@ void StaticModelSystem::CreateCollidables(
 		const Float3& p2{ mesh.Vertices[iPoint - 0].Pos };
 
 		//Point & Normal
-		collidable.Points[iPoint - 2] = p0;
-		collidable.Points[iPoint - 1] = p1;
-		collidable.Points[iPoint - 0] = p2;
-		collidable.TriangleNormals[iTriangle] =
-			Triangle::FindNormal(p0, p1, p2);
+		Float3 normal{};
+		if (Triangle::FindNormal(p0, p1, p2, normal))
+		{
+			collidable.Points.Add(p0);
+			collidable.Points.Add(p1);
+			collidable.Points.Add(p2);
+			collidable.TriangleNormals.Add(normal);
+		}
 	}
 
 	//Bounds
@@ -134,6 +134,11 @@ void StaticModelSystem::CreateCollidables(
 		instance.World = instances[iInstance];
 		WorldMatrix::TranslateRelative(instance.World, minBounds);
 		instance.WorldInverse = WorldMatrix::GetInversed(instance.World);
+
+		//Make WorldBounds
+		instance.WorldBounds =
+			CubeAA::MakeGlobalBounds(instance.World, collidable.Size);
+
 		collidable.Instances.Add(instance);
 	}
 

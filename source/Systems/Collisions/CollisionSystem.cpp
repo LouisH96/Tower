@@ -3,8 +3,12 @@
 
 #include <Animations\AnimationUtils.h>
 #include <Geometry\Shapes\Cube.h>
+#include <Geometry\Shapes\Sphere.h>
 #include <Geometry\Shapes\Triangle.h>
 #include <Physics\Collisions\LineCubeCollision.h>
+#include <Physics\Collisions\PointTriangleCollision.h>
+#include <Physics\Collisions\SphereAabCollision.h>
+#include <Physics\Collisions\SphereTriangleCollision.h>
 #include <Transform\WorldMatrix.h>
 
 using namespace TowerGame;
@@ -124,6 +128,20 @@ bool ModelCollidables::IsColliding(const Ray& ray,
 	return false;
 }
 
+bool ModelCollidables::IsColliding(
+	const Sphere& sphere,
+	Physics::CollisionDetection::Collision& collision) const
+{
+	for (unsigned iModel{ 0 }; iModel < Models.GetSize(); ++iModel)
+	{
+		if (Models[iModel].IsColliding(sphere, collision))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void ModelCollidables::RenderDebugBoundingBoxes()
 {
 	for (unsigned iModel{ 0 }; iModel < Models.GetSize(); ++iModel)
@@ -139,6 +157,20 @@ void ModelCollidables::RenderDebugBoundingBoxes()
 	}
 }
 
+void ModelCollidables::RenderDebugGlobalBoundingBoxes()
+{
+	for (unsigned iModel{ 0 }; iModel < Models.GetSize(); ++iModel)
+	{
+		const ModelCollidable& model{ Models[iModel] };
+		for (unsigned iInst{ 0 }; iInst < model.Instances.GetSize(); ++iInst)
+		{
+			DebugRenderer::DrawCube(
+				model.Instances[iInst].WorldBounds,
+				Color::Functions::GetColor(iModel));
+		}
+	}
+}
+
 bool ModelCollidable::IsColliding(const Ray& ray,
 	CollisionDetection::Collision& collision) const
 {
@@ -149,7 +181,7 @@ bool ModelCollidable::IsColliding(const Ray& ray,
 	{
 		localRay.Origin = ray.Origin;
 		localRay.Direction = ray.Direction;
-		
+
 		const Instance& instance{ Instances[iInst] };
 
 		WorldMatrix::TransformPoint(instance.WorldInverse, localRay.Origin);
@@ -162,6 +194,29 @@ bool ModelCollidable::IsColliding(const Ray& ray,
 
 		//Mesh
 		if (CollisionDetection::Detect(localRay, Points, TriangleNormals, collision))
+			return true;
+	}
+	return false;
+}
+
+bool ModelCollidable::IsColliding(const Sphere& sphere,
+	Physics::CollisionDetection::Collision& collision) const
+{
+	Sphere localSphere{ sphere };
+
+	for (unsigned iInst{ 0 }; iInst < Instances.GetSize(); ++iInst)
+	{
+		const Instance& instance{ Instances[iInst] };
+
+		localSphere.SetCenter(
+			WorldMatrix::TransformedPoint(instance.WorldInverse, sphere.GetCenter())
+		);
+
+		if (!SphereAabCollision::Detect(localSphere, Size))
+			continue;
+
+		Float3 closest;
+		if (SphereTriangleCollision::Detect(localSphere, Points, closest))
 			return true;
 	}
 	return false;

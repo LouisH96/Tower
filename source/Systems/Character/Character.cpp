@@ -1,11 +1,14 @@
 #include "pch.h"
 #include "Character.h"
 
-#include <Geometry/Shapes/Sphere.h>
-#include <Physics/CollisionDetection.h>
+#include "CharacterMovement.h"
+#include <Geometry\Shapes\Sphere.h>
+#include <Physics\CollisionDetection.h>
+#include <Physics\Collisions\SphereTriangleCollision.h>
 #include <Systems\Collisions\CollisionSystem.h>
 #include <Systems\Terrain\Terrain.h>
 #include <TowerApp.h>
+#include <Transform\WorldMatrix.h>
 
 using namespace TowerGame;
 
@@ -25,31 +28,46 @@ void Character::Init(const Float3& position)
 
 void Character::Update()
 {
-	const Float3 oldHead{ m_CameraController.GetPosition() };
-	const Float2 movement{ Globals::pKeyboard->GetArrowInput(
+	//Get Input
+	const Float2 movementInput{ Globals::pKeyboard->GetArrowInput(
 			m_MoveLeftKey, m_MoveRightKey, m_MoveUpKey, m_MoveDownKey,
 			Globals::DeltaTime * SPEED) };
-	m_CameraController.MoveRelative({ movement.x, -9.81f * Globals::DeltaTime, movement.y });
-	const Float3 newPos{ m_CameraController.GetPosition() };
 
-	//ground collision
-	const Float3 head{ oldHead };
-	const Float3 feet{ GetFeetPosition() };
-	Physics::CollisionDetection::Collision collision{};
-	if (SYSTEMS.Collisions.Tower.IsColliding(head, feet, collision))
-		m_CameraController.SetPositionY(collision.position.y + HEIGHT);
-	else
+	const Float3 inputDir{
+		m_CameraController.GetRelativeMovement({ movementInput.x, 0, movementInput.y }) };
+
+	m_Velocity.y -= 9.81f * Globals::DeltaTime;
+	m_Velocity.x = inputDir.x;
+	m_Velocity.z = inputDir.z;
+
+	if (KEYBOARD.IsDown(KeyCodes::SHIFT_LEFT))
+		m_Velocity.y = SPEED;
+	else if (KEYBOARD.IsDown(KeyCodes::CTRL_LEFT))
+		m_Velocity.y = -SPEED;
+
+	const Float3 desiredMovement{
+		m_Velocity.x,
+		m_Velocity.y * Globals::DeltaTime,
+		m_Velocity.z };
+
+	//
+	const Float3 oldFeet{ GetFeetPosition() };
+
+	Float3 feetPos{ oldFeet };
+	Float3 direction{ desiredMovement };
+	float distance{};
+
+	if (direction.LengthSq() > 0)
 	{
-		const float terrainHeight{ SYSTEMS.Terrain.GetHeight(feet.Xz()) };
-		if (feet.y < terrainHeight)
-			m_CameraController.SetPositionY(terrainHeight + HEIGHT);
+		direction.Normalize(distance);
+		CharacterMovement::DoMovement(
+			feetPos,
+			direction, distance, m_Velocity);
 	}
-
-	Float3 overlap;
-	if (SYSTEMS.Collisions.Tower.IsColliding(Sphere{ newPos, .1f }, overlap))
-		m_CameraController.SetPosition(m_CameraController.GetPosition() - overlap);
+	const Float3 movedAmount{ feetPos - oldFeet };
 
 	//cam & bow
+	m_CameraController.Move(movedAmount);
 	m_CameraController.Update();
 }
 
@@ -59,3 +77,4 @@ Float3 Character::GetFeetPosition() const
 	pos.y -= HEIGHT;
 	return pos;
 }
+

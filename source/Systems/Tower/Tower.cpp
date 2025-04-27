@@ -97,12 +97,6 @@ void Tower::AddModelsIn(StaticModelSystem::InitData& staticModelData)
 		{3.729973f, 0, -5.740005f},
 		{0,-180,0} });
 
-	/*Model& barrels{ adventure.Models.AddEmpty() };
-	barrels.Path = L"SM_Prop_Barrel_02.fbx";
-	barrels.Instances.Add({
-		{6.020004f, -0.16f, 0.09999847f },
-		{0,-180,0} });*/
-
 	Model& cart{ adventure.Models.AddEmpty() };
 	cart.Path = L"SM_Prop_Cart_03.fbx";
 	cart.Instances.Add({
@@ -144,15 +138,6 @@ void Tower::AddModelsIn(StaticModelSystem::InitData& staticModelData)
 	dirtFloor.Instances.Add({
 		{-2.28f, 5.52f, -0.38f},
 		{} });
-	dirtFloor.Instances.Add({
-		{1.57f, 3.2f, -1.37f},
-		{0,90,0} });
-	dirtFloor.Instances.Add({
-		{1.57f, 3.2f, -0.665f},
-		{} });
-	dirtFloor.Instances.Add({
-		{5.03f, 3.2f, -4.06f},
-		{0,90,0} });
 
 	Texture& western{ data.AddEmpty() };
 	western.Path = L"PolygonWestern_Texture_01_A.png";

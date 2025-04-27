@@ -25,7 +25,10 @@ void Systems::Init()
 
 	//CHARACTER & BOW
 	const Float3 characterPosition{
-		towerDesc.Position + Float3::FromXz(towerDesc.RoofSize * .5) + Float3{ 0,towerDesc.Height, 0 } };
+		towerDesc.Position + Float3::FromXz(towerDesc.RoofSize * .5) + Float3{ 0,towerDesc.Height, 0 }
+
+
+	+ Float3{-2,6,-3} };
 	Character.Init(characterPosition);
 
 	//ENEMIES
