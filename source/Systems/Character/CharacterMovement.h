@@ -48,6 +48,12 @@ private:
 		void SetType(float coreRadiusSq, float fullRadiusSq);
 	};
 	/*
+		Forward doesn't have to be normalized
+	*/
+	static StaticCheckResult DoStaticCheck(
+		const Float3& center, const Float3& forward,
+		const CubeAA& globalBounds);
+	/*
 	* Result should be an already active struct.
 	* Direction doesn't have to be normalized.
 	* Result.Type will not be set.
@@ -57,16 +63,17 @@ private:
 		const Float3& center, const Float3& direction,
 		float coreRadiusSq, float fullRadiusSq,
 		//Object
-		PtrRangeConst<Float3> points, PtrRangeConst<Float3> triangleNormals,
+		PtrRangeConst<Float3> points,
 		//Result
 		StaticCheckResult& result);
-
-	/*
-		Forward doesn't have to be normalized
-	*/
-	static StaticCheckResult DoStaticCheck(
-		const Float3& center, const Float3& forward,
-		const CubeAA& globalBounds);
+	static void DoStaticCheck(
+		//Character
+		const Float3& center, const Float3& direction,
+		float coreRadiusSq, float fullRadiusSq,
+		//Object
+		const Float3* pTriangle,
+		//Result
+		StaticCheckResult& result);
 
 	//---| Move Check |---
 	static bool DoMoveCheck(

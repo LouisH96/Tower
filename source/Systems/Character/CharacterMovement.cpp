@@ -115,60 +115,6 @@ bool CharacterMovement::DoMovementStep(
 		center, forward, distance, velocity, bounds);
 }
 
-bool CharacterMovement::DoStaticCheck(
-	//Character
-	const Float3& center, const Float3& direction,
-	float coreRadiusSq, float fullRadiusSq,
-	//Object
-	PtrRangeConst<Float3> points, PtrRangeConst<Float3> triangleNormals,
-	//Result
-	StaticCheckResult& result)
-{
-	//
-	const float initDistSq{ result.DistanceSq };
-
-	//Loop
-	for (unsigned iPoint{ 2 }, iTriangle{ 0 };
-		iPoint < points.count;
-		iPoint += 3, iTriangle++)
-	{
-		//Get triangle
-		const Float3* pTriangle{ &points[iPoint - 2] };
-
-		//Get closest point to triangle
-		const Float3 triangleClosest{
-			PointTriangleCollision::Closest(
-				center, pTriangle) };
-
-		//Assert result
-#ifdef MY_ASSERT
-		if (triangleClosest.HasNan())
-			Logger::Warning("[CharacterMovement::DoStaticCheck] closest has nan");
-#endif
-
-		//Get squaed distance to closest
-		const float triangleDistSq{ triangleClosest.DistanceSq(center) };
-
-		//Compare
-		if (triangleDistSq >= result.DistanceSq)
-			continue;
-
-		/*
-			If hit is outside coreRadius,
-				only detect if character isn't running away.
-			Maybe replace 0 by a variable (cos of an angle).
-		*/
-		if (triangleDistSq > coreRadiusSq)
-			if (direction.Dot(triangleClosest - center) < 0)
-				continue;
-
-		//Hit! Triangle is closest (for now)
-		result.DistanceSq = triangleDistSq;
-		result.HitPoint = triangleClosest;
-	}
-	return result.DistanceSq < initDistSq;
-}
-
 CharacterMovement::StaticCheckResult CharacterMovement::DoStaticCheck(
 	const Float3& center, const Float3& forward,
 	const CubeAA& globalBounds)
@@ -198,7 +144,7 @@ CharacterMovement::StaticCheckResult CharacterMovement::DoStaticCheck(
 			if (CharacterMovement::DoStaticCheck(
 				localCenter, localForward,
 				CORE_RADIUS_SQ, FULL_RADIUS_SQ,
-				{ model.Points }, { model.TriangleNormals },
+				{ model.Points },
 				result))
 			{
 				iModelHit = iModel;
@@ -224,6 +170,73 @@ CharacterMovement::StaticCheckResult CharacterMovement::DoStaticCheck(
 	}
 
 	return result;
+}
+
+bool CharacterMovement::DoStaticCheck(
+	//Character
+	const Float3& center, const Float3& direction,
+	float coreRadiusSq, float fullRadiusSq,
+	//Object
+	PtrRangeConst<Float3> points, 
+	//Result
+	StaticCheckResult& result)
+{
+	//
+	const float initDistSq{ result.DistanceSq };
+
+	//Loop
+	for (unsigned iPoint{ 2 }, iTriangle{ 0 };
+		iPoint < points.count;
+		iPoint += 3, iTriangle++)
+	{
+		//Get triangle
+		const Float3* pTriangle{ &points[iPoint - 2] };
+
+		DoStaticCheck(
+			center, direction,
+			coreRadiusSq, fullRadiusSq,
+			pTriangle,
+			result);
+	}
+	return result.DistanceSq < initDistSq;
+}
+
+void CharacterMovement::DoStaticCheck(
+	const Float3& center, const Float3& direction,
+	float coreRadiusSq, float fullRadiusSq,
+	const Float3* pTriangle,
+	StaticCheckResult& result)
+{
+	//Get closest point to triangle
+	const Float3 triangleClosest{
+		PointTriangleCollision::Closest(
+			center, pTriangle) };
+
+	//Assert result
+#ifdef MY_ASSERT
+	if (triangleClosest.HasNan())
+		Logger::Warning("[CharacterMovement::DoStaticCheck] closest has nan");
+#endif
+
+	//Get squaed distance to closest
+	const float triangleDistSq{ triangleClosest.DistanceSq(center) };
+
+	//Compare
+	if (triangleDistSq >= result.DistanceSq)
+		return;
+
+	/*
+		If hit is outside coreRadius,
+			only detect if character isn't running away.
+		Maybe replace 0 by a variable (cos of an angle).
+	*/
+	if (triangleDistSq > coreRadiusSq)
+		if (direction.Dot(triangleClosest - center) < 0)
+			return;
+
+	//Hit! Triangle is closest (for now)
+	result.DistanceSq = triangleDistSq;
+	result.HitPoint = triangleClosest;
 }
 
 bool CharacterMovement::DoMoveCheck(
@@ -300,10 +313,10 @@ bool CharacterMovement::DoMoveCheck(
 		}
 		else
 		{
-#ifdef MY_PRINT
+			//#ifdef MY_PRINT
 			Logger::Print("New Distance is neg.", distance);
 			Logger::Print("Neg. Distance returns false");
-#endif
+			//#endif
 			return false;
 		}
 	}
