@@ -6,7 +6,7 @@ namespace TowerGame
 class Character
 {
 public:
-	constexpr static float HEIGHT{ 1.5f };
+	constexpr static float HEIGHT{ 1.8f };
 
 	Character();
 	void Init(const Float3& position);
@@ -20,6 +20,8 @@ public:
 private:
 
 	static constexpr float SPEED{ 5.f };
+	static constexpr float JUMP_HEIGHT{ 1.1f };
+	static const float JUMP_VELOCITY;
 	FpsCameraController m_CameraController;
 
 	char m_MoveLeftKey;

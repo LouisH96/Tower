@@ -8,6 +8,8 @@ namespace TowerGame
 class CharacterMovement
 {
 public:
+	static constexpr float FULL_RADIUS{ .6f };
+
 	static void DoMovement(
 		Float3& center,
 		Float3 direction, float distance,
@@ -15,7 +17,6 @@ public:
 
 private:
 	using MoveCheckResult = MyEngine::Physics::SphereTriangleCollision::MovingSphereCollision;
-	static constexpr float FULL_RADIUS{ .6f };
 	static constexpr float MARGIN_RADIUS{ .3f };
 	static constexpr float FULL_RADIUS_SQ{ FULL_RADIUS * FULL_RADIUS };
 	static constexpr float CORE_RADIUS_SQ{

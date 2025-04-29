@@ -12,6 +12,8 @@
 
 using namespace TowerGame;
 
+const float Character::JUMP_VELOCITY{ sqrtf(JUMP_HEIGHT * 2 * 9.81f) };
+
 Character::Character()
 	: m_MoveDownKey{ Keyboard::ScanCodeToVk(ScanCode::S) }
 	, m_MoveUpKey{ Keyboard::ScanCodeToVk(ScanCode::W) }
@@ -51,9 +53,10 @@ void Character::Update()
 		m_Velocity.z };
 
 	//
-	const Float3 oldFeet{ GetFeetPosition() };
+	const float initVelocityY{ m_Velocity.y };
+	const Float3 oldPos{ GetFeetPosition() + Float3{0,CharacterMovement::FULL_RADIUS,0} };
 
-	Float3 feetPos{ oldFeet };
+	Float3 spherePos{ oldPos };
 	Float3 direction{ desiredMovement };
 	float distance{};
 
@@ -61,10 +64,14 @@ void Character::Update()
 	{
 		direction.Normalize(distance);
 		CharacterMovement::DoMovement(
-			feetPos,
+			spherePos,
 			direction, distance, m_Velocity);
 	}
-	const Float3 movedAmount{ feetPos - oldFeet };
+	const Float3 movedAmount{ spherePos - oldPos };
+
+	if(m_Velocity.y > initVelocityY 
+		&& KEYBOARD.IsPressed(KeyCodes::SPACE))
+		m_Velocity.y += JUMP_VELOCITY;
 
 	//cam & bow
 	m_CameraController.Move(movedAmount);
