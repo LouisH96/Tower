@@ -57,6 +57,15 @@ void CharacterMovement::DoMovement(
 	if (step > 5)
 		Logger::Print("Steps", step);
 #endif
+
+	//Terrain
+	const float terrainHeight{ SYSTEMS.Terrain.GetHeight({center.x, center.z})
+		+ FULL_RADIUS };
+	if (center.y <= terrainHeight)
+	{
+		center.y = terrainHeight;
+		velocity.y = 0;
+	}
 }
 
 bool CharacterMovement::DoMovementStep(
