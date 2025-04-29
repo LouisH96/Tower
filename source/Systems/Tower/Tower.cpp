@@ -100,8 +100,8 @@ void Tower::AddModelsIn(StaticModelSystem::InitData& staticModelData)
 	Model& cart{ adventure.Models.AddEmpty() };
 	cart.Path = L"SM_Prop_Cart_03.fbx";
 	cart.Instances.Add({
-		{ 0.35f, -0.1f, -5.89f },
-		{5.f, 105.f, 5.f} });
+		{ -0.53f, -0.1f, -5.735f },
+		{5.608f, -101.065f, 3.665f} });
 
 	Model& crate{ adventure.Models.AddEmpty() };
 	crate.Path = L"SM_Prop_Crate_01.fbx";
@@ -168,10 +168,19 @@ void Tower::AddModelsIn(StaticModelSystem::InitData& staticModelData)
 			for (unsigned iInstance{ 0 }; iInstance < modelData.Instances.GetSize(); ++iInstance)
 			{
 				Orientation& instanceData{ modelData.Instances[iInstance] };
+				
+				//Data came from Unity scene.
+					//Quaternion there cames from (eulers): z->x->y
+				Quaternion quat{ Quaternion::FromAxis(
+					{ 0,0,1 }, instanceData.Eulers.z * Constants::TO_RAD
+				) };
+				quat.RotateBy({ 1,0,0 }, instanceData.Eulers.x * Constants::TO_RAD);
+				quat.RotateBy({ 0,1,0 }, instanceData.Eulers.y * Constants::TO_RAD);
+				quat.Normalize();
 
 				model.Matrices.Add(WorldMatrix::FromPosAndQuat(
 					instanceData.Pos + m_Position,
-					Quaternion::FromEulerDegrees(instanceData.Eulers)
+					quat
 				));
 			}
 		}
