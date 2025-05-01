@@ -8,25 +8,6 @@
 
 namespace TowerGame
 {
-struct MeshCollidable
-{
-	MeshCollidable() = default;
-	~MeshCollidable() = default;
-
-	MeshCollidable(const MeshCollidable& other) = delete;
-	MeshCollidable(MeshCollidable&& other) noexcept = default;
-	MeshCollidable& operator=(const MeshCollidable& other) = delete;
-	MeshCollidable& operator=(MeshCollidable&& other) noexcept = default;
-
-	bool IsColliding(const Float3& begin, const Float3& end) const;
-	bool IsColliding(const Float3& begin, const Float3& end, Physics::CollisionDetection::Collision& collision) const;
-	bool IsColliding(const Sphere& sphere, Float3& sphereToHitPlane) const;
-
-	Array<Float3> Points;
-	Array<Float3> TriangleNormals;
-	Array<int> Indices;
-};
-
 struct ModelCollidable
 {
 	struct Instance
@@ -91,7 +72,6 @@ private:
 
 struct CollisionSystem
 {
-	MeshCollidable Tower;
 	EnemiesCollidable Enemies;
 	ModelCollidables Models;
 };

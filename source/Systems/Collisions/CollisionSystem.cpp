@@ -14,23 +14,6 @@
 using namespace TowerGame;
 using namespace Physics;
 
-bool MeshCollidable::IsColliding(const Float3& begin, const Float3& end) const
-{
-	Physics::CollisionDetection::Collision collision;
-	return Physics::CollisionDetection::Detect(begin, end, Points, TriangleNormals, Indices, collision);
-}
-
-bool MeshCollidable::IsColliding(const Float3& begin, const Float3& end,
-	Physics::CollisionDetection::Collision& collision) const
-{
-	return Physics::CollisionDetection::Detect(begin, end, Points, TriangleNormals, Indices, collision);
-}
-
-bool MeshCollidable::IsColliding(const Sphere& sphere, Float3& sphereToHitPlane) const
-{
-	return Physics::CollisionDetection::Detect(sphere, Points, TriangleNormals, Indices, sphereToHitPlane);
-}
-
 Enemy* EnemiesCollidable::IsColliding(const Float3& begin, const Float3& end) const
 {
 	for (unsigned i = 0; i < pEnemies->GetSize(); i++)

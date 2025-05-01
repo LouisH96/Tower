@@ -95,12 +95,6 @@ void ArrowSystem::Update()
 			SetArrowFinished(velocity);
 			continue;
 		}
-
-		if (collisions.Tower.IsColliding(position, newPosition))
-		{
-			SetArrowFinished(velocity);
-			continue;
-		}
 	}
 }
 

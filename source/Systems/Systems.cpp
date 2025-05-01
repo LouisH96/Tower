@@ -43,7 +43,6 @@ void Systems::Init()
 	//TERRAIN-RENDERER
 	StaticMeshSystem::MeshData staticMeshData{};
 	Terrain.GenerateMeshIn(staticMeshData);
-	Tower.GenerateMeshIn(staticMeshData, Collisions.Tower);
 	StaticMeshes.Init(staticMeshData);
 
 	StaticModelSystem::InitData staticModelData{};
