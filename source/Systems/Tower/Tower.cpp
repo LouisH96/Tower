@@ -120,7 +120,7 @@ void Tower::AddModelsIn(StaticModelSystem::InitData& staticModelData)
 	stairs.Path = L"SM_Bld_Rockwall_Stairs_01.fbx";
 	stairs.Scale = Float3{ 1.1679f };
 	stairs.Instances.Add({
-		{-1.439999f, 2.26f, -2.930031f},
+		{-1.339999f, 2.26f, -2.930031f},
 		{0,90,0} });
 	stairs.Instances.Add({
 		{0.1199989f, 0, 3.029999f},
