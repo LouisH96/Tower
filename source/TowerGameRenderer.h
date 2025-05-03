@@ -37,6 +37,7 @@ private:
 	Rendering::Shader m_Shader_Terrain;
 	Rendering::Shader m_Shader_Entity;
 	Rendering::Shader m_Shader_Weapon;
+	Rendering::Shader m_Shader_StaticMesh;
 
 	//DepthStencilStates
 	Rendering::DepthStencilState m_DepthStencilState_On;

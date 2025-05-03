@@ -12,8 +12,6 @@ using namespace TowerGame;
 using namespace Rendering;
 
 StaticModelSystem::StaticModelSystem()
-	: m_InputLayout{ InputLayout::FromType<Vertex>() }
-	, m_Shader{ Resources::GlobalShader(L"LambertCam_Tex.hlsl") }
 {
 }
 
@@ -77,8 +75,6 @@ void StaticModelSystem::Init(const InitData& initData)
 void StaticModelSystem::Render()
 {
 	PrimitiveTopology::Activate(TOPOLOGY);
-	m_InputLayout.Activate();
-	m_Shader.Activate();
 
 	for (unsigned iTexture{ 0 }; iTexture < m_TextureGroups.GetSize(); ++iTexture)
 	{

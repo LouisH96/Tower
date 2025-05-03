@@ -16,6 +16,7 @@ TowerGameRenderer::TowerGameRenderer()
 	: m_Shader_Entity{ Resources::Local(L"Entity.hlsl") }
 	, m_Shader_Weapon{ Resources::Local(L"Weapon.hlsl") }
 	, m_Shader_Terrain{ Resources::Local(L"Terrain.hlsl") }
+	, m_Shader_StaticMesh{ Resources::Local(L"StaticMesh.hlsl") }
 	, m_Il_V_PosNorUv_I_ModelMatrix{ InputLayout::FromTypes<V_PosNorUv, I_ModelMatrix>() }
 	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
 	, m_Il_V_PosNorUv{ InputLayout::FromType<V_PosNorUv>() }
@@ -53,6 +54,8 @@ void TowerGameRenderer::PreRender()
 	m_Shader_Terrain.Activate<Shader::Function::Vertex>();
 	m_Il_V_PosNorCol.Activate();
 	SYSTEMS.StaticMeshes.Render();
+
+	SYSTEMS.StaticModels.Render();
 }
 
 void TowerGameRenderer::Render()
@@ -81,6 +84,11 @@ void TowerGameRenderer::Render()
 	SYSTEMS.Arrows.Render();
 	SYSTEMS.Enemies.Render(m_BonesBuffer);
 
+	//StaticMesh
+	m_Shader_StaticMesh.Activate();
+	m_Il_V_PosNorUv.Activate();
+	SYSTEMS.StaticModels.Render();
+
 	//Weapon
 	const Bow& bow{ SYSTEMS.Bow };
 	m_Shader_Weapon.Activate();
@@ -91,7 +99,6 @@ void TowerGameRenderer::Render()
 	SYSTEMS.Bow.Render();
 
 	//Other
-	SYSTEMS.StaticModels.Render();
 	SYSTEMS.pSimpleRenderer->Render();
 
 	SYSTEMS.Shadows.EndRender();
