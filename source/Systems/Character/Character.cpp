@@ -9,16 +9,21 @@
 #include <Systems\Terrain\Terrain.h>
 #include <TowerApp.h>
 #include <Transform\WorldMatrix.h>
+#include <App\Win32\Keyboard_.h>
 
 using namespace TowerGame;
 
 const float Character::JUMP_VELOCITY{ sqrtf(JUMP_HEIGHT * 2 * 9.81f) };
 
 Character::Character()
-	: m_MoveDownKey{ Keyboard::ScanCodeToVk(ScanCode::S) }
-	, m_MoveUpKey{ Keyboard::ScanCodeToVk(ScanCode::W) }
-	, m_MoveLeftKey{ Keyboard::ScanCodeToVk(ScanCode::A) }
-	, m_MoveRightKey{ Keyboard::ScanCodeToVk(ScanCode::D) }
+	: m_MoveDownKey{ Keyboard::ScanCodeToVk(KeyCode::S) }
+	, m_MoveUpKey{ Keyboard::ScanCodeToVk(KeyCode::W) }
+	, m_MoveLeftKey{ Keyboard::ScanCodeToVk(KeyCode::A) }
+	, m_MoveRightKey{ Keyboard::ScanCodeToVk(KeyCode::D) }
+	, m_JumpKey{ Keyboard::ScanCodeToVk(KeyCode::Space) }
+	, m_SprintKey{ Keyboard::ScanCodeToVk(KeyCode::ShiftLeft) }
+	, m_DebugUpKey{ Keyboard::ScanCodeToVk(KeyCode::ShiftRight) }
+	, m_DebugDownKey{ Keyboard::ScanCodeToVk(KeyCode::ControlRight) }
 {
 }
 
@@ -31,9 +36,16 @@ void Character::Init(const Float3& position)
 void Character::Update()
 {
 	//Get Input
+	const float currSpeed{
+		(KEYBOARD.IsDown(m_SprintKey)
+		? SPRINT_SPEED
+		: SPEED)
+		* DELTA_TIME
+	};
+
 	const Float2 movementInput{ Globals::pKeyboard->GetArrowInput(
 			m_MoveLeftKey, m_MoveRightKey, m_MoveUpKey, m_MoveDownKey,
-			Globals::DeltaTime * SPEED) };
+			currSpeed) };
 
 	const Float3 inputDir{
 		m_CameraController.GetRelativeMovement({ movementInput.x, 0, movementInput.y }) };
@@ -42,9 +54,9 @@ void Character::Update()
 	m_Velocity.x = inputDir.x;
 	m_Velocity.z = inputDir.z;
 
-	if (KEYBOARD.IsDown(KeyCodes::SHIFT_LEFT))
+	if (KEYBOARD.IsDown(m_DebugUpKey))
 		m_Velocity.y = SPEED;
-	else if (KEYBOARD.IsDown(KeyCodes::CTRL_LEFT))
+	else if (KEYBOARD.IsDown(m_DebugDownKey))
 		m_Velocity.y = -SPEED;
 
 	const Float3 desiredMovement{
@@ -69,8 +81,8 @@ void Character::Update()
 	}
 	const Float3 movedAmount{ spherePos - oldPos };
 
-	if(m_Velocity.y > initVelocityY 
-		&& KEYBOARD.IsPressed(KeyCodes::SPACE))
+	if (m_Velocity.y > initVelocityY
+		&& KEYBOARD.IsPressed(m_JumpKey))
 		m_Velocity.y += JUMP_VELOCITY;
 
 	//cam & bow
