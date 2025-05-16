@@ -10,10 +10,15 @@ class CharacterMovement
 public:
 	static constexpr float FULL_RADIUS{ .6f };
 
+	struct Result {
+		float lowestSphereHit{ 1.f }; //along y-axis, normalized[-1,-1]
+	};
+
 	static void DoMovement(
 		Float3& center,
 		Float3 direction, float distance,
-		Float3& velocity);
+		Float3& velocity,
+		Result& result);
 
 private:
 	using MoveCheckResult = MyEngine::Physics::SphereTriangleCollision::MovingSphereCollision;
@@ -31,7 +36,8 @@ private:
 	static bool DoMovementStep(
 		Float3& center, Float3& forward, float& distance,
 		Float3& velocity,
-		const CubeAA& bounds);
+		const CubeAA& bounds,
+		Result& movementResult);
 
 	//---| Static Check |---
 	/*
@@ -80,11 +86,13 @@ private:
 	static bool DoMoveCheck(
 		Float3& center, Float3& forward, float& distance,
 		Float3& velocity,
-		const CubeAA& bounds);
-	 
+		const CubeAA& bounds,
+		Result& movementResult);
+
 	//---| Other |---
 	static void FindBounceDir(
 		const Float3& hitDir, Float3& forward,
-		Float3& velocity);
+		Float3& velocity,
+		Result& result);
 };
 }

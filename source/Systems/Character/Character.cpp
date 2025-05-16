@@ -59,6 +59,9 @@ void Character::Update()
 	else if (KEYBOARD.IsDown(m_DebugDownKey))
 		m_Velocity.y = -SPEED;
 
+	if (KEYBOARD.IsDown(m_JumpKey))
+		m_JumpInput = JUMP_INPUT_DURATION;
+
 	const Float3 desiredMovement{
 		m_Velocity.x,
 		m_Velocity.y * Globals::DeltaTime,
@@ -74,20 +77,29 @@ void Character::Update()
 
 	if (direction.LengthSq() > 0)
 	{
+		CharacterMovement::Result
+			movementResult{};
+
 		direction.Normalize(distance);
 		CharacterMovement::DoMovement(
 			spherePos,
-			direction, distance, m_Velocity);
+			direction, distance, m_Velocity, movementResult);
+
+		if (movementResult.lowestSphereHit <= GROUND_HIT_COS
+			&& m_JumpInput > 0)
+		{
+			m_Velocity.y = JUMP_VELOCITY;
+		}
+
 	}
 	const Float3 movedAmount{ spherePos - oldPos };
-
-	if (m_Velocity.y > initVelocityY
-		&& KEYBOARD.IsPressed(m_JumpKey))
-		m_Velocity.y += JUMP_VELOCITY;
 
 	//cam & bow
 	m_CameraController.Move(movedAmount);
 	m_CameraController.Update();
+
+	//
+	m_JumpInput -= DELTA_TIME;
 }
 
 Float3 Character::GetFeetPosition() const

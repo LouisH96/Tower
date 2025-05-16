@@ -18,7 +18,8 @@ const float CharacterMovement::BOUNCE_SIN{ sinf(BOUNCE_ANGLE) };
 void CharacterMovement::DoMovement(
 	Float3& center,
 	Float3 direction, float distance,
-	Float3& velocity)
+	Float3& velocity,
+	Result& result)
 {
 	const Float3 initDirection{ direction };
 
@@ -40,7 +41,7 @@ void CharacterMovement::DoMovement(
 		const CubeAA globalBounds{
 			Sphere::GetGlobalBounds(center, FULL_RADIUS, direction, distance) };
 
-		if (!DoMovementStep(center, direction, distance, velocity, globalBounds))
+		if (!DoMovementStep(center, direction, distance, velocity, globalBounds, result))
 			break;
 
 		if (direction.Dot(initDirection) <= 0)
@@ -65,13 +66,15 @@ void CharacterMovement::DoMovement(
 	{
 		center.y = terrainHeight;
 		velocity.y = 0;
+		result.lowestSphereHit = -1.f;
 	}
 }
 
 bool CharacterMovement::DoMovementStep(
 	Float3& center, Float3& forward, float& distance,
 	Float3& velocity,
-	const CubeAA& bounds)
+	const CubeAA& bounds,
+	Result& movementResult)
 {
 	//---| Static Check |---
 	const StaticCheckResult result{
@@ -98,7 +101,7 @@ bool CharacterMovement::DoMovementStep(
 		Logger::Print("MarginHit");
 		Logger::Print("HitDir", hitDir);
 #endif
-		FindBounceDir(hitDir, forward, velocity);
+		FindBounceDir(hitDir, forward, velocity, movementResult);
 
 #ifdef MY_PRINT
 		Logger::Print("Bounce", forward);
@@ -112,7 +115,8 @@ bool CharacterMovement::DoMovementStep(
 
 	//---| Move Check |---
 	return DoMoveCheck(
-		center, forward, distance, velocity, bounds);
+		center, forward, distance, velocity, bounds,
+		movementResult);
 }
 
 CharacterMovement::StaticCheckResult CharacterMovement::DoStaticCheck(
@@ -177,7 +181,7 @@ bool CharacterMovement::DoStaticCheck(
 	const Float3& center, const Float3& direction,
 	float coreRadiusSq, float fullRadiusSq,
 	//Object
-	PtrRangeConst<Float3> points, 
+	PtrRangeConst<Float3> points,
 	//Result
 	StaticCheckResult& result)
 {
@@ -242,7 +246,8 @@ void CharacterMovement::DoStaticCheck(
 bool CharacterMovement::DoMoveCheck(
 	Float3& center, Float3& forward, float& distance,
 	Float3& velocity,
-	const CubeAA& bounds)
+	const CubeAA& bounds,
+	Result& movementResult)
 {
 	//Sources
 	const List<ModelCollidable>& models{ SYSTEMS.Collisions.Models.Models };
@@ -303,7 +308,7 @@ bool CharacterMovement::DoMoveCheck(
 			WorldMatrix::RotatePoint(models[iModelHit].Instances[iInstHit].World, result.HitDirection);
 			result.HitDirection.Normalize();
 
-			FindBounceDir(result.HitDirection, forward, velocity);
+			FindBounceDir(result.HitDirection, forward, velocity, movementResult);
 
 #ifdef MY_PRINT
 			Logger::Print("HitDir", result.HitDirection);
@@ -335,7 +340,8 @@ bool CharacterMovement::DoMoveCheck(
 
 void CharacterMovement::FindBounceDir(
 	const Float3& hitDir, Float3& forward,
-	Float3& velocity)
+	Float3& velocity,
+	Result& result)
 {
 #ifdef MY_ASSERT
 	if (abs(forward.Length() - 1) > .01f)
@@ -343,6 +349,10 @@ void CharacterMovement::FindBounceDir(
 	if (abs(hitDir.Length() - 1) > .01f)
 		Logger::Warning("HitDit not normalized");
 #endif
+
+	result.lowestSphereHit = Float::Min(
+		result.lowestSphereHit,
+		hitDir.y);
 
 	forward -= hitDir * forward.Dot(hitDir);
 	velocity -= hitDir * velocity.Dot(hitDir);
