@@ -3,6 +3,7 @@
 
 #include <Rendering\Renderers\R_LambertCam_Tex_Tran_Inst.h>
 #include <Rendering\Renderers\Texture2DRenderer.h>
+#include <Rendering\State\RasterizerState.h>
 
 #include <Systems\Arrows\ArrowSystem.h>
 #include <Systems\Bow\Bow.h>
@@ -21,6 +22,8 @@ TowerGameRenderer::TowerGameRenderer()
 	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
 	, m_Il_V_PosNorUv{ InputLayout::FromType<V_PosNorUv>() }
 	, m_Il_V_PosNorUvSkin{ InputLayout::FromType<V_PosNorUvSkin>() }
+	, m_Culling_Back{ RasterizerState::Culling::Back }
+	, m_Culling_Front{ RasterizerState::Culling::Front }
 	, m_DepthStencilState_On{ true }
 	, m_BonesBuffer{ BONES_BUFFER_SIZE }
 {
@@ -39,6 +42,7 @@ void TowerGameRenderer::PreRender()
 	SYSTEMS.Shadows.BeginShadowMapRender();
 	const Float4X4 viewProjection{ SYSTEMS.Shadows.GetLightViewProjection() };
 
+	m_Culling_Front.Activate();
 	m_DepthStencilState_On.Activate();
 
 	//Entity
@@ -66,6 +70,7 @@ void TowerGameRenderer::Render()
 	SYSTEMS.Skydome.Render(); //Render
 	SYSTEMS.Shadows.BeginRender();
 
+	m_Culling_Back.Activate();
 	m_DepthStencilState_On.Activate();
 
 	//Terrain

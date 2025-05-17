@@ -64,7 +64,7 @@ float GetShadowFactor(float3 worldPos, float3 forward)
             uint index = ((uint) (random * nrRandomOffsets)) % nrRandomOffsets;
             float2 coord = shadowSpace.xy + randomOffsets[index] * edgeThickness;
             
-            sum += shadow_map_texture.SampleCmpLevelZero(shadow_sampler, coord, shadowSpace.z-0.002f).r;
+            sum += shadow_map_texture.SampleCmpLevelZero(shadow_sampler, coord, shadowSpace.z-0.000f).r;
         }
         sum /= nrSamples;
         factor = 1.0f - maxShadowImpact * sum;

@@ -33,6 +33,10 @@ private:
 	Rendering::InputLayout m_Il_V_PosNorUv_I_ModelMatrix;
 	Rendering::InputLayout m_Il_V_PosNorCol;
 
+	//RasterizerStates
+	Rendering::RasterizerState m_Culling_Back;
+	Rendering::RasterizerState m_Culling_Front;
+
 	//Shaders
 	Rendering::Shader m_Shader_Terrain;
 	Rendering::Shader m_Shader_Entity;
