@@ -67,10 +67,11 @@ void TowerGameRenderer::Render()
 	const Camera& camera{ *Globals::pCamera };
 	const Float4X4& viewProjection{ camera.GetViewProjection() };
 
+	m_Culling_Back.Activate();
+	
 	SYSTEMS.Skydome.Render(); //Render
 	SYSTEMS.Shadows.BeginRender();
 
-	m_Culling_Back.Activate();
 	m_DepthStencilState_On.Activate();
 
 	//Terrain
