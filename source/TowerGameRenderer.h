@@ -23,7 +23,7 @@ public:
 
 private:
 	//CamBuffers
-	Rendering::ConstantBuffer<Rendering::CB_CamMatPos> m_CameraMatrixPosBuffer;
+	Rendering::ConstantBuffer<Rendering::CB_CamMatPosFor> m_CameraMatrixPosBuffer;
 	Rendering::ConstantBuffer<Rendering::CB_ModelBuffer> m_ModelBuffer;
 	Rendering::ConstantBuffer<Float4X4> m_BonesBuffer;
 

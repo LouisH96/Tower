@@ -21,6 +21,8 @@
     <ClCompile Include="Systems\Ui\TowerUi.cpp" />
     <ClCompile Include="Systems\StaticMeshes\StaticModelSystem.cpp" />
     <ClCompile Include="Systems\Character\CharacterMovement.cpp" />
+    <ClCompile Include="Systems\Shadows\ShadowMapDisplay2.cpp" />
+    <ClCompile Include="Systems\Shadows\ShadowSystem2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Bow\Bow.h" />
@@ -41,5 +43,7 @@
     <ClInclude Include="Systems\Ui\TowerUi.h" />
     <ClInclude Include="Systems\StaticMeshes\StaticModelSystem.h" />
     <ClInclude Include="Systems\Character\CharacterMovement.h" />
+    <ClInclude Include="Systems\Shadows\ShadowMapDisplay2.h" />
+    <ClInclude Include="Systems\Shadows\ShadowSystem2.h" />
   </ItemGroup>
 </Project>

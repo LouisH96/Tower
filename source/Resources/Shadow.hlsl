@@ -24,50 +24,72 @@ static const float2 randomOffsets[nrRandomOffsets] =
     float2(0.23037, 0.77172),
 };
 
+static const uint nrSlices = 3;
+static const float sliceEnd[nrSlices] =
+{
+    5.f, 15.f, 50.f
+};
+
 cbuffer ShadowMap : register(b2)
 {
-    float4x4 shadow_map_view_projection;
+    float4x4 shadow_map_view_projection[nrSlices];
     float3 shadow_forward;
     float shadow_padding[13];
 }
 
-Texture2D shadow_map_texture : register(t1);
+Texture2D shadow_map_texture_near : register(t1);
+Texture2D shadow_map_texture_mid : register(t2);
+Texture2D shadow_map_texture_far : register(t3);
 SamplerComparisonState shadow_sampler : register(s1);
 
-float GetShadowFactor(float3 worldPos, float3 forward)
+float GetShadowFactor(float3 worldPos, float3 hitNormal)
 {
-    float factor = 1; //1 means no shadow, 0 means full shadow
-    float4 shadowSpace = mul(float4(worldPos, 1), shadow_map_view_projection);
+    //return 1 means no shadow, 0 means full shadow
+    float factor = 1;
     
-    if (dot(shadow_forward, forward) >= 0)
+    if (dot(shadow_forward, hitNormal) >= 0)
+    {
         factor = 1.0f - maxShadowImpact;
-    else 
-        if (shadowSpace.x < -shadowSpace.w || shadowSpace.x > shadowSpace.w 
-        || shadowSpace.z < 0 || shadowSpace.z > shadowSpace.w)
-        factor = 1;
+    }
     else
     {
-        shadowSpace /= shadowSpace.w;
-        shadowSpace.xy += float2(1, 1);
-        shadowSpace.xy /= float2(2, 2);
-        shadowSpace.y = 1 - shadowSpace.y;
-        
-        float4 random4 = float4(floor(worldPos * 1000), 0);
-        float sum = 0;
-        for (uint iSample = 0; iSample < nrSamples; iSample++)
+        uint slice = 0;
+        for (; slice < nrSlices; ++slice)
         {
-            random4.w = iSample * 111;
+            float4 shadowSpace = mul(float4(worldPos, 1), shadow_map_view_projection[slice]);
+            if (shadowSpace.x > -shadowSpace.w && shadowSpace.x < shadowSpace.w 
+                && shadowSpace.y > -shadowSpace.w && shadowSpace.y < shadowSpace.w
+                && shadowSpace.z > 0 && shadowSpace.z < shadowSpace.w)
+            {
+                shadowSpace /= shadowSpace.w;
+                shadowSpace.xy += float2(1, 1);
+                shadowSpace.xy /= float2(2, 2);
+                shadowSpace.y = 1 - shadowSpace.y;
+        
+                float4 random4 = float4(floor(worldPos * 1000), 0);
+                float sum = 0;
+                for (uint iSample = 0; iSample < nrSamples; iSample++)
+                {
+                    random4.w = iSample * 111;
             
-            float random = dot(random4, float4(42.98, 78.23, 45.14, 94.63));
-            random = frac(sin(random / 16.f)) * 971.123;
+                    float random = dot(random4, float4(42.98, 78.23, 45.14, 94.63));
+                    random = frac(sin(random / 16.f)) * 971.123;
             
-            uint index = ((uint) (random * nrRandomOffsets)) % nrRandomOffsets;
-            float2 coord = shadowSpace.xy + randomOffsets[index] * edgeThickness;
+                    uint index = ((uint) (random * nrRandomOffsets)) % nrRandomOffsets;
+                    float2 coord = shadowSpace.xy + randomOffsets[index] * edgeThickness;
             
-            sum += shadow_map_texture.SampleCmpLevelZero(shadow_sampler, coord, shadowSpace.z-0.000f).r;
+                    if (slice == 0)
+                        sum += shadow_map_texture_near.SampleCmpLevelZero(shadow_sampler, coord, shadowSpace.z - 0.000f).r;
+                    else if (slice == 1)
+                        sum += shadow_map_texture_mid.SampleCmpLevelZero(shadow_sampler, coord, shadowSpace.z - 0.000f).r;
+                    else
+                        sum += shadow_map_texture_far.SampleCmpLevelZero(shadow_sampler, coord, shadowSpace.z - 0.000f).r;
+                }
+                sum /= nrSamples;
+                factor = 1.0f - maxShadowImpact * sum;
+                break;
+            }
         }
-        sum /= nrSamples;
-        factor = 1.0f - maxShadowImpact * sum;
     }
     return factor;
 }

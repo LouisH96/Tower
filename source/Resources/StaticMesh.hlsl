@@ -1,12 +1,5 @@
 #include "Shadow.hlsl"
-
-//--| CBUFFER |--
-cbuffer CBuffer : register(b0)
-{
-    float4x4 camera_matrix;
-    float3 camera_pos;
-    float padding;
-}
+#include "Shared.hlsl"
 
 //--| STRUCTS |---
 struct Vertex
@@ -33,7 +26,7 @@ Pixel vs_main(Vertex vertex)
 {
     Pixel pixel = (Pixel) 0;
     pixel.worldPos = vertex.pos;
-    pixel.pos = mul(float4(vertex.pos, 1), camera_matrix);
+    pixel.pos = mul(float4(vertex.pos, 1), camera_view_projection);
     pixel.uv = vertex.uv;
     pixel.norm = vertex.norm;
     return pixel;
@@ -46,12 +39,11 @@ float4 ps_main(Pixel pixel) : SV_TARGET
     const float maxLam = 1.f;
     const float rangeLam = maxLam - minLam;
     
-    float brightness = dot(normalize(camera_pos - pixel.worldPos), normalize(pixel.norm));
+    float brightness = dot(normalize(camera_position - pixel.worldPos), normalize(pixel.norm));
     brightness *= rangeLam;
     brightness += minLam;
     brightness *= GetShadowFactor(pixel.worldPos, normalize(pixel.norm));
     
     const float3 color = (float3) texture_main.Sample(sampler_main, pixel.uv);
-    
     return float4(color * brightness, 1);
 }

@@ -39,6 +39,7 @@ void Systems::Init()
 
 	//SHADOWS
 	Shadows.Init(Character);
+	Shadows2.Init(Character.GetCameraController().GetCamera());
 
 	//TERRAIN-RENDERER
 	StaticMeshSystem::MeshData staticMeshData{};
@@ -55,6 +56,8 @@ void Systems::Init()
 	Array<int> pivotIndices{};
 	Generation::ArrowGenerator::CreatePivotArrows(pivotVertices, pivotIndices, 16, { 0,0,0 });
 	pSimpleRenderer->AddMesh(pivotVertices, pivotIndices);
+
+	ShadowDisplay.Init(Shadows2);
 }
 
 void Systems::EarlyUpdate()
@@ -68,5 +71,11 @@ void Systems::Update()
 	Enemies.Update();
 	Arrows.Update();
 	Shadows.MoveShadow(Character);
+	Shadows2.Update();
+
 	Ui.Update();
+
+	ShadowDisplay.Update();
+	//Shadows.m_Matrix = ShadowDisplay.GetMatrix();
+	//Shadows2.SetMatrix(ShadowDisplay.GetMatrix());
 }

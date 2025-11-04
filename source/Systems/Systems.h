@@ -8,11 +8,15 @@
 #include <Systems\Collisions\CollisionSystem.h>
 #include <Systems\Enemies\EnemySystem.h>
 #include <Systems\Shadows\ShadowSystem.h>
+#include <Systems\Shadows\ShadowSystem2.h>
 #include <Systems\Skydome\SkyDomeSystem.h>
 #include <Systems\StaticMeshes\StaticMeshSystem.h>
 #include <Systems\Terrain\Terrain.h>
 #include <Systems\Tower\Tower.h>
 #include <TowerGameRenderer.h>
+
+#include "Shadows\ShadowMapDisplay2.h"
+#include "Shadows\ShadowSystem2.h"
 
 namespace TowerGame
 {
@@ -35,6 +39,7 @@ public:
 	CollisionSystem Collisions;
 	EnemySystem Enemies;
 	ShadowSystem Shadows;
+	ShadowSystem2 Shadows2;
 	SkyDomeSystem Skydome;
 	Terrain Terrain;
 	Tower Tower;
@@ -42,5 +47,7 @@ public:
 	StaticMeshSystem StaticMeshes;
 	StaticModelSystem StaticModels;
 	SimpleRenderer* pSimpleRenderer{};
+
+	ShadowMapDisplay2 ShadowDisplay;
 };
 }
