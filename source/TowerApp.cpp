@@ -14,7 +14,7 @@ TowerApp* TowerApp::pApp{ nullptr };
 TowerApp::TowerApp()
 {
 	pApp = this;
-	m_Systems.Init();
+	m_TowerSystems.Init();
 }
 
 TowerApp::~TowerApp()
@@ -28,7 +28,7 @@ void TowerApp::OnCanvasResized(const App::ResizedEvent& event)
 
 void TowerApp::EarlyUpdate()
 {
-	m_Systems.EarlyUpdate();
+	m_TowerSystems.EarlyUpdate();
 }
 
 void TowerApp::Update()
@@ -39,7 +39,7 @@ void TowerApp::Update()
 		return;
 	}
 
-	m_Systems.Update();
+	m_TowerSystems.Update();
 }
 
 void TowerApp::PreRender()

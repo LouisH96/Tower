@@ -2,7 +2,6 @@
 #include "TowerGameRenderer.h"
 #include <Systems\TowerSystems.h>
 
-
 namespace TowerGame
 {
 class TowerApp
@@ -22,14 +21,14 @@ public:
 	void RenderUi();
 
 	TowerGameRenderer& GetRenderer() { return m_Renderer; }
-	TowerSystems& GetSystems() { return m_Systems; }
+	TowerSystems& GetTowerSystems() { return m_TowerSystems; }
 
 private:
 	TowerGameRenderer m_Renderer;
-	TowerSystems m_Systems;
+	TowerSystems m_TowerSystems;
 };
 }
 
 #define APP (*TowerApp::pApp)
 #define NEW_UI (*Globals::pUi)
-#define SYSTEMS (APP.GetSystems())
+#define SYSTEMS (APP.GetTowerSystems())
