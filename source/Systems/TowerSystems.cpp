@@ -56,8 +56,6 @@ void TowerSystems::Init()
 	Array<int> pivotIndices{};
 	Generation::ArrowGenerator::CreatePivotArrows(pivotVertices, pivotIndices, 16, { 0,0,0 });
 	pSimpleRenderer->AddMesh(pivotVertices, pivotIndices);
-
-	ShadowDisplay.Init(Shadows2);
 }
 
 void TowerSystems::EarlyUpdate()
@@ -74,8 +72,4 @@ void TowerSystems::Update()
 	Shadows2.Update();
 
 	Ui.Update();
-
-	ShadowDisplay.Update();
-	//Shadows.m_Matrix = ShadowDisplay.GetMatrix();
-	//Shadows2.SetMatrix(ShadowDisplay.GetMatrix());
 }

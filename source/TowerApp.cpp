@@ -24,11 +24,13 @@ TowerApp::~TowerApp()
 void TowerApp::OnCanvasResized(const App::ResizedEvent& event)
 {
 	m_Renderer.OnCanvasResized(event);
+	m_Systems.OnCanvasResized(event);
 }
 
 void TowerApp::EarlyUpdate()
 {
 	m_TowerSystems.EarlyUpdate();
+	m_Systems.EarlyUpdate();
 }
 
 void TowerApp::Update()
@@ -40,16 +42,19 @@ void TowerApp::Update()
 	}
 
 	m_TowerSystems.Update();
+	m_Systems.Update();
 }
 
 void TowerApp::PreRender()
 {
 	m_Renderer.PreRender();
+	m_Systems.PreRender();
 }
 
 void TowerApp::Render()
 {
 	m_Renderer.Render();
+	m_Systems.Render();
 }
 
 void TowerApp::RenderUi()

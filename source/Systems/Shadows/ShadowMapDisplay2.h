@@ -1,5 +1,6 @@
 #pragma once
 #include "ShadowSystem2.h"
+#include <Framework\Systems\System.h>
 
 #undef near
 #undef far
@@ -7,13 +8,19 @@
 namespace TowerGame
 {
 class ShadowMapDisplay2
+	: public ISystem
 {
 public:
 	void Init(ShadowSystem2& shadowMap);
-	void Update();
 
 	const Float4X4& GetMatrix() const { return m_Matrix; }
 	void SetMatrix(const Float4X4& matrix) { m_Matrix = matrix; }
+
+	void OnCanvasResized(const App::ResizedEvent& event) override {};
+	void EarlyUpdate() override {};
+	void Update() override;
+	void PreRender() override {};
+	void Render() override {};
 
 private:
 	struct EyeFrustum
@@ -101,5 +108,6 @@ private:
 	void AddLines(
 		const List<Float3>& lines, const Float3& color,
 		List<Float4>& linesDestination, List<Float3>& colorsDestination);
-};
+
+	};
 }

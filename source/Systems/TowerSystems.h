@@ -15,7 +15,6 @@
 #include <Systems\Tower\Tower.h>
 #include <TowerGameRenderer.h>
 
-#include "Shadows\ShadowMapDisplay2.h"
 #include "Shadows\ShadowSystem2.h"
 
 namespace TowerGame
@@ -47,7 +46,5 @@ public:
 	StaticMeshSystem StaticMeshes;
 	StaticModelSystem StaticModels;
 	SimpleRenderer* pSimpleRenderer{};
-
-	ShadowMapDisplay2 ShadowDisplay;
 };
 }
