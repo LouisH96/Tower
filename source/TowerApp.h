@@ -1,6 +1,6 @@
 #pragma once
 #include "TowerGameRenderer.h"
-#include <Systems\Systems.h>
+#include <Systems\TowerSystems.h>
 
 
 namespace TowerGame
@@ -22,11 +22,11 @@ public:
 	void RenderUi();
 
 	TowerGameRenderer& GetRenderer() { return m_Renderer; }
-	Systems& GetSystems() { return m_Systems; }
+	TowerSystems& GetSystems() { return m_Systems; }
 
 private:
 	TowerGameRenderer m_Renderer;
-	Systems m_Systems;
+	TowerSystems m_Systems;
 };
 }
 

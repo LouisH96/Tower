@@ -20,14 +20,14 @@
 
 namespace TowerGame
 {
-class Systems
+class TowerSystems
 {
 public:
 	using SimpleRenderer = Rendering::RendererFactory::SimpleRenderer;
 
 	//Class
-	Systems() = default;
-	~Systems();
+	TowerSystems() = default;
+	~TowerSystems();
 
 	void Init();
 	void EarlyUpdate();

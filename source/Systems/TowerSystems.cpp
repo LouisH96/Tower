@@ -1,16 +1,16 @@
 #include "pch.h"
-#include "Systems.h"
+#include "TowerSystems.h"
 
 #include <Generation/Shapes/ArrowGenerator.h>
 
 using namespace TowerGame;
 
-Systems::~Systems()
+TowerSystems::~TowerSystems()
 {
 	delete pSimpleRenderer;
 }
 
-void Systems::Init()
+void TowerSystems::Init()
 {
 	//TERRAIN & TOWER
 	const Float2 terrainSize{ 250,250 };
@@ -60,12 +60,12 @@ void Systems::Init()
 	ShadowDisplay.Init(Shadows2);
 }
 
-void Systems::EarlyUpdate()
+void TowerSystems::EarlyUpdate()
 {
 	Character.Update();
 }
 
-void Systems::Update()
+void TowerSystems::Update()
 {
 	Bow.Update(Character.GetCameraController().GetTransform());
 	Enemies.Update();
