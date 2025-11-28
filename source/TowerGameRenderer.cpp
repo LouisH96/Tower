@@ -18,6 +18,8 @@ TowerGameRenderer::TowerGameRenderer()
 	, m_Shader_Weapon{ Resources::Local(L"Weapon.hlsl") }
 	, m_Shader_Terrain{ Resources::Local(L"Terrain.hlsl") }
 	, m_Shader_StaticMesh{ Resources::Local(L"StaticMesh.hlsl") }
+	, m_Shader_Tracer{ Resources::Local(L"Tracer.hlsl") }
+	, m_Il_V_PosCol{ InputLayout::FromType<V_PosCol>() }
 	, m_Il_V_PosNorUv_I_ModelMatrix{ InputLayout::FromTypes<V_PosNorUv, I_ModelMatrix>() }
 	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
 	, m_Il_V_PosNorUv{ InputLayout::FromType<V_PosNorUv>() }
@@ -112,6 +114,12 @@ void TowerGameRenderer::Render()
 	m_ModelBuffer.Activate(1);
 	m_BonesBuffer.Update(bow.GetBones());
 	SYSTEMS.Bow.Render();
+
+	//Arrow Tracers
+	PrimitiveTopology::Activate(ModelTopology::TriangleListIdx);
+	m_Il_V_PosCol.Activate();
+	m_Shader_Tracer.Activate();
+	SYSTEMS.Arrows.RenderTracers();
 
 	//Other
 	SYSTEMS.pSimpleRenderer->Render();

@@ -180,6 +180,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Systems\Arrows\Tracing\TracingSystem.cpp" />
     <ClCompile Include="Systems\Character\CharacterMovement.cpp" />
     <ClCompile Include="Systems\Shadows\ShadowMapDisplay2.cpp" />
     <ClCompile Include="Systems\Shadows\ShadowSystem2.cpp" />
@@ -209,6 +210,7 @@
     <ClCompile Include="TowerApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Systems\Arrows\Tracing\TracingSystem.h" />
     <ClInclude Include="Systems\Character\CharacterMovement.h" />
     <ClInclude Include="Systems\Shadows\ShadowMapDisplay2.h" />
     <ClInclude Include="Systems\Shadows\ShadowSystem2.h" />

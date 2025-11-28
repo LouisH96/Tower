@@ -28,6 +28,7 @@ private:
 	Rendering::ConstantBuffer<Float4X4> m_BonesBuffer;
 
 	//InputLayouts
+	Rendering::InputLayout m_Il_V_PosCol;
 	Rendering::InputLayout m_Il_V_PosNorUv;
 	Rendering::InputLayout m_Il_V_PosNorUvSkin;
 	Rendering::InputLayout m_Il_V_PosNorUv_I_ModelMatrix;
@@ -42,6 +43,7 @@ private:
 	Rendering::Shader m_Shader_Entity;
 	Rendering::Shader m_Shader_Weapon;
 	Rendering::Shader m_Shader_StaticMesh;
+	Rendering::Shader m_Shader_Tracer;
 
 	//DepthStencilStates
 	Rendering::DepthStencilState m_DepthStencilState_On;

@@ -95,6 +95,9 @@ void ArrowSystem::Update()
 			SetArrowFinished(velocity);
 			continue;
 		}
+
+		//Tracer
+		m_Tracing.Update(i, world, velocity);
 	}
 }
 
@@ -121,9 +124,19 @@ void ArrowSystem::SetArrowTransform(int arrowIdx, const Transform& newArrowWorld
 void ArrowSystem::Launch(int arrowIdx, const Float3& launchedPosition)
 {
 	const Instance& instance{ m_Instances[arrowIdx] };
-	m_Velocities[arrowIdx] = WorldMatrix::GetForward(instance.model) * LAUNCH_SPEED;
-	m_LaunchedPosition.Add(launchedPosition);
+	const Float3 forward{ WorldMatrix::GetForward(instance.model) };
+	const Float4X4& transform{ instance.model };
+	const Float3 position{ transform.GetRow3().Xyz() };
+
+	m_Velocities[arrowIdx] = forward * LAUNCH_SPEED;
+	m_LaunchedPosition.Add(position);
 	m_IsCharging = 0;
+
+	//Tracer
+	const Float2 forwardXz{ forward.Xz().Normalized() };
+	const float upAngle{ asinf(forward.y) };
+	const Float2 force{ cosf(upAngle) * LAUNCH_SPEED, forward.y * LAUNCH_SPEED };
+	m_Tracing.Add(position, forwardXz, force, transform);
 }
 
 bool ArrowSystem::IsArrowFinished(const Float3& arrowVelocity)
@@ -141,4 +154,9 @@ void ArrowSystem::Render(bool hideCharging)
 	m_Texture.Activate();
 	m_Instances.Draw(m_Instances.GetSize() -
 		(hideCharging ? m_IsCharging : 0));
+}
+
+void ArrowSystem::RenderTracers()
+{
+	m_Tracing.Render();
 }

@@ -11,6 +11,7 @@
 #include "Rendering/Structs/ConstantBufferTypes.h"
 #include "Rendering/Structs/InstanceTypes.h"
 #include "Rendering/Structs/VertexTypes.h"
+#include "Tracing/TracingSystem.h"
 
 namespace TowerGame
 {
@@ -22,13 +23,14 @@ public:
 
 	void Update();
 	void Render(bool hideCharging = false);
+	void RenderTracers();
 
 	int Spawn();
 	void Launch(int arrowIdx, const Float3& launchedPosition);
 	void SetArrowTransform(int arrowIdx, const Float4X4& newArrowWorld);
 	void SetArrowTransform(int arrowIdx, const Transform& newArrowWorld);
 
-	static constexpr float LAUNCH_SPEED{ 20 };
+	static constexpr float LAUNCH_SPEED{ 25 };
 
 private:
 	using Vertex = Rendering::V_PosNorUv;
@@ -42,6 +44,8 @@ private:
 	List<Float3> m_Velocities;
 	List<Float3> m_LaunchedPosition;
 	unsigned m_IsCharging{ 0 };
+
+	TracingSystem m_Tracing{};
 
 	static bool IsArrowFinished(const Float3& arrowVelocity);
 	static void SetArrowFinished(Float3& arrowVelocity);
