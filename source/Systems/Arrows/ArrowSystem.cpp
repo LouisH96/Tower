@@ -35,16 +35,15 @@ ArrowSystem::ArrowSystem()
 
 void ArrowSystem::Update()
 {
+	const float dt{ Globals::DeltaTime };
+
 	for (unsigned i = 0; i < m_Velocities.GetSize(); i++)
 	{
 		//IS ALREADY FINISHED ?
 		Float3& velocity{ m_Velocities[i] };
 		Float4X4& world{ m_Instances[i].model };
 		if (IsArrowFinished(velocity))
-		{
-			//m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
 			continue;
-		}
 
 		//IS UNDER TERRAIN ?
 		const Float3 position{ WorldMatrix::GetPosition(world) };
@@ -55,11 +54,12 @@ void ArrowSystem::Update()
 		}
 
 		//UPDATE WORLD-MATRIX
-		velocity.y += -9.81f * Globals::DeltaTime;
+		velocity.y += Constants::GRAVITY / 2 * dt;
 
 		float movementAmount{};
 		const Float3 movementDirection{ velocity.Normalized(movementAmount) };
-		movementAmount *= Globals::DeltaTime;
+		movementAmount *= dt;
+		velocity.y += Constants::GRAVITY / 2 * dt;
 
 		const Float3 newPosition{ position + movementDirection * movementAmount };
 
