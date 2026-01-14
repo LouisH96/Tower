@@ -24,9 +24,13 @@ TowerGameRenderer::TowerGameRenderer()
 	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
 	, m_Il_V_PosNorUv{ InputLayout::FromType<V_PosNorUv>() }
 	, m_Il_V_PosNorUvSkin{ InputLayout::FromType<V_PosNorUvSkin>() }
+	, m_Il_V_PosColUv{ InputLayout::FromType<V_PosColUv>() }
+	, m_Il_V_PosCol4Uv{ InputLayout::FromType<V_PosCol4Uv>() }
 	, m_Culling_Back{ RasterizerState::Culling::Back }
 	, m_Culling_Front{ RasterizerState::Culling::Front }
+	, m_Culling_None{ RasterizerState::Culling::None }
 	, m_DepthStencilState_On{ true }
+	, m_DepthStencilState_Off{ false }
 	, m_BonesBuffer{ BONES_BUFFER_SIZE }
 {
 }
@@ -115,14 +119,18 @@ void TowerGameRenderer::Render()
 	m_BonesBuffer.Update(bow.GetBones());
 	SYSTEMS.Bow.Render();
 
-	//Arrow Tracers
-	PrimitiveTopology::Activate(ModelTopology::TriangleListIdx);
-	m_Il_V_PosCol.Activate();
-	m_Shader_Tracer.Activate();
-	SYSTEMS.Arrows.RenderTracers();
-
 	//Other
 	SYSTEMS.pSimpleRenderer->Render();
 
 	SYSTEMS.Shadows2.EndRender();
+
+	//---| Transparency |---
+	m_Culling_None.Activate();
+	m_DepthStencilState_Off.Activate();
+
+	//Arrow Tracers
+	PrimitiveTopology::Activate(ModelTopology::TriangleListIdx);
+	m_Il_V_PosCol4Uv.Activate();
+	m_Shader_Tracer.Activate();
+	SYSTEMS.Arrows.RenderTracers();
 }

@@ -33,10 +33,13 @@ private:
 	Rendering::InputLayout m_Il_V_PosNorUvSkin;
 	Rendering::InputLayout m_Il_V_PosNorUv_I_ModelMatrix;
 	Rendering::InputLayout m_Il_V_PosNorCol;
+	Rendering::InputLayout m_Il_V_PosColUv;
+	Rendering::InputLayout m_Il_V_PosCol4Uv;
 
 	//RasterizerStates
 	Rendering::RasterizerState m_Culling_Back;
 	Rendering::RasterizerState m_Culling_Front;
+	Rendering::RasterizerState m_Culling_None;
 
 	//Shaders
 	Rendering::Shader m_Shader_Terrain;
@@ -47,6 +50,7 @@ private:
 
 	//DepthStencilStates
 	Rendering::DepthStencilState m_DepthStencilState_On;
+	Rendering::DepthStencilState m_DepthStencilState_Off;
 
 	//Samplers
 	Rendering::SamplerState m_Sampler;

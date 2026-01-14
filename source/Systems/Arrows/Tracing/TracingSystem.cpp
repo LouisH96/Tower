@@ -1,106 +1,161 @@
 #include "pch.h"
 #include "TracingSystem.h"
 
+#include <Math\Math.h>
 #include <Transform\WorldMatrix.h>
 
 using namespace TowerGame;
 
 TracingSystem::TracingSystem()
 	: m_Vertices{}
+	, m_Indices{ 50 * NR_SIDES * NR_SIDE_TRIANGLES * Triangle::NR_POINTS }
 {
+	for (unsigned iSide{ 0 }; iSide < NR_SIDES; ++iSide)
+	{
+		const float angle{ Constants::PI2 / NR_SIDES * iSide };
+		m_SideCosSin[iSide * 2 + 0] = cosf(angle);
+		m_SideCosSin[iSide * 2 + 1] = sinf(angle);
+	}
 }
 
 void TracingSystem::Add(const Float3& origin, const Float2& forwardXz, const Float2& force, const Float4X4& transform)
 {
 	TraceData data{};
-	data.PrevTrans = transform;
-	data.PrevSliceIdx = AddVertices(2);
-	data.CurrSliceIdx = data.PrevSliceIdx + NR_SIDES;
-	m_Tracers.Add(data);
+	data.SpawnTime = Globals::Time + DELAY;
 
-	SetVertices(data.PrevSliceIdx, transform);
-	ConnectSlices(data.PrevSliceIdx, data.CurrSliceIdx);
+	m_Tracers.Add(data);
 }
 
-void TracingSystem::Update(unsigned idx, const Float4X4& transform, const Float3& velocity)
+void TracingSystem::UpdateHead(unsigned idx, const Float4X4& transform, const Float3& velocity)
 {
-	TraceData& data{ m_Tracers[idx] };
+	//Get
+	TraceData& data{ m_Tracers.Get(idx) };
 
-	const Float3 prevUp{ WorldMatrix::GetUp(data.PrevTrans) };
-	const float velDot{ abs(velocity.Dot(prevUp)) };
-	const float forwardDor{ abs(WorldMatrix::GetForward(transform).Dot(prevUp)) };
+	if (Globals::Time < data.SpawnTime)
+		return;
 
-	data.AngleDistSum += velDot * forwardDor;
-
-	if (data.AngleDistSum > m_AngleDistInterval)
+	//Add Slices?
+	if (data.Slices.GetSize() < 2)
 	{
-		data.PrevSliceIdx = data.CurrSliceIdx;
-		data.CurrSliceIdx = AddVertices();
-		data.AngleDistSum = 0;
-		SetVertices(data.CurrSliceIdx, transform);
-		ConnectSlices(data.PrevSliceIdx, data.CurrSliceIdx);
-		data.PrevTrans = transform;
-		//DebugRenderer::AddRay(WorldMatrix::GetPosition(transform), WorldMatrix::GetUp(transform) * 5, Color::Blue);
+		TraceSlice& slice{ data.Slices.AddEmpty() };
+		slice.IVertex = AddVertices();
+		slice.Time = Globals::Time;
+		SetSlicePositions(slice, transform);
+		return;
 	}
-	else
+
+	//Move Head
+	TraceSlice* pCurrSlice{ &data.Slices.Last() };
+	pCurrSlice->Time = Globals::Time;
+	SetSlicePositions(*pCurrSlice, transform);
+
+	//New Slice?
+	TraceSlice* pPrevSlice{ &data.Slices.GetReverse(1) };
+	if (Globals::Time > pPrevSlice->Time + SLICE_TIME_INTERVAL)
 	{
-		SetVertices(data.CurrSliceIdx, transform);
+		TraceSlice& newSlice{ data.Slices.AddEmpty() };
+		newSlice.Time = Globals::Time;
+		newSlice.IVertex = AddVertices();
+		pCurrSlice = &data.Slices.GetReverse(1);
+		CopyVerticesTo(pCurrSlice->IVertex, newSlice.IVertex);
+		newSlice.Center = pCurrSlice->Center;
+	}
+}
+
+void TracingSystem::UpdateTracers()
+{
+	for (unsigned iTrace{ 0 }; iTrace < m_Tracers.GetLocalSize(); ++iTrace)
+	{
+		TraceData& trace{ m_Tracers.GetLocal(iTrace) };
+
+		if (!trace.IsValid())
+			continue;
+		if (trace.SpawnTime + DELAY > Globals::Time)
+			continue;
+
+		if (!ProgressTail(trace))
+		{
+			m_Tracers.RemoveLocal(iTrace);
+			iTrace--;
+			continue;
+		}
+		UpdateSizeAndAlpha(trace);
 	}
 }
 
 void TracingSystem::Render()
 {
-	List<Vertex>& vertices{ m_DrawData.GetVertices() };
-	List<int>& indices{ m_DrawData.GetIndices() };
+	if (m_Tracers.IsEmpty())
+		return;
 
-	vertices.Clear();
-	for (unsigned iVertex{ 0 }; iVertex < m_Vertices.GetEndIdx(); ++iVertex)
+	//Count Indices
+	unsigned nrIndices{ 0 };
+	for (unsigned iTrace{ 0 }; iTrace < m_Tracers.GetLocalSize(); ++iTrace)
 	{
-		Vertex vertex{ m_Vertices.Get(iVertex) };
-		if (!vertex.IsValid())
-			vertex.Pos = {};
-		vertices.Add(vertex);
+		const TraceData& tracer{ m_Tracers.GetLocal(iTrace) };
+		if (tracer.Slices.IsEmpty())
+			continue;
+		const unsigned nrSections{ m_Tracers.GetLocal(iTrace).Slices.GetSize() - 1 };
+		nrIndices += nrSections * NR_SIDES * NR_SIDE_TRIANGLES * Triangle::NR_POINTS;
+	}
+	m_Indices.EnsureCapacityNoCopy(nrIndices, true);
+
+	//Create Indices on GPU
+	int* pIndex{ m_Indices.BeginCopyData() };
+	for (unsigned iTrace{ 0 }; iTrace < m_Tracers.GetLocalSize(); ++iTrace)
+	{
+		const TraceData& trace{ m_Tracers.GetLocal(iTrace) };
+
+		for (unsigned iSlice{ 1 }; iSlice < trace.Slices.GetSize(); ++iSlice)
+		{
+			const unsigned iPrev{ trace.Slices[iSlice - 1].IVertex };
+			const unsigned iCurr{ trace.Slices[iSlice].IVertex };
+			ConnectSlices(iPrev, iCurr, pIndex);
+		}
 	}
 
-	indices.Clear();
-	for (unsigned iIndex{ m_Indices.GetFirstIdx() }; iIndex < m_Indices.GetEndIdx(); ++iIndex)
-	{
-		const Index& index{ m_Indices.Get(iIndex) };
-		if (index.IsValid())
-			indices.Add(index.Index);
-	}
-
-	m_DrawData.Draw();
+	//Activate & Draw
+	m_Indices.EndCopyData();
+	m_Indices.Activate();
+	m_Vertices.ActivateFromStart();
+	m_Indices.Draw(nrIndices);
 }
 
 unsigned TracingSystem::AddVertices(unsigned nrSlices)
 {
 	Vertex vertex{};
-	vertex.Color = Color::Red;
-	return m_Vertices.AddContinuous(vertex, NR_SIDES * nrSlices);
+	vertex.Color = Float4{ Float3{GRAY_COLOR}, 0 };
+
+	return m_Vertices.GetCpuData().AddContinuous(vertex, NR_SIDES * nrSlices);
 }
 
-void TracingSystem::SetVertices(unsigned iVertex, const Float4X4& transform)
+void TracingSystem::SetSlicePositions(TraceSlice& slice, const Float4X4& transform)
 {
 	const Float3 right{ WorldMatrix::GetRight(transform) * THICKNESS };
 	const Float3 up{ WorldMatrix::GetUp(transform) * THICKNESS };
 	const Float3 pos{ WorldMatrix::GetPosition(transform) };
+	slice.Center = pos;
 
 	//Vertices
-	Vertex* pVertex{ &m_Vertices.Get(iVertex) };
+	Vertex* pVertex{ &m_Vertices.Get(slice.IVertex) };
 
 	for (unsigned iSide{ 0 }; iSide < NR_SIDES; ++iSide)
 	{
-		const float angle{ Constants::PI2 / NR_SIDES * iSide };
-		const float cos{ cosf(angle) };
-		const float sin{ sinf(angle) };
-
-		pVertex->Pos = pos + right * cos + up * sin;
+		pVertex->Pos = pos
+			+ right * m_SideCosSin[iSide * 2 + 0]
+			+ up * m_SideCosSin[iSide * 2 + 1];
+		pVertex->Uv.y = iSide % 2;
 		++pVertex;
 	}
 }
 
-void TracingSystem::ConnectSlices(unsigned iFirstSlice, unsigned iSecSlice)
+void TracingSystem::CopyVerticesTo(unsigned iSource, unsigned iTarget)
+{
+	InvalidateList<Vertex>& vertices{ m_Vertices.GetCpuData() };
+	std::copy(&vertices.Get(iSource), &vertices.Get(iSource + NR_SIDES), &vertices.Get(iTarget));
+}
+
+void TracingSystem::ConnectSlices(unsigned iFirstSlice, unsigned iSecSlice, int*& pIndices)
 {
 	for (unsigned iSide{ 0 }; iSide < NR_SIDES; ++iSide)
 	{
@@ -114,7 +169,80 @@ void TracingSystem::ConnectSlices(unsigned iFirstSlice, unsigned iSecSlice)
 		const unsigned lb{ left + bot };
 		const unsigned lt{ left + top };
 
-		m_Indices.AddContinuous({ rb }, { lb }, { lt });
-		m_Indices.AddContinuous({ rb }, { lt }, { rt });
+		*pIndices++ = rb;
+		*pIndices++ = lb;
+		*pIndices++ = lt;
+
+		*pIndices++ = rb;
+		*pIndices++ = lt;
+		*pIndices++ = rt;
 	}
+}
+
+void TracingSystem::UpdateSizeAndAlpha(TraceData& tracer)
+{
+	const float prevAlpha{ m_Vertices[tracer.Slices.First().IVertex].Color.w };
+	const float newAlpha{ Float::Min(prevAlpha + ALPHA_GAIN * Globals::DeltaTime, ALPHA_MAX) };
+
+	for (unsigned iSlice{ 0 }; iSlice < tracer.Slices.GetSize(); ++iSlice)
+	{
+		TraceSlice& slice{ tracer.Slices[iSlice] };
+		for (unsigned iVertex{ slice.IVertex }; iVertex < slice.IVertex + NR_SIDES; ++iVertex)
+		{
+			Vertex& vertex{ m_Vertices[iVertex] };
+			Float3 diff{ vertex.Pos - slice.Center };
+			diff *= 1 + THICKNESS_GAIN * Globals::DeltaTime;
+			vertex.Pos = slice.Center + diff;
+			vertex.Color.w = newAlpha;
+		}
+	}
+}
+
+bool TracingSystem::ProgressTail(TraceData& trace)
+{
+	List<TraceSlice>& slices{ trace.Slices };
+	const float tailTime{ Globals::Time - LIFETIME };
+
+	unsigned iSlice{ 1 };
+	for (; iSlice < slices.GetSize(); ++iSlice)
+	{
+		TraceSlice& slice{ slices[iSlice] };
+
+		if (slice.Time <= tailTime)
+			continue;
+
+		//Move previous slice
+		TraceSlice& prevSlice{ slices[iSlice - 1] };
+		const float alpha{ Math::Unlerp(prevSlice.Time, slice.Time, tailTime) };
+		const Float3 diff{
+			(slice.Center -
+			prevSlice.Center) * alpha };
+
+		for (unsigned iVertex{ prevSlice.IVertex }; iVertex < prevSlice.IVertex + NR_SIDES; ++iVertex)
+		{
+			Vertex& vertex{ m_Vertices[iVertex] };
+			vertex.Pos += diff;
+		}
+		prevSlice.Time = tailTime;
+		prevSlice.Center += diff;
+		iSlice--;
+		break;
+	}
+
+	//-- Remove slices & vertices
+	const unsigned slicesToRemove{ Uint::Min(iSlice, slices.GetSize()) };
+
+	//remove vertices of slices that will be removed
+	for (unsigned iRemoveSlice{ 0 }; iRemoveSlice < slicesToRemove; ++iRemoveSlice)
+	{
+		TraceSlice& removeSlice{ trace.Slices[iRemoveSlice] };
+		for (unsigned iRemoveVertex{ removeSlice.IVertex }; iRemoveVertex < removeSlice.IVertex + NR_SIDES; ++iRemoveVertex)
+			m_Vertices.Remove(iRemoveVertex);
+	}
+
+	//remove slices
+	trace.Slices.ShrinkFromBegin(slicesToRemove);
+	if (trace.Slices.IsEmpty())
+		return false;
+	return true;
 }

@@ -48,6 +48,6 @@ private:
 	TracingSystem m_Tracing{};
 
 	static bool IsArrowFinished(const Float3& arrowVelocity);
-	static void SetArrowFinished(Float3& arrowVelocity);
+	void SetArrowFinished(unsigned idx);
 };
 }

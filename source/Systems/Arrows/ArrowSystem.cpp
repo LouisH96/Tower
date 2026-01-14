@@ -37,11 +37,11 @@ void ArrowSystem::Update()
 {
 	const float dt{ Globals::DeltaTime };
 
-	for (unsigned i = 0; i < m_Velocities.GetSize(); i++)
+	for (unsigned iArrow = 0; iArrow < m_Velocities.GetSize(); iArrow++)
 	{
 		//IS ALREADY FINISHED ?
-		Float3& velocity{ m_Velocities[i] };
-		Float4X4& world{ m_Instances[i].model };
+		Float3& velocity{ m_Velocities[iArrow] };
+		Float4X4& world{ m_Instances[iArrow].model };
 		if (IsArrowFinished(velocity))
 			continue;
 
@@ -49,7 +49,7 @@ void ArrowSystem::Update()
 		const Float3 position{ WorldMatrix::GetPosition(world) };
 		if (SYSTEMS.Terrain.GetHeight(position.Xz()) >= position.y)
 		{
-			SetArrowFinished(velocity);
+			SetArrowFinished(iArrow);
 			continue;
 		}
 
@@ -75,10 +75,10 @@ void ArrowSystem::Update()
 		Enemy* pEnemy{ collisions.Enemies.IsColliding(position, newPosition) };
 		if (pEnemy)
 		{
-			SYSTEMS.Enemies.OnCollision(Transform{ newPosition, Quaternion{world} }, i, *pEnemy);
-			SetArrowFinished(velocity);
+			SYSTEMS.Enemies.OnCollision(Transform{ newPosition, Quaternion{world} }, iArrow, *pEnemy);
+			SetArrowFinished(iArrow);
 
-			const Float3& launchedPosition{ m_LaunchedPosition[i] };
+			const Float3& launchedPosition{ m_LaunchedPosition[iArrow] };
 			const Float3& hitPosition{ newPosition };
 			const float travelDistance{ launchedPosition.Distance(hitPosition) };
 			const unsigned score{ static_cast<unsigned>(travelDistance * 10) };
@@ -92,13 +92,15 @@ void ArrowSystem::Update()
 		CollisionDetection::Collision collision{};
 		if (collisions.Models.IsColliding(arrowMovement, collision))
 		{
-			SetArrowFinished(velocity);
+			SetArrowFinished(iArrow);
 			continue;
 		}
 
 		//Tracer
-		m_Tracing.Update(i, world, velocity);
+		m_Tracing.UpdateHead(iArrow, world, velocity);
 	}
+
+	m_Tracing.UpdateTracers();
 }
 
 int ArrowSystem::Spawn()
@@ -144,9 +146,9 @@ bool ArrowSystem::IsArrowFinished(const Float3& arrowVelocity)
 	return arrowVelocity.x == ARROW_FINISHED;
 }
 
-void ArrowSystem::SetArrowFinished(Float3& arrowVelocity)
+void ArrowSystem::SetArrowFinished(unsigned idx)
 {
-	arrowVelocity.x = ARROW_FINISHED;
+	m_Velocities[idx].x = ARROW_FINISHED;
 }
 
 void ArrowSystem::Render(bool hideCharging)

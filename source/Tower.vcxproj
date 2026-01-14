@@ -210,6 +210,7 @@
     <ClCompile Include="TowerApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataStructures\OffsetList.h" />
     <ClInclude Include="Systems\Arrows\Tracing\TracingSystem.h" />
     <ClInclude Include="Systems\Character\CharacterMovement.h" />
     <ClInclude Include="Systems\Shadows\ShadowMapDisplay2.h" />

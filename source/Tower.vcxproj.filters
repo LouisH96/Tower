@@ -47,5 +47,6 @@
     <ClInclude Include="Systems\Shadows\ShadowMapDisplay2.h" />
     <ClInclude Include="Systems\Shadows\ShadowSystem2.h" />
     <ClInclude Include="Systems\Arrows\Tracing\TracingSystem.h" />
+    <ClInclude Include="DataStructures\OffsetList.h" />
   </ItemGroup>
 </Project>
