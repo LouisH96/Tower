@@ -7,7 +7,7 @@
 #include <Systems\Character\Character.h>
 #include <Systems\Collisions\CollisionSystem.h>
 #include <Systems\Enemies\EnemySystem.h>
-#include <Systems\Shadows\ShadowSystem2.h>
+#include <Systems\Shadows\ShadowSystem.h>
 #include <Systems\Skydome\SkyDomeSystem.h>
 #include <Systems\StaticMeshes\StaticMeshSystem.h>
 #include <Systems\Terrain\Terrain.h>
@@ -34,7 +34,7 @@ public:
 	Character Character;
 	CollisionSystem Collisions;
 	EnemySystem Enemies;
-	ShadowSystem2 Shadows2;
+	ShadowSystem Shadows;
 	SkyDomeSystem Skydome;
 	Terrain Terrain;
 	Tower Tower;

@@ -1,5 +1,5 @@
 #pragma once
-#include "ShadowSystem2.h"
+#include "ShadowSystem.h"
 #include <Framework\Systems\System.h>
 
 #undef near
@@ -11,7 +11,7 @@ class ShadowMapDisplay2
 	: public ISystem
 {
 public:
-	void Init(ShadowSystem2& shadowMap);
+	void Init(ShadowSystem& shadowMap);
 
 	const Float4X4& GetMatrix() const { return m_Matrix; }
 	void SetMatrix(const Float4X4& matrix) { m_Matrix = matrix; }

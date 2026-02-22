@@ -16,7 +16,7 @@ using namespace TowerGame;
 #undef min
 #undef max
 
-void ShadowMapDisplay2::Init(ShadowSystem2& shadowMap)
+void ShadowMapDisplay2::Init(ShadowSystem& shadowMap)
 {
 	//Ui
 	Margin* pMargin{ new Margin(10) };
@@ -69,7 +69,7 @@ unsigned iSlice{ 1 };
 void ShadowMapDisplay2::Update()
 {
 	//
-	const ShadowSystem2& shadows{ SYSTEMS.Shadows2 };
+	const ShadowSystem& shadows{ SYSTEMS.Shadows };
 
 	//Setup
 	m_Matrix = WorldMatrix::GetIdentity();
@@ -85,7 +85,7 @@ void ShadowMapDisplay2::Update()
 
 	//EyeRect
 	AddEyeLines(eye, m_EyeRectLines, m_EyeRectColors);
-	Float4X4 eyeRectMatrix{ SYSTEMS.Shadows2.GetView() };
+	Float4X4 eyeRectMatrix{ SYSTEMS.Shadows.GetView() };
 	eyeRectMatrix *= WorldMatrix::Translation(-(eye.Origin * eyeRectMatrix));
 	TransformLines(m_EyeRectLines, eyeRectMatrix);
 
@@ -268,7 +268,7 @@ void ShadowMapDisplay2::Try(EyeFrustum& eye)
 	//Get
 	const Camera& camera{ CAMERA };
 
-	const Float4X4& view{ SYSTEMS.Shadows2.GetView() };
+	const Float4X4& view{ SYSTEMS.Shadows.GetView() };
 	constexpr unsigned NR_SLICES{ 2 };
 	const float sliceDepth[]{
 		eye.NearDepth + eye.SliceEnds[0],
@@ -351,7 +351,7 @@ Float4X4 ShadowMapDisplay2::Try2(EyeFrustum& eye)
 {
 	//
 	const Camera& camera{ CAMERA };
-	const Float4X4& view{ SYSTEMS.Shadows2.GetView() };
+	const Float4X4& view{ SYSTEMS.Shadows.GetView() };
 
 	//
 	Float4X4 matrix{ Float4X4::GetIdentity() };
@@ -400,7 +400,7 @@ ShadowMapDisplay2::EyeFrustum ShadowMapDisplay2::CalcEyeFrustum()
 	const Camera& camera{ CAMERA };
 	const float ar{ camera.GetAspectRatio() };
 	const float camTan{ camera.GetTanHalfFov() };
-	const ShadowSystem2& shadowSystem{ SYSTEMS.Shadows2 };
+	const ShadowSystem& shadowSystem{ SYSTEMS.Shadows };
 
 	//Frustum
 	EyeFrustum f{};

@@ -39,7 +39,7 @@ void TowerSystems::Init()
 
 	//SHADOWS
 	//Shadows.Init(Character);
-	Shadows2.Init(Character.GetCameraController().GetCamera());
+	Shadows.Init(Character.GetCameraController().GetCamera());
 
 	//TERRAIN-RENDERER
 	StaticMeshSystem::MeshData staticMeshData{};
@@ -68,7 +68,7 @@ void TowerSystems::Update()
 	Bow.Update(Character.GetCameraController().GetTransform());
 	Enemies.Update();
 	Arrows.Update();
-	Shadows2.Update();
+	Shadows.Update();
 
 	Ui.Update();
 }

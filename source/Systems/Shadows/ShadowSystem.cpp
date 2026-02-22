@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ShadowSystem2.h"
+#include "ShadowSystem.h"
 
 #include <Transform\ViewMatrix.h>
 #include <Transform\WorldMatrix.h>
@@ -10,10 +10,10 @@ using namespace Rendering;
 #undef near
 #undef far
 
-const Float3 ShadowSystem2::m_LightDir{ Float3{.432709f,-.639439f,.635516f}.Normalized() };
-const Float2 ShadowSystem2::m_TextureSize{ 512 * 2 };
+const Float3 ShadowSystem::m_LightDir{ Float3{.432709f,-.639439f,.635516f}.Normalized() };
+const Float2 ShadowSystem::m_TextureSize{ 512 * 2 };
 
-ShadowSystem2::ShadowSystem2()
+ShadowSystem::ShadowSystem()
 	: m_Viewport{ m_TextureSize }
 	, m_View{ ViewMatrix::From(m_LightDir) }
 	, m_Sampler{ SamplerState::BorderMode::Value, SamplerState::BorderMode::Value, Float4{Float::MAX}, SamplerState::Filter::Linear, SamplerState::Comparison::Greater }
@@ -29,12 +29,12 @@ ShadowSystem2::ShadowSystem2()
 	}
 }
 
-void ShadowSystem2::Init(const Camera& camera)
+void ShadowSystem::Init(const Camera& camera)
 {
 	CalculatePlaneSize();
 }
 
-void ShadowSystem2::Update()
+void ShadowSystem::Update()
 {
 	//Get Info
 	Camera& camera{ CAMERA };
@@ -237,12 +237,12 @@ void ShadowSystem2::Update()
 }*/
 #pragma endregion
 
-void ShadowSystem2::BeginCreateAny()
+void ShadowSystem::BeginCreateAny()
 {
 	m_Viewport.Activate();
 }
 
-void ShadowSystem2::BeginCreate(unsigned iMap)
+void ShadowSystem::BeginCreate(unsigned iMap)
 {
 	m_DepthStencil[iMap].Clear();
 	ID3D11RenderTargetView* renderTargets[1]
@@ -252,7 +252,7 @@ void ShadowSystem2::BeginCreate(unsigned iMap)
 	Globals::pGpu->GetContext().OMSetRenderTargets(1, renderTargets, m_DepthStencil[iMap].GetView());
 }
 
-void ShadowSystem2::BeginRender()
+void ShadowSystem::BeginRender()
 {
 	LightBuffer buffer{};
 	buffer.Forward = m_LightDir;
@@ -268,13 +268,13 @@ void ShadowSystem2::BeginRender()
 	m_Sampler.Activate(1);
 }
 
-void ShadowSystem2::EndRender()
+void ShadowSystem::EndRender()
 {
 	for (unsigned i{ 0 }; i < NR_MAPS; ++i)
 		Texture::Unset(i + 1);
 }
 
-void ShadowSystem2::CalculatePlaneSize()
+void ShadowSystem::CalculatePlaneSize()
 {
 	//Calculate the bounding box around the view plane at distance 1,
 	//	taking into account the allowed movement (ExtraAngle)

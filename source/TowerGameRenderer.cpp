@@ -44,16 +44,16 @@ void TowerGameRenderer::PreRender()
 {
 	//Get
 	const Camera& camera{ *Globals::pCamera };
-	const ShadowSystem2& shadows{ SYSTEMS.Shadows2 };
+	const ShadowSystem& shadows{ SYSTEMS.Shadows };
 
 	m_Culling_Front.Activate();
 	m_DepthStencilState_On.Activate();
 
-	SYSTEMS.Shadows2.BeginCreateAny();
+	SYSTEMS.Shadows.BeginCreateAny();
 
 	for (unsigned iShadow{ 0 }; iShadow < shadows.NR_MAPS; ++iShadow)
 	{
-		SYSTEMS.Shadows2.BeginCreate(iShadow);
+		SYSTEMS.Shadows.BeginCreate(iShadow);
 
 		const Float4X4 viewProjection{ shadows.GetViewProj(iShadow) };
 		m_CameraMatrixPosBuffer.Update(CB_CamMatPosFor{ camera.GetPosition(), camera.GetForward(), viewProjection });
@@ -83,7 +83,7 @@ void TowerGameRenderer::Render()
 	m_Culling_Back.Activate();
 
 	SYSTEMS.Skydome.Render(); //Render
-	SYSTEMS.Shadows2.BeginRender();
+	SYSTEMS.Shadows.BeginRender();
 
 	m_DepthStencilState_On.Activate();
 	m_CameraMatrixPosBuffer.Update(CB_CamMatPosFor{ camera.GetPosition(), camera.GetForward(), viewProjection });
@@ -122,7 +122,7 @@ void TowerGameRenderer::Render()
 	//Other
 	SYSTEMS.pSimpleRenderer->Render();
 
-	SYSTEMS.Shadows2.EndRender();
+	SYSTEMS.Shadows.EndRender();
 
 	//---| Transparency |---
 	m_Culling_None.Activate();

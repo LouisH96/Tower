@@ -6,7 +6,7 @@
 
 namespace TowerGame
 {
-class ShadowSystem2
+class ShadowSystem
 {
 public:
 	static constexpr unsigned NR_MAPS{ 3 };
@@ -16,7 +16,7 @@ public:
 		5.f,15.f,50.f
 	};
 
-	ShadowSystem2();
+	ShadowSystem();
 
 	void Init(const Camera& camera);
 	void Update();
