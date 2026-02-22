@@ -19,9 +19,12 @@ ShadowSystem2::ShadowSystem2()
 	, m_Sampler{ SamplerState::BorderMode::Value, SamplerState::BorderMode::Value, Float4{Float::MAX}, SamplerState::Filter::Linear, SamplerState::Comparison::Greater }
 	, m_PrevForward{ 0.f }
 {
+	DepthStencilBuffer::Options options{};
+	options.AsShaderResource = true;
+	options.MultiSampling = DepthStencilBuffer::Options::MultiSampling::Disabled;
 	for (unsigned iMap{ 0 }; iMap < NR_MAPS; ++iMap)
 	{
-		m_DepthStencil[iMap].Init(m_TextureSize, true);
+		m_DepthStencil[iMap].Init(m_TextureSize, options);
 		m_ShadowMap[iMap] = { m_DepthStencil[iMap].MakeShaderResourceView() };
 	}
 }
@@ -267,7 +270,8 @@ void ShadowSystem2::BeginRender()
 
 void ShadowSystem2::EndRender()
 {
-	Texture::Unset(1);
+	for (unsigned i{ 0 }; i < NR_MAPS; ++i)
+		Texture::Unset(i + 1);
 }
 
 void ShadowSystem2::CalculatePlaneSize()
