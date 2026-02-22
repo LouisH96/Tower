@@ -190,7 +190,6 @@
     <ClCompile Include="Systems\Ui\TowerUi.cpp" />
     <ClCompile Include="TowerGameRenderer.cpp" />
     <ClCompile Include="Systems\Skydome\SkyDomeSystem.cpp" />
-    <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
     <ClCompile Include="Systems\Arrows\ArrowSystem.cpp" />
     <ClCompile Include="Systems\Enemies\Enemy.cpp" />
     <ClCompile Include="Systems\Enemies\EnemySystem.cpp" />
@@ -221,7 +220,6 @@
     <ClInclude Include="Systems\Ui\TowerUi.h" />
     <ClInclude Include="TowerGameRenderer.h" />
     <ClInclude Include="Systems\Skydome\SkyDomeSystem.h" />
-    <ClInclude Include="Systems\Shadows\ShadowSystem.h" />
     <ClInclude Include="Systems\Arrows\ArrowSystem.h" />
     <ClInclude Include="Systems\Enemies\Enemy.h" />
     <ClInclude Include="Systems\Enemies\EnemySystem.h" />

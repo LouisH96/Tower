@@ -15,7 +15,6 @@
     <ClCompile Include="Systems\Arrows\ArrowSystem.cpp" />
     <ClCompile Include="TowerGameRenderer.cpp" />
     <ClCompile Include="Systems\Skydome\SkyDomeSystem.cpp" />
-    <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
     <ClCompile Include="Systems\TowerSystems.cpp" />
     <ClCompile Include="Systems\StaticMeshes\StaticMeshSystem.cpp" />
     <ClCompile Include="Systems\Ui\TowerUi.cpp" />
@@ -38,7 +37,6 @@
     <ClInclude Include="Systems\Arrows\ArrowSystem.h" />
     <ClInclude Include="TowerGameRenderer.h" />
     <ClInclude Include="Systems\Skydome\SkyDomeSystem.h" />
-    <ClInclude Include="Systems\Shadows\ShadowSystem.h" />
     <ClInclude Include="Systems\TowerSystems.h" />
     <ClInclude Include="Systems\StaticMeshes\StaticMeshSystem.h" />
     <ClInclude Include="Systems\Ui\TowerUi.h" />

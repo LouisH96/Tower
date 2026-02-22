@@ -38,7 +38,7 @@ void TowerSystems::Init()
 	pSimpleRenderer = Rendering::RendererFactory::CreateSimpleRenderer();
 
 	//SHADOWS
-	Shadows.Init(Character);
+	//Shadows.Init(Character);
 	Shadows2.Init(Character.GetCameraController().GetCamera());
 
 	//TERRAIN-RENDERER
@@ -68,7 +68,6 @@ void TowerSystems::Update()
 	Bow.Update(Character.GetCameraController().GetTransform());
 	Enemies.Update();
 	Arrows.Update();
-	Shadows.MoveShadow(Character);
 	Shadows2.Update();
 
 	Ui.Update();
