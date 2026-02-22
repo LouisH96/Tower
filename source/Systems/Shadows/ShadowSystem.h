@@ -13,7 +13,7 @@ public:
 	static const Float3 m_LightDir;
 	static constexpr unsigned NR_SLICES{ 3 };
 	static constexpr float SLICE_END[]{
-		5.f,15.f,50.f
+		5.f,15.f,60.f
 	};
 
 	ShadowSystem();
