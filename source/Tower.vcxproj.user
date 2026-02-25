@@ -3,6 +3,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PartialDebug|x64'">
     <LocalDebuggerCommandArguments>$(MyEngine)MyEngine\Resources\</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArgumentsHistory>C:\Users\louis\My\MyEngine\MyEngine\source\MyEngine\Resources\|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommandArguments>$(MyEngine)MyEngine\Resources\</LocalDebuggerCommandArguments>
@@ -16,5 +17,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>$(MyEngine)MyEngine\Resources\</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
 </Project>

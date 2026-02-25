@@ -37,29 +37,52 @@ void EnemySystem::Init(int nrEnemies, const Float2& target)
 
 	//MESH
 	constexpr float modelScale{ .01f };
-	const std::wstring meshPath{ Resources::Local(L"SK_Character_DarkElf_01.fbx") };
+	const std::wstring meshPath{ Resources::Local(L"Chr_Nomad_Male_01.fbx") };
 	Io::Fbx::FbxClass fbxModel{ meshPath, modelScale };
-	Io::Fbx::FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
-
-	Array<Vertex> vertices{ geom.Points.GetSize() };
-	for (unsigned i = 0; i < geom.Points.GetSize(); i++)
+	struct Attachment
 	{
-		Vertex& vertex{ vertices[i] };
-		vertex.Pos = geom.Points[i];
-		vertex.Normal = geom.Normals[i];
-		vertex.Uv = geom.Uvs[i];
+		const std::wstring Path;
+		const std::string ParentJoint;
+	} attachments[]{
+		{L"SM_Chr_Attach_Hair_Wild_01.fbx", "Head"},
+		{L"SM_Chr_Attach_Ear_01.fbx", "Head"},
+		{L"SM_Chr_Attach_Mask_04.fbx", "Head"}
+	};
 
-		const Io::Fbx::FbxClass::BlendData& blendData{ geom.Weights[i] };
-		vertex.BoneIds = blendData.IndicesAsInt4();
-		vertex.BoneWeights = blendData.WeightsAsFloat4();
+	for (unsigned iAttach{ 0 };
+		iAttach < sizeof(attachments) / sizeof(Attachment);
+		++iAttach)
+	{
+		const Attachment& attach{ attachments[iAttach] };
+		const FbxClass fbx{ Wrapping::FbxData{Resources::Local(attach.Path)}, modelScale };
+		fbxModel.Attach(fbx, attach.ParentJoint);
+	}
+
+	List<Vertex> vertices{};
+	for (unsigned iGeom{ 0 }; iGeom < fbxModel.GetGeometries().GetSize(); ++iGeom)
+	{
+		Io::Fbx::FbxClass::Geometry& geom{ fbxModel.GetGeometry(iGeom) };
+		vertices.EnsureIncrease(geom.Points.GetSize());
+
+		for (unsigned iVertex = 0; iVertex < geom.Points.GetSize(); iVertex++)
+		{
+			Vertex& vertex{ vertices.AddEmpty() };
+			vertex.Pos = geom.Points[iVertex];
+			vertex.Normal = geom.Normals[iVertex];
+			vertex.Uv = geom.Uvs[iVertex];
+
+			const Io::Fbx::FbxClass::BlendData& blendData{ geom.Weights[iVertex] };
+			vertex.BoneIds = blendData.IndicesAsInt4();
+			vertex.BoneWeights = blendData.WeightsAsFloat4();
+		}
 	}
 
 	m_InstanceArray = InstanceArray{ PtrRangeConst<Vertex>{vertices}, sizeof(Instance), Uint::Cast(nrEnemies) };
 	m_InstanceArray.SetInstanceCount(Uint::Cast(nrEnemies));
-	m_Texture = Texture{ Resources::Local(L"FantasyRivals_Texture_01_A.png") };
+	m_Texture = Texture{ Resources::Local(L"Dungeons_2_Texture_01_A.png") };
 
 	//ANIMATIONS
-	const std::wstring animationPath{ Resources::Local(L"Zombie Running.fbx") };
+	const std::wstring animationPath{ Resources::Local(L"Unarmed Run Forward(v25).fbx") };
 	Io::Fbx::FbxClass animationFbx{ animationPath, modelScale };
 
 	const FbxAnimation& animation{ animationFbx.GetAnimations().First() };
