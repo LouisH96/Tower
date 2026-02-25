@@ -10,6 +10,9 @@
 
 using namespace TowerGame;
 
+float Enemy::RADIUS{.5f};
+float Enemy::HEIGHT{1.8f};
+
 Float2 Enemy::FullAnimationMovement{};
 
 Enemy::Enemy()

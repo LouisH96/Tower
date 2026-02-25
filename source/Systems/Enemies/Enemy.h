@@ -28,7 +28,8 @@ public:
 
 	Float3 ToAnimationSpace(const Float3& worldSpace) const;
 
-	static constexpr float HEIGHT = 1.6f;
+	static float HEIGHT;
+	static float RADIUS;
 	static Float2 FullAnimationMovement;
 
 private:

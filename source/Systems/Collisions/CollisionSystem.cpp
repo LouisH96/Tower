@@ -24,7 +24,6 @@ Enemy* EnemiesCollidable::IsColliding(const Float3& begin, const Float3& end) co
 
 bool EnemiesCollidable::IsColliding(const Float3& begin, const Float3& end, const Enemy& enemy) const
 {
-	constexpr float cylinderRadius = .75f;
 	const float cylinderBot{ enemy.GetTransform().Position.y };
 	const float cylinderTop{ cylinderBot + Enemy::HEIGHT };
 
@@ -42,7 +41,7 @@ bool EnemiesCollidable::IsColliding(const Float3& begin, const Float3& end, cons
 
 	//cylinder horizontal check
 	const float distanceSq{ Float2{Float2{end.x, end.z} - enemy.GetTransform().Position.Xz() }.LengthSq() };
-	if (distanceSq > cylinderRadius * cylinderRadius)
+	if (distanceSq > Enemy::RADIUS * Enemy::RADIUS)
 		return false;
 
 	const Float3 localBegin{ enemy.ToAnimationSpace(begin) };
