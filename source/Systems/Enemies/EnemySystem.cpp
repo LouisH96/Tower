@@ -145,6 +145,12 @@ void EnemySystem::CreateTypes()
 	desc.Height = 1.8f;
 	desc.Radius = .5f;
 	CreateType(desc);
+
+	//Skeleton
+	desc.Attachments.Clear();
+	desc.ModelPath = L"Chr_Skeleton_03.fbx";
+	desc.AnimationPath = L"Zombie Running(v25).fbx";
+	CreateType(desc);
 }
 
 void EnemySystem::Render_Internal(Rendering::ConstantBuffer<Float4X4>& bones)
