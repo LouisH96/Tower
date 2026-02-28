@@ -4,7 +4,6 @@
 #include <Geometry\Shapes\Line.h>
 #include <Physics\CollisionDetection.h>
 #include <Physics\Collisions\SphereTriangleCollision.h>
-#include <Systems\Enemies\Enemy.h>
 
 namespace TowerGame
 {
@@ -51,28 +50,8 @@ struct ModelCollidables
 	void RenderDebugGlobalBoundingBoxes();
 };
 
-struct EnemiesCollidable
-{
-	struct Vertex
-	{
-		Float3 Point;
-		Int4 BoneIndices;
-		Float4 BoneWeights;
-	};
-
-	Enemy* IsColliding(const Float3& begin, const Float3& end) const;
-
-	Array<Enemy>* pEnemies{};
-	Array<Vertex> Vertices;
-
-private:
-	bool IsColliding(const Float3& begin, const Float3& end, const Enemy& enemy) const;
-	static bool HasOverlap(float aMin, float aMax, float bMin, float bMax);
-};
-
 struct CollisionSystem
 {
-	EnemiesCollidable Enemies;
 	ModelCollidables Models;
 };
 }

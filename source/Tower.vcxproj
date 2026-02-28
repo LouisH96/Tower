@@ -182,6 +182,7 @@
   <ItemGroup>
     <ClCompile Include="Systems\Arrows\Tracing\TracingSystem.cpp" />
     <ClCompile Include="Systems\Character\CharacterMovement.cpp" />
+    <ClCompile Include="Systems\Enemies\EnemyCode.cpp" />
     <ClCompile Include="Systems\Shadows\ShadowMapDisplay2.cpp" />
     <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
     <ClCompile Include="Systems\StaticMeshes\StaticMeshSystem.cpp" />
@@ -191,7 +192,6 @@
     <ClCompile Include="TowerGameRenderer.cpp" />
     <ClCompile Include="Systems\Skydome\SkyDomeSystem.cpp" />
     <ClCompile Include="Systems\Arrows\ArrowSystem.cpp" />
-    <ClCompile Include="Systems\Enemies\Enemy.cpp" />
     <ClCompile Include="Systems\Enemies\EnemySystem.cpp" />
     <ClCompile Include="Systems\Collisions\CollisionSystem.cpp" />
     <ClCompile Include="Systems\Bow\Bow.cpp" />
@@ -210,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructures\OffsetList.h" />
+    <ClInclude Include="Systems\Enemies\EnemyCode.h" />
     <ClInclude Include="Systems\Arrows\Tracing\TracingSystem.h" />
     <ClInclude Include="Systems\Character\CharacterMovement.h" />
     <ClInclude Include="Systems\Shadows\ShadowMapDisplay2.h" />
@@ -221,7 +222,6 @@
     <ClInclude Include="TowerGameRenderer.h" />
     <ClInclude Include="Systems\Skydome\SkyDomeSystem.h" />
     <ClInclude Include="Systems\Arrows\ArrowSystem.h" />
-    <ClInclude Include="Systems\Enemies\Enemy.h" />
     <ClInclude Include="Systems\Enemies\EnemySystem.h" />
     <ClInclude Include="Systems\Collisions\CollisionSystem.h" />
     <ClInclude Include="Systems\Bow\Bow.h" />

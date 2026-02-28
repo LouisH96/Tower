@@ -1,177 +1,172 @@
 #include "pch.h"
 #include "EnemySystem.h"
 
-#include <Systems\Terrain\Terrain.h>
-#include <Systems\Collisions\CollisionSystem.h>
-
-#include "Framework/Resources.h"
-#include "Io/Fbx/FbxClass.h"
-#include "Rendering/Renderers/R_LambertCam_Tex_Tran_Inst.h"
-#include <TowerGameRenderer.h>
-
-#include <Timing\Counter.h>
-#include <Io\Fbx\Wrapping\FbxData.h>
-#include <Transform\WorldMatrix.h>
+#include "EnemyCode.h"
+#include <Other\Random.h>
 #include <TowerApp.h>
+#include <Rendering\State\InputLayout.h>
 
 using namespace Animations;
-using namespace Io::Fbx;
-using namespace TowerGame;
 using namespace Rendering;
+using namespace TowerGame;
 
-const InputLayout::Element EnemySystem::Instance::ELEMENTS[]{
+const InputLayout::Element EnemySystem::RenderInstance::ELEMENTS[]{
 	{"WORLD", InputLayout::ElementType::Float4X4},
 	{"BONE_OFFSET", InputLayout::ElementType::Uint}
 };
 
 EnemySystem::EnemySystem()
-	: m_InputLayout{ InputLayout::FromTypes2<Vertex, Instance>() }
-	, m_Shader{ Resources::Local(L"Enemy.hlsl") }
 {
+	constexpr unsigned ENEMIES_PER_INSTANCEBUFFER{ 100 };
+	m_Rendering.Instances = { sizeof(RenderInstance), ENEMIES_PER_INSTANCEBUFFER, false };
+	CreateTypes();
 }
 
-void EnemySystem::Init(int nrEnemies, const Float2& target)
+void EnemySystem::Init(unsigned nrEnemies, const Float2& target)
 {
-	m_Enemies = { nrEnemies };
-	m_Target = target;
-
-	//MESH
-	constexpr float modelScale{ .01f };
-	const std::wstring meshPath{ Resources::Local(L"Chr_Nomad_Male_01.fbx") };
-	Io::Fbx::FbxClass fbxModel{ meshPath, modelScale };
-	struct Attachment
+	m_Enemies.Target = target;
+	for (unsigned i = 0; i < nrEnemies; i++)
 	{
-		const std::wstring Path;
-		const std::string ParentJoint;
-	} attachments[]{
-		{L"SM_Chr_Attach_Hair_Wild_01.fbx", "Head"},
-		{L"SM_Chr_Attach_Ear_01.fbx", "Head"},
-		{L"SM_Chr_Attach_Mask_04.fbx", "Head"}
-	};
-
-	for (unsigned iAttach{ 0 };
-		iAttach < sizeof(attachments) / sizeof(Attachment);
-		++iAttach)
-	{
-		const Attachment& attach{ attachments[iAttach] };
-		const FbxClass fbx{ Wrapping::FbxData{Resources::Local(attach.Path)}, modelScale };
-		fbxModel.Attach(fbx, attach.ParentJoint);
-	}
-
-	List<Vertex> vertices{};
-	for (unsigned iGeom{ 0 }; iGeom < fbxModel.GetGeometries().GetSize(); ++iGeom)
-	{
-		Io::Fbx::FbxClass::Geometry& geom{ fbxModel.GetGeometry(iGeom) };
-		vertices.EnsureIncrease(geom.Points.GetSize());
-
-		for (unsigned iVertex = 0; iVertex < geom.Points.GetSize(); iVertex++)
-		{
-			Vertex& vertex{ vertices.AddEmpty() };
-			vertex.Pos = geom.Points[iVertex];
-			vertex.Normal = geom.Normals[iVertex];
-			vertex.Uv = geom.Uvs[iVertex];
-
-			const Io::Fbx::FbxClass::BlendData& blendData{ geom.Weights[iVertex] };
-			vertex.BoneIds = blendData.IndicesAsInt4();
-			vertex.BoneWeights = blendData.WeightsAsFloat4();
-		}
-	}
-
-	m_InstanceArray = InstanceArray{ PtrRangeConst<Vertex>{vertices}, sizeof(Instance), Uint::Cast(nrEnemies) };
-	m_InstanceArray.SetInstanceCount(Uint::Cast(nrEnemies));
-	m_Texture = Texture{ Resources::Local(L"Dungeons_2_Texture_01_A.png") };
-
-	//ANIMATIONS
-	const std::wstring animationPath{ Resources::Local(L"Unarmed Run Forward(v25).fbx") };
-	Io::Fbx::FbxClass animationFbx{ animationPath, modelScale };
-
-	const FbxAnimation& animation{ animationFbx.GetAnimations().First() };
-	m_Animation = Animation{ animationFbx, animation };
-	m_BatchLimit = TowerGameRenderer::BONES_BUFFER_SIZE / m_Animation.GetNrBones();
-	Enemy::FullAnimationMovement = m_Animation.GetFullRootMotionXz();
-
-	//ENEMIES
-	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
-	{
-		const float angle = (rand() % 360) * Constants::TO_RAD;
-		float x = cos(angle) * SYSTEMS.Terrain.GetSize().x / 2.f;
-		float y = sin(angle) * SYSTEMS.Terrain.GetSize().y / 2.f;
-		if (abs(x) < 5.f) x = x < 0.f ? -5.f : 5.f;
-		if (abs(y) < 5.f) y = y < 0.f ? -5.f : 5.f;
+		//Random position
+		const float angle{ Random::Angle() };
+		const float x{ cos(angle) * SYSTEMS.Terrain.GetSize().x / 2.f };
+		const float y{ sin(angle) * SYSTEMS.Terrain.GetSize().y / 2.f };
 		const Float3 initPos{ target.x + x, 0, target.y + y };
 
-		m_Enemies[i] = Enemy{ m_Animation, initPos };
-		m_Enemies[i].GetTransform().LookAt(Float3::FromXz(m_Target));
-	}
+		Type& type{ Random::Item(m_Enemies.Types) };
+		List<Enemy>& enemies{ type.Enemies };
 
-	//COLLIDABLES
-	EnemiesCollidable& collidable{ SYSTEMS.Collisions.Enemies };
-	collidable.pEnemies = &m_Enemies;
-	collidable.Vertices = { vertices.GetSize() };
-	for (unsigned i = 0; i < vertices.GetSize(); i++)
-	{
-		EnemiesCollidable::Vertex& colVertex{ collidable.Vertices[i] };
-		EnemySystem::Vertex& modelVertex{ vertices[i] };
-
-		colVertex.Point = modelVertex.Pos;
-		colVertex.BoneIndices = modelVertex.BoneIds;
-		colVertex.BoneWeights = modelVertex.BoneWeights;
+		Enemy& enemy{ enemies.AddAndGet(Enemy{ type.Animation, initPos }) };
+		enemy.World.LookAt(Float3::FromXz(m_Enemies.Target));
 	}
 }
 
 void EnemySystem::Update()
 {
-	//Update cpu data
-	for (unsigned i = 0; i < m_Enemies.GetSize(); i++)
-		m_Enemies[i].Update(m_Target, m_Animation);
-
-	//Update gpu data
-	Instance* pInstances{ m_InstanceArray.BeginUpdateInstances<Instance>() };
-	for (unsigned iEnemy{ 0 }; iEnemy < m_Enemies.GetSize(); ++iEnemy)
+	for (unsigned iType{ 0 }; iType < m_Enemies.Types.GetSize(); ++iType)
 	{
-		const Enemy& enemy{ m_Enemies[iEnemy] };
-		Instance& instance{ pInstances[iEnemy] };
-		instance.World = enemy.GetTransform().AsMatrix();
-		WorldMatrix::TranslateRelativeXz(instance.World, -enemy.GetRootPos()); //Root-Motion
-		instance.BoneIdOffset = (iEnemy % m_BatchLimit) * m_Animation.GetNrBones();
+		Type& type{ m_Enemies.Types[iType] };
+		List<Enemy>& enemies{ type.Enemies };
+		for (unsigned iEnemy{ 0 }; iEnemy < enemies.GetSize(); ++iEnemy)
+			EnemyCode::UpdateEnemy(m_Enemies.Target, type, enemies[iEnemy]);
 	}
-	m_InstanceArray.EndUpdateInstances();
-}
-
-void EnemySystem::Render_Internal(
-	Rendering::ConstantBuffer<Float4X4>& bones)
-{
-	//
-	m_Texture.ActivatePs();
-	m_InputLayout.Activate();
-
-	//
-	//Timing::Counter counter{};
-	const unsigned bonesPerEnemy{ m_Animation.GetNrBones() };
-
-	for (unsigned iEnemy{ 0 }; iEnemy < m_Enemies.GetSize();)
-	{
-		const unsigned firstEnemy{ iEnemy };
-		unsigned iBatchEnemy{ 0 };
-
-		Float4X4* pBone{ bones.StartUpdate() };
-		for (;
-			iBatchEnemy < m_BatchLimit && iEnemy < m_Enemies.GetSize();
-			++iBatchEnemy, ++iEnemy)
-		{
-			const Enemy& enemy{ m_Enemies[iEnemy] };
-			enemy.GetAnimator().GetBones().CopyTo(pBone);
-			pBone += bonesPerEnemy;
-		}
-		bones.EndUpdate();
-
-		m_InstanceArray.Draw(firstEnemy, iBatchEnemy);
-	}
-
-	//counter.End("Counter");
 }
 
 void EnemySystem::OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy)
 {
-	enemy.HitByArrow(arrowTransform, arrowIdx);
+	EnemyCode::HitByArrow(arrowTransform, arrowIdx, enemy);
+}
+
+EnemySystem::Enemy* EnemySystem::IsColliding(const Line& line)
+{
+	for (unsigned iType{ 0 }; iType < m_Enemies.Types.GetSize(); ++iType)
+	{
+		const Type& type{ m_Enemies.Types[iType] };
+		for (unsigned iEnemy{ 0 }; iEnemy < type.Enemies.GetSize(); ++iEnemy)
+		{
+			const Enemy& enemy{ type.Enemies[iEnemy] };
+			if (EnemyCode::IsColliding(line, type, enemy))
+				return &m_Enemies.Types[iType].Enemies[iEnemy];
+		}
+	}
+	return nullptr;
+}
+
+unsigned EnemySystem::CreateType(TypeDesc desc)
+{
+	using namespace Io::Fbx;
+	using namespace Rendering;
+
+	//Absolute paths
+	desc.ModelPath = Resources::Local(desc.ModelPath);
+	desc.AnimationPath = Resources::Local(desc.AnimationPath);
+	for (unsigned iAttach{ 0 }; iAttach < desc.Attachments.GetSize(); ++iAttach)
+	{
+		std::wstring& path{ desc.Attachments[iAttach].FbxPath };
+		path = Resources::Local(path);
+	}
+
+	//Create Type
+	Type type{};
+	type.Height = desc.Height;
+	type.Radius = desc.Radius;
+
+	//Model
+	FbxClass fbx{ desc.ModelPath, desc.Scale };
+
+	//Attachments
+	for (unsigned iAttach{ 0 }; iAttach < desc.Attachments.GetSize(); ++iAttach)
+	{
+		const TypeDesc::Attachment& attach{ desc.Attachments[iAttach] };
+		const FbxClass fbxAttach{ attach.FbxPath, desc.Scale };
+		fbx.Attach(fbxAttach, attach.ParentJoint);
+	}
+
+	//Vertices
+	const List<Vertex> vertices{ EnemyCode::CreateVertices(fbx) };
+	type.Vertices = EnemyCode::CreateVertexBuffer(vertices);
+
+	//Animations
+	FbxClass animationFbx{ desc.AnimationPath, desc.Scale };
+	type.Animation = Animation{ animationFbx, animationFbx.GetAnimations().First() };
+	type.RootAnimationMovement = type.Animation.GetFullRootMotionXz();
+	type.NrEnemiesInBonesBuffer = TowerGameRenderer::BONES_BUFFER_SIZE / type.Animation.GetNrBones();
+
+	//Collision
+	type.CollisionVertices = { vertices.GetSize() };
+	for (unsigned iVertex = 0; iVertex < vertices.GetSize(); iVertex++)
+	{
+		const Vertex& modelVertex{ vertices[iVertex] };
+
+		Type::CollisionVertex colVertex{};
+		colVertex.Point = modelVertex.Pos;
+		colVertex.BoneIndices = modelVertex.BoneIds;
+		colVertex.BoneWeights = modelVertex.BoneWeights;
+
+		type.CollisionVertices.Add(colVertex);
+	}
+	m_Enemies.Types.Add(std::move(type));
+	return m_Enemies.Types.LastIdx();
+}
+
+void EnemySystem::CreateTypes()
+{
+	TypeDesc desc{};
+	desc.Scale = .01f;
+
+	//Nomad
+	desc.ModelPath = L"Chr_Nomad_Male_01.fbx";
+	desc.AnimationPath = L"Unarmed Run Forward(v25).fbx";
+	desc.Attachments.Add(
+		{ L"SM_Chr_Attach_Hair_Wild_01.fbx", "Head" },
+		{ L"SM_Chr_Attach_Ear_01.fbx", "Head" },
+		{ L"SM_Chr_Attach_Mask_04.fbx", "Head" }
+	);
+	desc.Height = 1.8f;
+	desc.Radius = .5f;
+	CreateType(desc);
+}
+
+void EnemySystem::Render_Internal(Rendering::ConstantBuffer<Float4X4>& bones)
+{
+	EnemyCode::Render(bones, m_Rendering, m_Enemies.Types);
+}
+
+EnemySystem::Enemy::Enemy()
+	: State{ State::Running }
+{
+}
+
+EnemySystem::Enemy::Enemy(const Animations::Animation& animation, const Float3& initPos)
+	: Animator{ animation }
+	, World{ initPos, {} }
+	, State{ State::Running }
+{
+}
+
+EnemySystem::EnemiesRendering::EnemiesRendering()
+	: InputLayout{ InputLayout::FromTypes2<Vertex, RenderInstance>() }
+	, Shader{ Resources::Local(L"Enemy.hlsl") }
+	, Texture{ Resources::Local(L"Dungeons_2_Texture_01_A.png") }
+{
 }

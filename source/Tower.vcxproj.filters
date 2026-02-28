@@ -9,7 +9,6 @@
     <ClCompile Include="Systems\Terrain\HeightMap.cpp" />
     <ClCompile Include="Systems\Character\Character.cpp" />
     <ClCompile Include="Systems\Tower\Tower.cpp" />
-    <ClCompile Include="Systems\Enemies\Enemy.cpp" />
     <ClCompile Include="Systems\Enemies\EnemySystem.cpp" />
     <ClCompile Include="Systems\Collisions\CollisionSystem.cpp" />
     <ClCompile Include="Systems\Arrows\ArrowSystem.cpp" />
@@ -23,6 +22,7 @@
     <ClCompile Include="Systems\Shadows\ShadowMapDisplay2.cpp" />
     <ClCompile Include="Systems\Shadows\ShadowSystem.cpp" />
     <ClCompile Include="Systems\Arrows\Tracing\TracingSystem.cpp" />
+    <ClCompile Include="Systems\Enemies\EnemyCode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Bow\Bow.h" />
@@ -31,7 +31,6 @@
     <ClInclude Include="Systems\Terrain\HeightMap.h" />
     <ClInclude Include="Systems\Character\Character.h" />
     <ClInclude Include="Systems\Tower\Tower.h" />
-    <ClInclude Include="Systems\Enemies\Enemy.h" />
     <ClInclude Include="Systems\Enemies\EnemySystem.h" />
     <ClInclude Include="Systems\Collisions\CollisionSystem.h" />
     <ClInclude Include="Systems\Arrows\ArrowSystem.h" />
@@ -46,5 +45,6 @@
     <ClInclude Include="Systems\Shadows\ShadowSystem.h" />
     <ClInclude Include="Systems\Arrows\Tracing\TracingSystem.h" />
     <ClInclude Include="DataStructures\OffsetList.h" />
+    <ClInclude Include="Systems\Enemies\EnemyCode.h" />
   </ItemGroup>
 </Project>

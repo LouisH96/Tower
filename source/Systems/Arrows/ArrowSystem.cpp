@@ -72,7 +72,7 @@ void ArrowSystem::Update()
 		const Ray arrowMovement{ position, movementDirection, movementAmount };
 
 		//IS IN ENEMY?
-		Enemy* pEnemy{ collisions.Enemies.IsColliding(position, newPosition) };
+		EnemySystem::Enemy* pEnemy{ SYSTEMS.Enemies.IsColliding({position, newPosition}) };
 		if (pEnemy)
 		{
 			SYSTEMS.Enemies.OnCollision(Transform{ newPosition, Quaternion{world} }, iArrow, *pEnemy);
