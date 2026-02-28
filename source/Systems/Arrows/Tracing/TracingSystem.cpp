@@ -144,7 +144,7 @@ void TracingSystem::SetSlicePositions(TraceSlice& slice, const Float4X4& transfo
 		pVertex->Pos = pos
 			+ right * m_SideCosSin[iSide * 2 + 0]
 			+ up * m_SideCosSin[iSide * 2 + 1];
-		pVertex->Uv.y = iSide % 2;
+		pVertex->Uv.y = static_cast<float>(iSide % 2);
 		++pVertex;
 	}
 }

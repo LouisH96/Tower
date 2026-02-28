@@ -25,7 +25,7 @@ private:
 	static constexpr unsigned NR_SIDE_TRIANGLES{ 2 };
 	static constexpr float SLICE_TIME_INTERVAL{ .05f };
 	static constexpr float THICKNESS{ .04f };
-	static constexpr float THICKNESS_GAIN{ 10.75f };
+	static constexpr float THICKNESS_GAIN{ 9.75f };
 	static constexpr float LIFETIME{ .15f };
 
 	static constexpr float GRAY_COLOR{ .8f };
@@ -43,8 +43,8 @@ private:
 	};
 	struct TraceSlice {
 		Float3 Center;
-		unsigned IVertex;
-		float Time;
+		unsigned IVertex{};
+		float Time{};
 	};
 	struct TraceData {
 		float SpawnTime{};
