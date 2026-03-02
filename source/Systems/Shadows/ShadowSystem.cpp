@@ -32,6 +32,9 @@ ShadowSystem::ShadowSystem()
 void ShadowSystem::Init(const Camera& camera)
 {
 	CalculatePlaneSize();
+	if (m_View[2][1] >= 0.f)
+		Logger::Warning("ShadowSystem::Init] Light-Forward-Y should be higher than 0");
+	m_ViewBackingFactor = 1.f / -m_View[2][1];
 }
 
 void ShadowSystem::Update()
@@ -99,14 +102,20 @@ void ShadowSystem::Update()
 		const Float2 min{ minFactors.x.Dot(caps), minFactors.y.Dot(caps) };
 		const Float2 max{ maxFactors.x.Dot(caps), maxFactors.y.Dot(caps) };
 		const Float2 size{ max - min };
-		const Float2 center{ min + size / 2.f };
+		const Float2 halfSize{ size / 2 };
+		const Float2 center{ min + halfSize };
 
 		//Calculate and set ViewProjection
 		Float4X4& viewProj{ m_ViewProj[iSlice] };
 		viewProj = m_View;
 
-		m_Scales[iSlice] = { 2.f / size.x, 2.f / size.y, 1.f / (m_PlaneRadius * caps.y + SHADOW_HEIGHT) };
-		m_Offsets[iSlice] = Float3{ center.x, center.y, -SHADOW_HEIGHT };
+		//Makes sure that each point of the shadow's-view-plane is above SHADOW_HEIGHT
+		const float viewDepth{
+			(SHADOW_HEIGHT - (camera.GetPosition().y + m_View[1][1] * center.y)
+			+ m_View[1][1] * halfSize.y) * m_ViewBackingFactor };
+
+		m_Scales[iSlice] = { 2.f / size.x, 2.f / size.y, 1.f / (viewDepth + m_PlaneRadius * caps.y) };
+		m_Offsets[iSlice] = Float3{ center.x, center.y, -viewDepth };
 		const Float3 movement{
 			-(viewProj.AppliedToPoint(camera.GetPosition())
 			+ m_Offsets[iSlice])
@@ -298,5 +307,5 @@ void ShadowSystem::CalculatePlaneSize()
 	m_PlaneSize.z = zMax - zMin;
 	m_PlaneCenterDepth = m_PlaneSize.z / 2.f + zMin;
 
-	m_PlaneRadius = std::sqrtf(tan * tan + tan * tan * ar * ar + 1);
+	m_PlaneRadius = std::sqrtf(tan * tan + tan * tan * ar * ar + zMax * zMax);
 }

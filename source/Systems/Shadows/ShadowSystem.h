@@ -40,7 +40,7 @@ private:
 	};
 
 	//Constant Values
-	static constexpr float SHADOW_HEIGHT{ 20.f };
+	static constexpr float SHADOW_HEIGHT{ 12.f }; //Should be (a bit) higher than the highest building
 	static const Float2 m_TextureSize;
 	Float4X4 m_View;
 	Float3 m_PlaneSize; //Half the size of the view-plane at distance 1
@@ -60,6 +60,7 @@ private:
 	Float3 m_Offsets[NR_SLICES];
 	Float3 m_Scales[NR_SLICES];
 	Float3 m_PrevForward;
+	float m_ViewBackingFactor{}; //desired ShadowCamera-y divided by View-Forward-y
 
 	void CalculatePlaneSize();
 };
