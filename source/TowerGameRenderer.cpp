@@ -71,6 +71,8 @@ void TowerGameRenderer::PreRender()
 		m_Il_V_PosNorCol.Activate();
 		SYSTEMS.StaticMeshes.Render();
 
+		m_Shader_StaticMesh.Activate<Shader::Function::Vertex>();
+		m_Il_V_PosNorUv.Activate();
 		SYSTEMS.StaticModels.Render();
 	}
 }
