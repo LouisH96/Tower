@@ -16,6 +16,11 @@ using namespace TowerGame;
 #undef min
 #undef max
 
+TowerGame::ShadowMapDisplay2::ShadowMapDisplay2()
+{
+	Init(SYSTEMS.Shadows);
+}
+
 void ShadowMapDisplay2::Init(ShadowSystem& shadowMap)
 {
 	//Ui

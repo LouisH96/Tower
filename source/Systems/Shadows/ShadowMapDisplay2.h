@@ -11,7 +11,7 @@ class ShadowMapDisplay2
 	: public ISystem
 {
 public:
-	void Init(ShadowSystem& shadowMap);
+	ShadowMapDisplay2();
 
 	const Float4X4& GetMatrix() const { return m_Matrix; }
 	void SetMatrix(const Float4X4& matrix) { m_Matrix = matrix; }
@@ -62,6 +62,8 @@ private:
 	List<Float3> m_Models{};
 
 	Float4X4 m_Matrix;
+
+	void Init(ShadowSystem& shadowMap);
 
 	//Frame
 	void InitEyeRect();
