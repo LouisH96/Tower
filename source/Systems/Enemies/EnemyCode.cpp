@@ -3,6 +3,7 @@
 
 #include <Animations\AnimationUtils.h>
 #include <Geometry\Shapes\Line.h>
+#include <Other\Random.h>
 #include <Physics\CollisionDetection.h>
 #include <TowerApp.h>
 #include <Transform\WorldMatrix.h>
@@ -33,6 +34,32 @@ void EnemyCode::UpdateEnemy(const Float2& target, const EnemySystem::Type& type,
 		for (unsigned i = 0; i < enemy.Arrows.GetSize(); i++)
 			SYSTEMS.Arrows.SetArrowTransform(enemy.Arrows[i].ArrowIdx, Transform::LocalToWorld(enemy.Arrows[i].Local, enemy.World));
 	}
+}
+
+void EnemyCode::InitSpawningData(EnemySystem::Spawning& spawn)
+{
+	spawn.IntervalChange = 0;
+	spawn.IntervalChange2 = (spawn.MinSpawnInterval - spawn.SpawnInterval)
+		/ (spawn.IntervalChangeDuration * spawn.IntervalChangeDuration);
+}
+
+void EnemyCode::UpdateEnemySpawning(EnemySystem::Spawning& spawn, EnemySystem::Enemies& enemies)
+{
+	//Progress SpawnTime
+	spawn.NextSpawn -= DELTA_TIME;
+	if (spawn.NextSpawn > 0)
+		return;
+
+	//Spawn
+	SpawnEnemy(enemies);
+
+	//Find next spawn time
+	spawn.NextSpawn = spawn.SpawnInterval;
+	const float rateChange{ spawn.IntervalChange2 * spawn.NextSpawn };
+	spawn.IntervalChange += rateChange;
+	spawn.SpawnInterval += spawn.IntervalChange * spawn.NextSpawn;
+	spawn.IntervalChange += rateChange;
+	spawn.SpawnInterval = Float::Max(spawn.SpawnInterval, spawn.MinSpawnInterval);
 }
 
 void EnemyCode::HitByArrow(const Transform& worldArrowTransform, int arrowIdx, EnemySystem::Enemy& enemy)
@@ -104,6 +131,46 @@ bool EnemyCode::IsColliding(const Line& line, const EnemySystem::Type& type, con
 		}
 	}
 	return false;
+}
+
+void EnemyCode::SpawnEnemies(unsigned count, EnemySystem::Enemies& systemData)
+{
+	for (unsigned i{ 0 }; i < count; ++i)
+		SpawnEnemy(systemData);
+}
+
+EnemySystem::Enemy& EnemyCode::SpawnEnemy(const Float2& position, EnemySystem::Enemies& systemData)
+{
+	EnemySystem::Type& type{ Random::Item(systemData.Types) };
+	List<EnemySystem::Enemy>& enemies{ type.Enemies };
+
+	EnemySystem::Enemy& enemy{ enemies.AddAndGet(EnemySystem::Enemy{ type.Animation, Float3::FromXz(position)}) };
+	enemy.World.LookAt(Float3::FromXz(systemData.Target));
+
+	return enemy;
+}
+
+EnemySystem::Enemy& EnemyCode::SpawnEnemy(EnemySystem::Enemies& systemData)
+{
+	return SpawnEnemyAtRelativeDistance(1.f, systemData);
+}
+
+EnemySystem::Enemy& EnemyCode::SpawnEnemyAtRelativeDistance(float relDistance, EnemySystem::Enemies& systemData)
+{
+	const Float2& terrainSize{ SYSTEMS.Terrain.GetSize() };
+
+	const Float2 direction{ Random::UnitVector2() * terrainSize * (relDistance / 2.f) };
+	const Float2 initPos{ systemData.Target + direction };
+
+	return SpawnEnemy(initPos, systemData);
+}
+
+unsigned EnemyCode::CountNrEnemies(const EnemySystem::Enemies& systemData)
+{
+	unsigned count{ 0 };
+	for (unsigned i{ 0 }; i < systemData.Types.GetSize(); ++i)
+		count += systemData.Types[i].Enemies.GetSize();
+	return count;
 }
 
 Float3 EnemyCode::ToAnimationSpace(const Float3& worldSpace, const EnemySystem::Enemy& enemy)
@@ -225,7 +292,7 @@ void EnemyCode::UpdateMove(const Float2& target, const Float2& movement, EnemySy
 
 void EnemyCode::UpdateFall(EnemySystem::Enemy& enemy)
 {
-	const Quaternion rotation{ Quaternion::FromAxis(enemy.FallAxis, 150 * Constants::TO_RAD * Globals::DeltaTime) };
+	const Quaternion rotation{ Quaternion::FromAxis(enemy.FallAxis, 200 * Constants::TO_RAD * Globals::DeltaTime) };
 	enemy.World.Rotation.RotateBy(rotation);
 
 	const Float3 head{ enemy.World.LocalToWorld({0, 1.8f,0}) };

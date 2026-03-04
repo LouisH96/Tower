@@ -25,24 +25,17 @@ EnemySystem::EnemySystem()
 void EnemySystem::Init(unsigned nrEnemies, const Float2& target)
 {
 	m_Enemies.Target = target;
-	for (unsigned i = 0; i < nrEnemies; i++)
-	{
-		//Random position
-		const float angle{ Random::Angle() };
-		const float x{ cos(angle) * SYSTEMS.Terrain.GetSize().x / 2.f };
-		const float y{ sin(angle) * SYSTEMS.Terrain.GetSize().y / 2.f };
-		const Float3 initPos{ target.x + x, 0, target.y + y };
+	EnemyCode::InitSpawningData(m_Spawning);
 
-		Type& type{ Random::Item(m_Enemies.Types) };
-		List<Enemy>& enemies{ type.Enemies };
-
-		Enemy& enemy{ enemies.AddAndGet(Enemy{ type.Animation, initPos }) };
-		enemy.World.LookAt(Float3::FromXz(m_Enemies.Target));
-	}
+	EnemyCode::SpawnEnemyAtRelativeDistance(.5f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.6f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.7f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.9f, m_Enemies);
 }
 
 void EnemySystem::Update()
 {
+	//Update Enemies
 	for (unsigned iType{ 0 }; iType < m_Enemies.Types.GetSize(); ++iType)
 	{
 		Type& type{ m_Enemies.Types[iType] };
@@ -50,6 +43,9 @@ void EnemySystem::Update()
 		for (unsigned iEnemy{ 0 }; iEnemy < enemies.GetSize(); ++iEnemy)
 			EnemyCode::UpdateEnemy(m_Enemies.Target, type, enemies[iEnemy]);
 	}
+
+	//Spawn Enemies
+	EnemyCode::UpdateEnemySpawning(m_Spawning, m_Enemies);
 }
 
 void EnemySystem::OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy)

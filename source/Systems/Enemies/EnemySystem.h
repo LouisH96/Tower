@@ -58,6 +58,15 @@ public:
 		float Height{};
 		float Radius{};
 	};
+	struct Spawning {
+		static constexpr float IntervalChangeDuration{ 80.f }; //Time(in sec) to go from initial SpawnInterval to MinSpawnInterval
+		float SpawnInterval{ 3.5f }; //Initial SpawnInterval(in sec), spawn an enemy each x seconds
+		float MinSpawnInterval{ .25f }; //Final SpawnInterval
+
+		float IntervalChange{}; //Rate of change of SpawnInterval
+		float IntervalChange2{}; //Second order rate of change, to get exponential change
+		float NextSpawn{ 0.f }; //Seconds until the next spawn should happen
+	};
 	struct Enemies {
 		List<Type> Types{};
 		Float2 Target;
@@ -91,6 +100,7 @@ public:
 private:
 	Enemies m_Enemies;
 	EnemiesRendering m_Rendering;
+	Spawning m_Spawning;
 
 	struct TypeDesc {
 		struct Attachment {
