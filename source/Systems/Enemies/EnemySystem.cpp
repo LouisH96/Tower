@@ -35,16 +35,7 @@ void EnemySystem::Init(unsigned nrEnemies, const Float2& target)
 
 void EnemySystem::Update()
 {
-	//Update Enemies
-	for (unsigned iType{ 0 }; iType < m_Enemies.Types.GetSize(); ++iType)
-	{
-		Type& type{ m_Enemies.Types[iType] };
-		List<Enemy>& enemies{ type.Enemies };
-		for (unsigned iEnemy{ 0 }; iEnemy < enemies.GetSize(); ++iEnemy)
-			EnemyCode::UpdateEnemy(m_Enemies.Target, type, enemies[iEnemy]);
-	}
-
-	//Spawn Enemies
+	EnemyCode::UpdateEnemies(m_Enemies);
 	EnemyCode::UpdateEnemySpawning(m_Spawning, m_Enemies);
 }
 
@@ -58,11 +49,14 @@ EnemySystem::Enemy* EnemySystem::IsColliding(const Line& line)
 	for (unsigned iType{ 0 }; iType < m_Enemies.Types.GetSize(); ++iType)
 	{
 		const Type& type{ m_Enemies.Types[iType] };
-		for (unsigned iEnemy{ 0 }; iEnemy < type.Enemies.GetSize(); ++iEnemy)
+		const InvalidateList<Enemy>& enemies{ type.Enemies };
+		for (unsigned iEnemy{ enemies.GetFirstIdx() }; iEnemy < enemies.GetEndIdx(); ++iEnemy)
 		{
-			const Enemy& enemy{ type.Enemies[iEnemy] };
+			const Enemy& enemy{ type.Enemies.Get(iEnemy) };
+			if (!enemy.IsValid())
+				continue;
 			if (EnemyCode::IsColliding(line, type, enemy))
-				return &m_Enemies.Types[iType].Enemies[iEnemy];
+				return &m_Enemies.Types[iType].Enemies.Get(iEnemy);
 		}
 	}
 	return nullptr;

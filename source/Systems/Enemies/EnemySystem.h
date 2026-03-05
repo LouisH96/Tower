@@ -2,6 +2,7 @@
 
 #include <Animations\Animation.h>
 #include <Animations\Animator.h>
+#include <DataStructures\InvalidateList.h>
 #include <Rendering\DrawData\VertexArray.h>
 
 namespace TowerGame
@@ -22,7 +23,7 @@ public:
 public:
 	struct Enemy {
 		enum class State {
-			Running, Falling, Dead, Completed
+			Running, Falling, Dead, Completed, Invalid
 		};
 		struct AttachedArrow {
 			int ArrowIdx{};
@@ -37,6 +38,9 @@ public:
 
 		Enemy();
 		Enemy(const Animations::Animation& animation, const Float3& initPos);
+
+		bool IsValid() const { return State != State::Invalid; }
+		void Invalidate() { State = State::Invalid; }
 	};
 	struct Type {
 		struct CollisionVertex
@@ -53,7 +57,7 @@ public:
 		//Collision
 		List<CollisionVertex> CollisionVertices{};
 		//Logic
-		List<Enemy> Enemies{};
+		InvalidateList<Enemy> Enemies{};
 		Float2 RootAnimationMovement;
 		float Height{};
 		float Radius{};

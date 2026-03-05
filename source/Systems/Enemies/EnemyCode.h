@@ -8,7 +8,8 @@ class EnemyCode
 {
 public:
 	//Enemies
-	static void UpdateEnemy(const Float2& target, const EnemySystem::Type& type, EnemySystem::Enemy& enemy);
+	static void UpdateEnemies(EnemySystem::Enemies& enemiesData);
+	static bool UpdateEnemy(const Float2& target, EnemySystem::Type& type, EnemySystem::Enemy& enemy);
 	static unsigned CountNrEnemies(const EnemySystem::Enemies& systemData);
 
 	//Spawning

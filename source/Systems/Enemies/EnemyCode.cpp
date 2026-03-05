@@ -10,12 +10,39 @@
 
 namespace TowerGame
 {
-void EnemyCode::UpdateEnemy(const Float2& target, const EnemySystem::Type& type, EnemySystem::Enemy& enemy)
-{
-	if (enemy.State == EnemySystem::Enemy::State::Dead)
-		return;
+using Enemy = EnemySystem::Enemy;
+using Type = EnemySystem::Type;
 
-	if (enemy.State == EnemySystem::Enemy::State::Running)
+void EnemyCode::UpdateEnemies(EnemySystem::Enemies& enemiesData)
+{
+	for (unsigned iType{ 0 }; iType < enemiesData.Types.GetSize(); ++iType)
+	{
+		Type& type{ enemiesData.Types[iType] };
+		InvalidateList<Enemy>& enemies{ type.Enemies };
+		for (unsigned iEnemy{ enemies.GetFirstIdx() }; iEnemy < enemies.GetEndIdx(); ++iEnemy)
+		{
+			Enemy& enemy{ enemies.Get(iEnemy) };
+			if (!enemy.IsValid())
+				continue;
+			if (!EnemyCode::UpdateEnemy(enemiesData.Target, type, enemy))
+				continue;
+			switch (enemy.State)
+			{
+			case Enemy::State::Completed:
+				enemies.Invalidate(iEnemy);
+				break;
+			}
+		}
+	}
+}
+
+bool EnemyCode::UpdateEnemy(const Float2& target, EnemySystem::Type& type, EnemySystem::Enemy& enemy)
+{
+	if (enemy.State == Enemy::State::Dead ||
+		enemy.State == Enemy::State::Completed)
+		return true;
+
+	if (enemy.State == Enemy::State::Running)
 	{
 		const unsigned nrLoops{ enemy.Animator.ProgressTime(type.Animation) };
 
@@ -28,12 +55,15 @@ void EnemyCode::UpdateEnemy(const Float2& target, const EnemySystem::Type& type,
 		enemy.RootPos = newRootPos;
 		UpdateMove(target, rootMotion, enemy);
 	}
-	else if (enemy.State == EnemySystem::Enemy::State::Falling)
+
+	else if (enemy.State == Enemy::State::Falling)
 	{
 		UpdateFall(enemy);
 		for (unsigned i = 0; i < enemy.Arrows.GetSize(); i++)
 			SYSTEMS.Arrows.SetArrowTransform(enemy.Arrows[i].ArrowIdx, Transform::LocalToWorld(enemy.Arrows[i].Local, enemy.World));
 	}
+
+	return false;
 }
 
 void EnemyCode::InitSpawningData(EnemySystem::Spawning& spawn)
@@ -88,10 +118,10 @@ bool EnemyCode::IsColliding(const Line& line, const EnemySystem::Type& type, con
 	//	to pick a good Radius & Height
 	//	could be calculated but then it should take the animation in account
 	/*DebugRenderer::DrawCube(
-		CubeAA{ enemy.World.Position - Float3{type.Radius, 0, type.Radius}, 
+		CubeAA{ enemy.World.Position - Float3{type.Radius, 0, type.Radius},
 		{type.Radius * 2,type.Height,type.Radius * 2} }, Color::Red);*/
 
-	//cube overlap check
+		//cube overlap check
 	if (!(
 		Float::HasOverlap(cylinderBot, cylinderTop, line.a.y, line.b.y)
 		&& Float::HasOverlap(enemy.World.Position.x - type.Radius, enemy.World.Position.x + type.Radius, line.a.x, line.b.x)
@@ -141,11 +171,18 @@ void EnemyCode::SpawnEnemies(unsigned count, EnemySystem::Enemies& systemData)
 
 EnemySystem::Enemy& EnemyCode::SpawnEnemy(const Float2& position, EnemySystem::Enemies& systemData)
 {
-	EnemySystem::Type& type{ Random::Item(systemData.Types) };
-	List<EnemySystem::Enemy>& enemies{ type.Enemies };
+	Type& type{ Random::Item(systemData.Types) };
+	InvalidateList<Enemy>& enemies{ type.Enemies };
 
-	EnemySystem::Enemy& enemy{ enemies.AddAndGet(EnemySystem::Enemy{ type.Animation, Float3::FromXz(position)}) };
+	Enemy* pEnemy{};
+	enemies.Validate(pEnemy);
+
+	Enemy& enemy{ enemies.Validate() };
+	enemy.State = Enemy::State::Running;
+	enemy.World.Position = Float3::FromXz(position);
 	enemy.World.LookAt(Float3::FromXz(systemData.Target));
+	enemy.Animator.SetAnimation(type.Animation);
+	enemy.Arrows.Clear();
 
 	return enemy;
 }
@@ -213,6 +250,9 @@ Rendering::VertexArray<EnemySystem::Vertex> EnemyCode::CreateVertexBuffer(const 
 
 void EnemyCode::Render(Rendering::ConstantBuffer<Float4X4>& bones, EnemySystem::EnemiesRendering& rendering, List<EnemySystem::Type>& types)
 {
+	using Enemy = EnemySystem::Enemy;
+	using Enemies = InvalidateList<Enemy>;
+
 	EnemySystem& system{ SYSTEMS.Enemies };
 
 	//Activate shared resources
@@ -226,13 +266,15 @@ void EnemyCode::Render(Rendering::ConstantBuffer<Float4X4>& bones, EnemySystem::
 
 		const unsigned nrEnemiesInInstances{ rendering.Instances.GetCapacity() };
 		EnemySystem::Type& type{ types[iType] };
+		Enemies& enemies{ type.Enemies };
 
 		//Active EnemyType resources
 		type.Vertices.Activate(0);
 
 		//Render all enemies
-		unsigned iEnemy{ 0 };
-		while (iEnemy < type.Enemies.GetSize())
+		unsigned iEnemy{ enemies.GetFirstIdx() };
+		const unsigned iEnemyEnd{ enemies.GetEndIdx() };
+		while (iEnemy < iEnemyEnd)
 		{
 			//Render in batches
 			//	1. fill the InstanceBuffer
@@ -240,37 +282,47 @@ void EnemyCode::Render(Rendering::ConstantBuffer<Float4X4>& bones, EnemySystem::
 			//	3. Draw the enemies included in the BonesBuffer
 			//	(as the InstanceBuffer should include more Enemies than the BonesBuffer)
 
-			//Fill InstanceBuffer
-			const unsigned firstInInstances{ iEnemy };
-			const unsigned endForInstances{
-				Uint::Min(firstInInstances + nrEnemiesInInstances, type.Enemies.GetSize()) };
+			const unsigned iEnemyFirstInInstances{ iEnemy };
 
+			//Fill InstanceBuffer
 			Instance* pInstance{ rendering.Instances.BeginUpdateData() };
-			for (; iEnemy < endForInstances; ++iEnemy, ++pInstance)
+			const Instance* pInstanceBegin{ pInstance };
+			Instance* pInstanceEnd{ pInstance + nrEnemiesInInstances }; //end of instance buffer
+
+			for (; iEnemy < iEnemyEnd && pInstance < pInstanceEnd; ++iEnemy)
 			{
-				const EnemySystem::Enemy& enemy{ type.Enemies[iEnemy] };
+				const Enemy& enemy{ type.Enemies.Get(iEnemy) };
+				if (!enemy.IsValid())
+					continue;
 				pInstance->World = enemy.World.AsMatrix();
-				pInstance->BoneIdOffset = ((iEnemy - firstInInstances) % type.NrEnemiesInBonesBuffer) * type.Animation.GetNrBones();
+				pInstance->BoneIdOffset = ((pInstance - pInstanceBegin) % type.NrEnemiesInBonesBuffer) * type.Animation.GetNrBones();
 				WorldMatrix::TranslateRelativeXz(pInstance->World, -enemy.RootPos);
+				++pInstance;
 			}
 			rendering.Instances.EndUpdateData();
-			iEnemy = firstInInstances;
+			const unsigned iEnemyEndInInstances{ iEnemy };
+			iEnemy = iEnemyFirstInInstances;
 
 			//Fill BonesBuffer
-			while (iEnemy < endForInstances)
+			unsigned iInstanceEnemy{ 0 };
+			while (iEnemy < iEnemyEndInInstances)
 			{
-				const unsigned firstInBones{ iEnemy };
-				const unsigned endForBones{
-					Uint::Min(firstInBones + type.NrEnemiesInBonesBuffer, endForInstances) };
+				unsigned iBoneEnemy{ 0 };
 
 				Float4X4* pBone{ bones.StartUpdate() };
-				for (; iEnemy < endForBones; ++iEnemy, pBone += type.Animation.GetNrBones())
+				const Float4X4* pBoneBegin{ pBone };
+				for (; iEnemy < iEnemyEndInInstances && iBoneEnemy < type.NrEnemiesInBonesBuffer; ++iEnemy)
 				{
-					const EnemySystem::Enemy& enemy{ type.Enemies[iEnemy] };
+					const Enemy& enemy{ type.Enemies.Get(iEnemy) };
+					if (!enemy.IsValid())
+						continue;
 					enemy.Animator.GetBones().CopyTo(pBone);
+					pBone += type.Animation.GetNrBones();
+					++iBoneEnemy;
 				}
 				bones.EndUpdate();
-				rendering.Instances.DrawAsInstances(type.Vertices.GetCapacity(), endForBones - firstInBones, firstInBones - firstInInstances);
+				rendering.Instances.DrawAsInstances(type.Vertices.GetCapacity(), iBoneEnemy, iInstanceEnemy);
+				iInstanceEnemy += iBoneEnemy;
 			}
 		}
 	}
