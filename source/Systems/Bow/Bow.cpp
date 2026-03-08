@@ -27,7 +27,7 @@ Bow::Bow()
 	using namespace Io::Fbx;
 
 	m_LocalTransform.Position = Float3{ .5f, -.1f, 1.0f };
-	m_LocalTransform.Rotation = Quaternion::FromAxis({ 1,0,0 }, -25 * Constants::TO_RAD);
+	m_LocalTransform.Rotation = Quaternion::FromAxis({ 1,0,0 }, -17 * Constants::TO_RAD);
 
 	//BOW-MESH
 	const std::wstring meshPath{ Resources::Local(L"Rigged_Bow_Testing.fbx") };
