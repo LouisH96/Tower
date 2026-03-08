@@ -65,7 +65,6 @@ void ArrowSystem::Update()
 
 		WorldMatrix::SetRotation(world, movementDirection);
 		WorldMatrix::SetPosition(world, newPosition);
-		//m_Instances[i].modelViewProj = world * Globals::pCamera->GetViewProjection();
 
 		//COLLISIONS
 		const CollisionSystem& collisions{ SYSTEMS.Collisions };
@@ -73,7 +72,7 @@ void ArrowSystem::Update()
 
 		//IS IN ENEMY?
 		EnemySystem::Enemy* pEnemy{ SYSTEMS.Enemies.IsColliding({position, newPosition}) };
-		if (pEnemy)
+		if (pEnemy && pEnemy->State == EnemySystem::Enemy::State::Running)
 		{
 			SYSTEMS.Enemies.OnCollision(Transform{ newPosition, Quaternion{world} }, iArrow, *pEnemy);
 			SetArrowFinished(iArrow);
