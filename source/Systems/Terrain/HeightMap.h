@@ -1,5 +1,5 @@
 #pragma once
-#include "DataStructures/GridArray.h"
+#include <DataStructures/GridArray.h>
 #include <Rendering/Structs/VertexTypes.h>
 
 namespace TowerGame
@@ -9,7 +9,7 @@ class HeightMap
 public:
 	//---| Constructor/Destructor |---
 	HeightMap() = default;
-	explicit HeightMap(Int2 nrElements, float initHeight, const Float2& size);
+	explicit HeightMap(float initHeight, float pointsPerSize, const Float2& size, const Float2& offset = Float2{ 0 });
 
 	void AddSinWaveX(float wavePeriod, float waveMagnitude);
 	void AddSinWaveY(float wavePeriod, float waveMagnitude);
@@ -25,17 +25,18 @@ public:
 	void Scale(float scale);
 	void Divide(float scale);
 
-	void ToVertices(List<Rendering::V_PosNorCol>& vertices, List<int>& indices, const Float3& origin) const;
+	void ToVertices(List<Rendering::V_PosNorCol>& vertices, List<int>& indices, Float3 origin) const;
 	Float2 GetCellSize() const;
 	float GetCellWidth() const;
 	float GetCellHeight() const;
-	const Float2& GetSize() const { return m_Size; }
+	Float2 GetSize() const { return m_CellSize * m_Grid.GetSize(); }
 
-	float GetHeight(const Float2& point) const;
+	float GetHeight(Float2 point) const;
 
 private:
 	GridArray<float> m_Grid;
-	Float2 m_Size;
+	Float2 m_OriginOffset; //Local (within the map), thus map starts at 0,0 anyway. used only for generation
+	Float2 m_CellSize;
 
 	float CubeFunction(float period, float magnitude, float t) const;
 	static float SinFunction(float period, float magnitude, float t);

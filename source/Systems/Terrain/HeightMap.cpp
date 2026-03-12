@@ -3,10 +3,11 @@
 
 using namespace TowerGame;
 
-HeightMap::HeightMap(Int2 nrElements, float initHeight, const Float2& size)
-	: m_Grid{ nrElements, initHeight }
-	, m_Size{ size }
+HeightMap::HeightMap(float initHeight, float pointsPerSize, const Float2& size, const Float2& offset)
+	: m_Grid{ size * pointsPerSize, initHeight }
+	, m_OriginOffset{ offset }
 {
+	m_CellSize = size / m_Grid.GetSize();
 }
 
 void HeightMap::AddSinWaveX(float wavePeriod, float waveMagnitude)
@@ -14,7 +15,7 @@ void HeightMap::AddSinWaveX(float wavePeriod, float waveMagnitude)
 	const Float2 cellSize{ GetCellSize() };
 	for (int iRow = 0, idx = 0; iRow < m_Grid.GetNrRows(); iRow++)
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++, idx++)
-			m_Grid.Get(idx) += SinFunction(wavePeriod, waveMagnitude, iCol * cellSize.x);
+			m_Grid.Get(idx) += SinFunction(wavePeriod, waveMagnitude, iCol * cellSize.x - m_OriginOffset.x);
 }
 
 void HeightMap::AddSinWaveY(float wavePeriod, float waveMagnitude)
@@ -22,7 +23,7 @@ void HeightMap::AddSinWaveY(float wavePeriod, float waveMagnitude)
 	const Float2 cellSize{ GetCellSize() };
 	for (int iRow = 0, idx = 0; iRow < m_Grid.GetNrRows(); iRow++)
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++, idx++)
-			m_Grid.Get(idx) += SinFunction(wavePeriod, waveMagnitude, iRow * cellSize.y);
+			m_Grid.Get(idx) += SinFunction(wavePeriod, waveMagnitude, iRow * cellSize.y - m_OriginOffset.y);
 }
 
 void HeightMap::AddSinWave(float wavePeriod, float waveMagnitude)
@@ -33,11 +34,11 @@ void HeightMap::AddSinWave(float wavePeriod, float waveMagnitude)
 	{
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
-			const float xPeriodTime{ iCol * cellSize.x / wavePeriod };
+			const float xPeriodTime{ (iCol * cellSize.x - m_OriginOffset.x) / wavePeriod };
 			const float xAngle{ xPeriodTime * Constants::PI2 };
 			const float xHeight{ sinf(xAngle) * waveMagnitude };
 
-			const float yPeriodTime{ iRow * cellSize.y / wavePeriod };
+			const float yPeriodTime{ (iRow * cellSize.y - m_OriginOffset.y) / wavePeriod };
 			const float yAngle{ yPeriodTime * Constants::PI2 };
 			const float yHeight{ sinf(yAngle) * waveMagnitude };
 
@@ -64,7 +65,7 @@ void HeightMap::AddCubeWaveX(float period, float magnitude)
 	const float cellWidth{ GetCellWidth() };
 	for (int iRow = 0, idx = 0; iRow < m_Grid.GetNrRows(); iRow++)
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++, idx++)
-			m_Grid.Get(idx) += CubeFunction(period, magnitude, iCol * cellWidth);
+			m_Grid.Get(idx) += CubeFunction(period, magnitude, iCol * cellWidth - m_OriginOffset.x);
 }
 
 void HeightMap::AddCubeWaveY(float period, float magnitude)
@@ -72,7 +73,7 @@ void HeightMap::AddCubeWaveY(float period, float magnitude)
 	const float cellHeight{ GetCellHeight() };
 	for (int iCol = 0, idx = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++, idx++)
-			m_Grid.Get({ iCol, iRow }) += CubeFunction(period, magnitude, iRow * cellHeight);
+			m_Grid.Get({ iCol, iRow }) += CubeFunction(period, magnitude, iRow * cellHeight - m_OriginOffset.y);
 }
 
 void HeightMap::CubeDisplaceAlongX(float period, float magnitude)
@@ -81,7 +82,7 @@ void HeightMap::CubeDisplaceAlongX(float period, float magnitude)
 	const GridArray<float> copy{ m_Grid };
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
-		const int displacement{ Int::Round(CubeFunction(period, magnitude, iRow * cellSize.y) / cellSize.x) };
+		const int displacement{ Int::Round(CubeFunction(period, magnitude, iRow * cellSize.y - m_OriginOffset.y) / cellSize.x) };
 		for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 		{
 			int prevCol{ iCol - displacement };
@@ -98,7 +99,7 @@ void HeightMap::SinDisplaceAlongX(float period, float magnitude)
 	const GridArray<float> copy{ m_Grid };
 	for (int iRow = 0; iRow < m_Grid.GetNrRows(); iRow++)
 	{
-		const float displacement{ SinFunction(period, magnitude, iRow * cellSize.y) / cellSize.x };
+		const float displacement{ SinFunction(period, magnitude, iRow * cellSize.y - m_OriginOffset.y) / cellSize.x };
 		const int lerpA{ Int::Floor(displacement) };
 		const int lerpB{ Int::Ceil(displacement) };
 		const float lerpAlpha{ displacement - lerpA };
@@ -121,7 +122,7 @@ void HeightMap::SinDisplaceAlongY(float period, float magnitude)
 	const GridArray<float> copy{ m_Grid };
 	for (int iCol = 0; iCol < m_Grid.GetNrCols(); iCol++)
 	{
-		const float displacement{ SinFunction(period, magnitude, iCol * cellSize.x) / cellSize.y };
+		const float displacement{ SinFunction(period, magnitude, iCol * cellSize.x - m_OriginOffset.x) / cellSize.y };
 		const int lerpA{ Int::Floor(displacement) };
 		const int lerpB{ Int::Ceil(displacement) };
 		const float lerpAlpha{ displacement - lerpA };
@@ -137,8 +138,7 @@ void HeightMap::SinDisplaceAlongY(float period, float magnitude)
 	}
 }
 
-void HeightMap::ToVertices(List<Rendering::V_PosNorCol>& vertices, List<int>& indices, const
-	Float3& origin) const
+void HeightMap::ToVertices(List<Rendering::V_PosNorCol>& vertices, List<int>& indices, Float3 origin) const
 {
 	vertices.EnsureIncrease(m_Grid.GetNrElements());
 
@@ -227,15 +227,15 @@ Float2 HeightMap::GetCellSize() const
 
 float HeightMap::GetCellWidth() const
 {
-	return m_Size.x / (m_Grid.GetNrCols() - 1);
+	return m_CellSize.x;
 }
 
 float HeightMap::GetCellHeight() const
 {
-	return m_Size.y / (m_Grid.GetNrRows() - 1);
+	return m_CellSize.y;
 }
 
-float HeightMap::GetHeight(const Float2& point) const
+float HeightMap::GetHeight(Float2 point) const
 {
 	constexpr float fallback{ -1 };
 	const Float2 pointCoord{
@@ -278,6 +278,7 @@ float HeightMap::CubeFunction(float period, float magnitude, float t) const
 {
 	constexpr float scaleX{ 4 }; //constant value is to choose pointiness
 	const float scaleY{ 1.f / (scaleX * scaleX * scaleX) * magnitude };
+	t = fabs(t);
 	t /= period;
 	t = fmod(t, 2.f);
 	if (t > 1)

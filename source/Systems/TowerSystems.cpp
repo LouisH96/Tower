@@ -13,14 +13,26 @@ TowerSystems::~TowerSystems()
 void TowerSystems::Init()
 {
 	//TERRAIN & TOWER
-	const Float2 terrainSize{ 250,250 };
+	const Float2 terrainGenOriginToTower{ Float2{125} }; //position of tower relative to the terrain's generation origin
+	const float halfTerrainSizeAroundTower{ 150 }; //starting from the tower, there should be at least this amount of terrain in all 4 directions
+
+	const Float2 terrainNegSize{
+		Float::Max(terrainGenOriginToTower.x, halfTerrainSizeAroundTower),
+		Float::Max(terrainGenOriginToTower.y, halfTerrainSizeAroundTower) };
+	const Float2 terrainPosSize{
+		Float::Max(-terrainGenOriginToTower.x, halfTerrainSizeAroundTower)
+		+ terrainNegSize.x,
+		Float::Max(-terrainGenOriginToTower.y, halfTerrainSizeAroundTower)
+		+ terrainNegSize.y
+	};
+	const Float2 terrainOrigin{ 0 };
 
 	Tower::Desc towerDesc{};
-	towerDesc.Position = Float3::FromXz(terrainSize / 2);
+	towerDesc.Position = Float3::FromXz(terrainOrigin + terrainGenOriginToTower);
 	towerDesc.RoofSize = { 10,6 };
 	towerDesc.Height = 8;
 
-	Terrain.Init({}, terrainSize);
+	Terrain.Init(Float3::FromXz(terrainOrigin), terrainPosSize, terrainNegSize);
 	Tower.Init(towerDesc);
 
 	//CHARACTER & BOW
@@ -38,7 +50,6 @@ void TowerSystems::Init()
 	pSimpleRenderer = Rendering::RendererFactory::CreateSimpleRenderer();
 
 	//SHADOWS
-	//Shadows.Init(Character);
 	Shadows.Init(Character.GetCameraController().GetCamera());
 
 	//TERRAIN-RENDERER
