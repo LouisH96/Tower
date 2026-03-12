@@ -65,7 +65,7 @@ public:
 	struct Spawning {
 		static constexpr float IntervalChangeDuration{ 80.f }; //Time(in sec) to go from initial SpawnInterval to MinSpawnInterval
 		float SpawnInterval{ 3.5f }; //Initial SpawnInterval(in sec), spawn an enemy each x seconds
-		float MinSpawnInterval{ .25f }; //Final SpawnInterval
+		float MinSpawnInterval{ .35f }; //Final SpawnInterval
 
 		float IntervalChange{}; //Rate of change of SpawnInterval
 		float IntervalChange2{}; //Second order rate of change, to get exponential change

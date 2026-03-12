@@ -27,9 +27,15 @@ void EnemySystem::Init(unsigned nrEnemies, const Float2& target)
 	m_Enemies.Target = target;
 	EnemyCode::InitSpawningData(m_Spawning);
 
+	EnemyCode::SpawnEnemyAtRelativeDistance(.3f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.4f, m_Enemies);
 	EnemyCode::SpawnEnemyAtRelativeDistance(.5f, m_Enemies);
 	EnemyCode::SpawnEnemyAtRelativeDistance(.6f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.6f, m_Enemies);
 	EnemyCode::SpawnEnemyAtRelativeDistance(.7f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.8f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.8f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.9f, m_Enemies);
 	EnemyCode::SpawnEnemyAtRelativeDistance(.9f, m_Enemies);
 }
 
