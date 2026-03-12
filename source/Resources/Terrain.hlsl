@@ -31,7 +31,7 @@ Pixel vs_main(Vertex vertex)
 //--| PIXEL SHADER |--
 float4 ps_main(Pixel pixel) : SV_TARGET
 {
-    const float minLam = .2f;
+    const float minLam = .4f;
     const float maxLam = 1.f;
     const float rangeLam = maxLam - minLam;
     
