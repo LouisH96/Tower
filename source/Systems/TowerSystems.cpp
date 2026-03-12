@@ -26,13 +26,13 @@ void TowerSystems::Init()
 	//CHARACTER & BOW
 	const Float3 characterPosition{
 		towerDesc.Position + Float3::FromXz(towerDesc.RoofSize * .5) + Float3{ 0,towerDesc.Height, 0 }
-
-
-	+ Float3{-2,6,-3} };
+		+ Float3{-2,6,-3} };
 	Character.Init(characterPosition);
 
 	//ENEMIES
-	Enemies.Init(100, towerDesc.Position.Xz());
+	const Float2 enemiesTarget{ towerDesc.Position.Xz()
+		+ Float2{0,-2.5f} };
+	Enemies.Init(100, enemiesTarget);
 
 	//SIMPLE RENDERER
 	pSimpleRenderer = Rendering::RendererFactory::CreateSimpleRenderer();

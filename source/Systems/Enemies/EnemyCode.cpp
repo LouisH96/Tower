@@ -330,9 +330,10 @@ void EnemyCode::Render(Rendering::ConstantBuffer<Float4X4>& bones, EnemySystem::
 
 void EnemyCode::UpdateMove(const Float2& target, const Float2& movement, EnemySystem::Enemy& enemy)
 {
-	constexpr float minTargetDistanceSq = 6 * 6;
+	constexpr float TARGET_RANGE_SQRT{ 2.5f };
+	constexpr float TARGET_RANGE{ TARGET_RANGE_SQRT * TARGET_RANGE_SQRT };
 
-	if (enemy.World.Position.Xz().DistanceSq(target) <= minTargetDistanceSq)
+	if (enemy.World.Position.Xz().DistanceSq(target) <= TARGET_RANGE)
 	{
 		enemy.State = EnemySystem::Enemy::State::Completed;
 		return;
