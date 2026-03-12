@@ -19,7 +19,8 @@ TowerUi::TowerUi()
 	m_pList->SetUniformFillSize(false);
 	pMargin->AddChild(m_pList);
 
-	m_pScoreLabel = new DynamicNumberLabel(5, Color::Green, SCORE_FONT_SIZE);
+	//m_pScoreLabel = new DynamicNumberLabel(5, Float3::Color(206, 198, 173), SCORE_FONT_SIZE);
+	m_pScoreLabel = new DynamicNumberLabel(5, Float3::Color(183,176,145), SCORE_FONT_SIZE);
 	m_pScoreLabel->SetPivot({ .5f,0 });
 	m_pList->AddChild(m_pScoreLabel);
 
