@@ -23,7 +23,7 @@ void Terrain::GenerateMeshIn(StaticMeshSystem::MeshData& data)
 void Terrain::Init(const Float3& origin, const Float2& posSize, const Float2& negSize)
 {
 	m_Position = origin - Float3::FromXz(negSize);
-	m_HeightMap = HeightMap{ 0, 1.3f, (posSize + negSize), negSize };
+	m_HeightMap = HeightMap{ 0, 1.1f, (posSize + negSize), negSize };
 	FillHeightMap();
 }
 

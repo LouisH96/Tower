@@ -164,32 +164,48 @@ void HeightMap::ToVertices(List<Rendering::V_PosNorCol>& vertices, List<int>& in
 	{
 		for (int iCol = 0; iCol < m_Grid.GetNrCols() - 1; iCol++)
 		{
-			const int idxBotLeft = idx;
-			const int idxBotRight = idx + 1;
-			const int idxTopLeft = idx + m_Grid.GetNrCols();
-			const int idxTopRight = idxTopLeft + 1;
-			const Float3& botLeft{ vertices[idxBotLeft].Pos };
-			const Float3& botRight{ vertices[idxBotRight].Pos };
-			const Float3& topLeft{ vertices[idxTopLeft].Pos };
-			const Float3& topRight{ vertices[idxTopRight].Pos };
+			const int idxBotLeft{ idx };
+			const int idxBotRight{ idx + 1 };
+			const int idxTopLeft{ idx + m_Grid.GetNrCols() };
+			const int idxTopRight{ idxTopLeft + 1 };
+			Float3 botLeft{ 0, vertices[idxBotLeft].Pos.y, 0 };
+			Float3 botRight{ cellSize.x, vertices[idxBotRight].Pos.y, 0 };
+			Float3 topLeft{ 0, vertices[idxTopLeft].Pos.y, cellSize.y };
+			Float3 topRight{ cellSize.x, vertices[idxTopRight].Pos.y, cellSize.y };
 
-			const Float3 diagonal{ topRight - botLeft };
 			const Float3 horizontal{ botRight - botLeft };
 			const Float3 vertical{ topLeft - botLeft };
 
-			const Float3 normal1{ diagonal.Cross(horizontal).Normalized() };
-			const Float3 normal2{ vertical.Cross(diagonal).Normalized() };
+			if ((iRow + iCol) % 2)
+			{
+				const Float3 diagonal{ topRight - botLeft };
 
-			vertices[idxBotLeft].Normal += normal1 + normal2;
-			vertices[idxBotRight].Normal += normal1;
-			vertices[idxTopLeft].Normal += normal2;
-			vertices[idxTopRight].Normal += normal1 + normal2;
+				const Float3 normal1{ diagonal.Cross(horizontal).Normalized() };
+				const Float3 normal2{ vertical.Cross(diagonal).Normalized() };
+
+				vertices[idxBotLeft].Normal += normal1 + normal2;
+				vertices[idxBotRight].Normal += normal1;
+				vertices[idxTopLeft].Normal += normal2;
+				vertices[idxTopRight].Normal += normal1 + normal2;
+			}
+			else
+			{
+				const Float3 diagonal{ botRight - topLeft };
+
+				const Float3 normal1{ vertical.Cross(horizontal).Normalized() };
+				const Float3 normal2{ (topRight - topLeft).Cross(diagonal).Normalized()};
+
+				vertices[idxBotLeft].Normal += normal1;
+				vertices[idxBotRight].Normal += normal1 + normal2;
+				vertices[idxTopLeft].Normal += normal1 + normal2;
+				vertices[idxTopRight].Normal += normal2;
+			}
 
 			idx++;
 		}
 		idx++;
 	}
-	//can optimize because nr of normals is known
+	//todo: can be optimized because nr of normals is known
 	for (unsigned i = 0; i < vertices.GetSize(); i++)
 		vertices[i].Normal.Normalize();
 
@@ -200,19 +216,21 @@ void HeightMap::ToVertices(List<Rendering::V_PosNorCol>& vertices, List<int>& in
 	{
 		for (int iCol = 0; iCol < m_Grid.GetNrCols() - 1; iCol++)
 		{
-			const int botLeft = idx;
-			const int botRight = idx + 1;
-			const int topLeft = idx + m_Grid.GetNrCols();
-			const int topRight = topLeft + 1;
+			const int botLeft{ idx };
+			const int botRight{ idx + 1 };
+			const int topLeft{ idx + m_Grid.GetNrCols() };
+			const int topRight{ topLeft + 1 };
 
-			//Triangle Left
-			indices.Add(botLeft);
-			indices.Add(topRight);
-			indices.Add(botRight);
-			
-			indices.Add(botLeft);
-			indices.Add(topLeft);
-			indices.Add(topRight);
+			if ((iRow + iCol) % 2)
+			{
+				indices.Add(botLeft, topRight, botRight);
+				indices.Add(botLeft, topLeft, topRight);
+			}
+			else
+			{
+				indices.Add(botLeft, topLeft, botRight);
+				indices.Add(topLeft, topRight, botRight);
+			}
 
 			idx++;
 		}
