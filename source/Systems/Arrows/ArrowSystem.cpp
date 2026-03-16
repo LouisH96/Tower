@@ -1,18 +1,9 @@
 #include "pch.h"
 #include "ArrowSystem.h"
 
-#include "Camera/Camera.h"
-#include "Generation/PlaneGeneration.h"
-#include "Io/Fbx/FbxClass.h"
-#include "Transform/WorldMatrix.h"
-#include <Geometry\Shapes\Ray.h>
-#include <Other\Random.h>
-#include <Physics\CollisionDetection.h>
-#include <Systems\Bow\Bow.h>
-#include <Systems\Collisions\CollisionSystem.h>
-#include <Systems\Enemies\EnemySystem.h>
-#include <Systems\Terrain\Terrain.h>
+#include <Other/Random.h>
 #include <TowerApp.h>
+#include <Transform/WorldMatrix.h>
 
 using namespace TowerGame;
 using namespace Rendering;
@@ -22,12 +13,13 @@ ArrowSystem::ArrowSystem()
 	: m_Texture{ Resources::Local(L"Texture_01.png") }
 {
 	//VERTICES
+	static constexpr float modelScale{ .01f };
 	const std::wstring arrowMeshPath{ Resources::Local(L"SM_Arrow_01.fbx") };
-	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath, 1.f };
+	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath, modelScale };
 	Io::Fbx::FbxClass::Geometry& arrowGeom = arrowFbxModel.GetGeometries()[0];
 	Array<V_PosNorUv> arrowVertices{ arrowGeom.Points.GetSize() };
-	for (unsigned i = 0; i < arrowGeom.Points.GetSize(); i++)
-		arrowVertices[i] = V_PosNorUv{ arrowGeom.Points[i] * 0.01f, arrowGeom.Normals[i], arrowGeom.Uvs[i] };
+	for (unsigned i{ 0 }; i < arrowGeom.Points.GetSize(); ++i)
+		arrowVertices[i] = V_PosNorUv{ arrowGeom.Points[i], arrowGeom.Normals[i], arrowGeom.Uvs[i] };
 
 	m_Instances = InstanceList<Vertex, Instance>{
 		arrowVertices.GetData(), arrowVertices.GetSize()
@@ -38,7 +30,7 @@ void ArrowSystem::Update()
 {
 	const float dt{ Globals::DeltaTime };
 
-	for (unsigned iArrow = 0; iArrow < m_Velocities.GetSize(); iArrow++)
+	for (unsigned iArrow{ 0 }; iArrow < m_Velocities.GetSize(); ++iArrow)
 	{
 		//IS ALREADY FINISHED ?
 		Float3& velocity{ m_Velocities[iArrow] };
@@ -55,12 +47,12 @@ void ArrowSystem::Update()
 		}
 
 		//UPDATE WORLD-MATRIX
-		velocity.y += Constants::GRAVITY / 2 * dt;
+		velocity.y += Constants::GRAVITY_HALF * dt;
 
 		float movementAmount{};
 		const Float3 movementDirection{ velocity.Normalized(movementAmount) };
 		movementAmount *= dt;
-		velocity.y += Constants::GRAVITY / 2 * dt;
+		velocity.y += Constants::GRAVITY_HALF * dt;
 
 		const Float3 newPosition{ position + movementDirection * movementAmount };
 
@@ -92,7 +84,7 @@ void ArrowSystem::Update()
 		const ModelCollidable::Instance* pHitInstance{};
 		if (collisions.Models.IsColliding(arrowMovement, hit))
 		{
-			hit.t += Random::Range(-.1f, .3f);
+			hit.t += Random::Range(-.1f, .3f); //Add variety to depth
 			const Float3 hitPosition{ position + movementDirection * hit.t };
 			WorldMatrix::SetPosition(world, hitPosition);
 			SetArrowFinished(iArrow);
