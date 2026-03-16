@@ -62,7 +62,7 @@ EnemySystem::Enemy* EnemySystem::IsColliding(
 		for (unsigned iEnemy{ enemies.GetFirstIdx() }; iEnemy < enemies.GetEndIdx(); ++iEnemy)
 		{
 			const Enemy& enemy{ type.Enemies.Get(iEnemy) };
-			if (!enemy.IsValid())
+			if (!enemy.IsValid() || enemy.State != Enemy::State::Running)
 				continue;
 			if (EnemyCode::IsColliding(line, type, enemy, hit))
 				return &m_Enemies.Types[iType].Enemies.Get(iEnemy);

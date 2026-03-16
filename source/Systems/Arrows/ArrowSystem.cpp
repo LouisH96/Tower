@@ -65,7 +65,7 @@ void ArrowSystem::Update()
 		//IS IN ENEMY?
 		CollisionDetection::Collision hit{};
 		EnemySystem::Enemy* pEnemy{ SYSTEMS.Enemies.IsColliding({position, newPosition}, hit) };
-		if (pEnemy && pEnemy->State == EnemySystem::Enemy::State::Running)
+		if (pEnemy)
 		{
 			const Float3 hitPosition{ position + movementDirection * hit.t };
 			WorldMatrix::SetPosition(world, hitPosition);
