@@ -14,15 +14,15 @@ void TowerSystems::Init()
 {
 	//TERRAIN & TOWER
 	const Float2 terrainGenOriginToTower{ Float2{125} }; //position of tower relative to the terrain's generation origin
-	const float halfTerrainSizeAroundTower{ 150 }; //starting from the tower, there should be at least this amount of terrain in all 4 directions
+	const float minTerrainSizeAroundTower{ 150 }; //starting from the tower, there should be at least this amount of terrain in all directions
 
 	const Float2 terrainNegSize{
-		Float::Max(terrainGenOriginToTower.x, halfTerrainSizeAroundTower),
-		Float::Max(terrainGenOriginToTower.y, halfTerrainSizeAroundTower) };
+		Float::Max(terrainGenOriginToTower.x, minTerrainSizeAroundTower),
+		Float::Max(terrainGenOriginToTower.y, minTerrainSizeAroundTower) };
 	const Float2 terrainPosSize{
-		Float::Max(-terrainGenOriginToTower.x, halfTerrainSizeAroundTower)
+		Float::Max(-terrainGenOriginToTower.x, minTerrainSizeAroundTower)
 		+ terrainNegSize.x,
-		Float::Max(-terrainGenOriginToTower.y, halfTerrainSizeAroundTower)
+		Float::Max(-terrainGenOriginToTower.y, minTerrainSizeAroundTower)
 		+ terrainNegSize.y
 	};
 	const Float2 terrainOrigin{ 0 };
@@ -44,7 +44,8 @@ void TowerSystems::Init()
 	//ENEMIES
 	const Float2 enemiesTarget{ towerDesc.Position.Xz()
 		+ Float2{0,-2.5f} };
-	Enemies.Init(100, enemiesTarget);
+	const float enemySpawnRadius{ minTerrainSizeAroundTower };
+	Enemies.Init(100, enemiesTarget, enemySpawnRadius);
 
 	//SIMPLE RENDERER
 	pSimpleRenderer = Rendering::RendererFactory::CreateSimpleRenderer();

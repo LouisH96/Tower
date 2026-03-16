@@ -81,7 +81,7 @@ void EnemyCode::UpdateEnemySpawning(EnemySystem::Spawning& spawn, EnemySystem::E
 		return;
 
 	//Spawn
-	SpawnEnemy(enemies);
+	SpawnEnemy(spawn, enemies);
 
 	//Find next spawn time
 	spawn.NextSpawn = spawn.SpawnInterval;
@@ -163,10 +163,10 @@ bool EnemyCode::IsColliding(const Line& line, const EnemySystem::Type& type, con
 	return false;
 }
 
-void EnemyCode::SpawnEnemies(unsigned count, EnemySystem::Enemies& systemData)
+void EnemyCode::SpawnEnemies(unsigned count, const EnemySystem::Spawning& spawnData, EnemySystem::Enemies& systemData)
 {
 	for (unsigned i{ 0 }; i < count; ++i)
-		SpawnEnemy(systemData);
+		SpawnEnemy(spawnData, systemData);
 }
 
 EnemySystem::Enemy& EnemyCode::SpawnEnemy(const Float2& position, EnemySystem::Enemies& systemData)
@@ -187,16 +187,14 @@ EnemySystem::Enemy& EnemyCode::SpawnEnemy(const Float2& position, EnemySystem::E
 	return enemy;
 }
 
-EnemySystem::Enemy& EnemyCode::SpawnEnemy(EnemySystem::Enemies& systemData)
+EnemySystem::Enemy& EnemyCode::SpawnEnemy(const EnemySystem::Spawning& spawnData, EnemySystem::Enemies& systemData)
 {
-	return SpawnEnemyAtRelativeDistance(1.f, systemData);
+	return SpawnEnemyAtRelativeDistance(1.f, spawnData, systemData);
 }
 
-EnemySystem::Enemy& EnemyCode::SpawnEnemyAtRelativeDistance(float relDistance, EnemySystem::Enemies& systemData)
+EnemySystem::Enemy& EnemyCode::SpawnEnemyAtRelativeDistance(float relDistance, const EnemySystem::Spawning& spawnData, EnemySystem::Enemies& systemData)
 {
-	const Float2& terrainSize{ SYSTEMS.Terrain.GetSize() };
-
-	const Float2 direction{ Random::UnitVector2() * terrainSize * (relDistance / 2.f) };
+	const Float2 direction{ Random::UnitVector2() * spawnData.SpawnRadius * relDistance };
 	const Float2 initPos{ systemData.Target + direction };
 
 	return SpawnEnemy(initPos, systemData);

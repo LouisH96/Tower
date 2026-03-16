@@ -22,21 +22,22 @@ EnemySystem::EnemySystem()
 	CreateTypes();
 }
 
-void EnemySystem::Init(unsigned nrEnemies, const Float2& target)
+void EnemySystem::Init(unsigned nrEnemies, const Float2& target, float spawnRadius)
 {
 	m_Enemies.Target = target;
+	m_Spawning.SpawnRadius = spawnRadius;
 	EnemyCode::InitSpawningData(m_Spawning);
 
-	EnemyCode::SpawnEnemyAtRelativeDistance(.3f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.4f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.5f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.6f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.6f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.7f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.8f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.8f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.9f, m_Enemies);
-	EnemyCode::SpawnEnemyAtRelativeDistance(.9f, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.3f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.4f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.5f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.6f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.6f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.7f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.8f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.8f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.9f, m_Spawning, m_Enemies);
+	EnemyCode::SpawnEnemyAtRelativeDistance(.9f, m_Spawning, m_Enemies);
 }
 
 void EnemySystem::Update()

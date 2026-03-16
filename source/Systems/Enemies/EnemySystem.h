@@ -70,6 +70,8 @@ public:
 		float IntervalChange{}; //Rate of change of SpawnInterval
 		float IntervalChange2{}; //Second order rate of change, to get exponential change
 		float NextSpawn{ 0.f }; //Seconds until the next spawn should happen
+
+		float SpawnRadius{};
 	};
 	struct Enemies {
 		List<Type> Types{};
@@ -87,7 +89,7 @@ public:
 public:
 	//Create
 	EnemySystem();
-	void Init(unsigned nrEnemies, const Float2& target);
+	void Init(unsigned nrEnemies, const Float2& target, float spawnRadius);
 	~EnemySystem() = default;
 
 	//Update

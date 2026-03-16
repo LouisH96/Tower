@@ -16,9 +16,9 @@ public:
 	static void InitSpawningData(EnemySystem::Spawning& spawn);
 	static void UpdateEnemySpawning(EnemySystem::Spawning& spawn, EnemySystem::Enemies& enemies);
 	static EnemySystem::Enemy& SpawnEnemy(const Float2& position, EnemySystem::Enemies& systemData);
-	static EnemySystem::Enemy& SpawnEnemy( EnemySystem::Enemies& systemData);
-	static EnemySystem::Enemy& SpawnEnemyAtRelativeDistance(float relDistance, EnemySystem::Enemies& systemData);
-	static void SpawnEnemies(unsigned count, EnemySystem::Enemies& systemData);
+	static EnemySystem::Enemy& SpawnEnemy(const EnemySystem::Spawning& spawnData, EnemySystem::Enemies& systemData);
+	static EnemySystem::Enemy& SpawnEnemyAtRelativeDistance(float relDistance, const EnemySystem::Spawning& spawnData, EnemySystem::Enemies& systemData);
+	static void SpawnEnemies(unsigned count, const EnemySystem::Spawning& spawnData, EnemySystem::Enemies& systemData);
 
 	//Arrows
 	static void HitByArrow(const Transform& worldArrowTransform, int arrowIdx, EnemySystem::Enemy& enemy);
