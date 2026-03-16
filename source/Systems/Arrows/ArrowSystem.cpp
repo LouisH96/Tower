@@ -6,6 +6,7 @@
 #include "Io/Fbx/FbxClass.h"
 #include "Transform/WorldMatrix.h"
 #include <Geometry\Shapes\Ray.h>
+#include <Other\Random.h>
 #include <Physics\CollisionDetection.h>
 #include <Systems\Bow\Bow.h>
 #include <Systems\Collisions\CollisionSystem.h>
@@ -64,21 +65,22 @@ void ArrowSystem::Update()
 		const Float3 newPosition{ position + movementDirection * movementAmount };
 
 		WorldMatrix::SetRotation(world, movementDirection);
-		WorldMatrix::SetPosition(world, newPosition);
 
 		//COLLISIONS
 		const CollisionSystem& collisions{ SYSTEMS.Collisions };
 		const Ray arrowMovement{ position, movementDirection, movementAmount };
 
 		//IS IN ENEMY?
-		EnemySystem::Enemy* pEnemy{ SYSTEMS.Enemies.IsColliding({position, newPosition}) };
+		CollisionDetection::Collision hit{};
+		EnemySystem::Enemy* pEnemy{ SYSTEMS.Enemies.IsColliding({position, newPosition}, hit) };
 		if (pEnemy && pEnemy->State == EnemySystem::Enemy::State::Running)
 		{
-			SYSTEMS.Enemies.OnCollision(Transform{ newPosition, Quaternion{world} }, iArrow, *pEnemy);
+			const Float3 hitPosition{ position + movementDirection * hit.t };
+			WorldMatrix::SetPosition(world, hitPosition);
+			SYSTEMS.Enemies.OnCollision(Transform{ hitPosition, Quaternion{world} }, iArrow, *pEnemy);
 			SetArrowFinished(iArrow);
 
 			const Float3& launchedPosition{ m_LaunchedPosition[iArrow] };
-			const Float3& hitPosition{ newPosition };
 			const float travelDistance{ launchedPosition.Distance(hitPosition) };
 			const unsigned score{ static_cast<unsigned>(travelDistance * 10) };
 			SYSTEMS.Ui.AddScore(score);
@@ -88,12 +90,17 @@ void ArrowSystem::Update()
 		//IS IN TOWER?
 		const ModelCollidable* pHitModel{};
 		const ModelCollidable::Instance* pHitInstance{};
-		CollisionDetection::Collision collision{};
-		if (collisions.Models.IsColliding(arrowMovement, collision))
+		if (collisions.Models.IsColliding(arrowMovement, hit))
 		{
+			hit.t += Random::Range(-.1f, .3f);
+			const Float3 hitPosition{ position + movementDirection * hit.t };
+			WorldMatrix::SetPosition(world, hitPosition);
 			SetArrowFinished(iArrow);
 			continue;
 		}
+
+		//No hit -> move all the way
+		WorldMatrix::SetPosition(world, newPosition);
 
 		//Tracer
 		m_Tracing.UpdateHead(iArrow, world, velocity);

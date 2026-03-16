@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EnemySystem.h"
+#include <Physics\CollisionDetection.h>
 
 namespace TowerGame
 {
@@ -25,7 +26,8 @@ public:
 	static bool IsColliding(
 		const Line& line,
 		const EnemySystem::Type& type,
-		const EnemySystem::Enemy& enemy);
+		const EnemySystem::Enemy& enemy,
+		Physics::CollisionDetection::Collision& hit);
 
 	//Animation
 	static Float3 ToAnimationSpace(const Float3& worldSpace, const EnemySystem::Enemy& enemy);

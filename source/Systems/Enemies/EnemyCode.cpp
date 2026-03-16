@@ -92,7 +92,8 @@ void EnemyCode::UpdateEnemySpawning(EnemySystem::Spawning& spawn, EnemySystem::E
 	spawn.SpawnInterval = Float::Max(spawn.SpawnInterval, spawn.MinSpawnInterval);
 }
 
-void EnemyCode::HitByArrow(const Transform& worldArrowTransform, int arrowIdx, EnemySystem::Enemy& enemy)
+void EnemyCode::HitByArrow(
+	const Transform& worldArrowTransform, int arrowIdx, EnemySystem::Enemy& enemy)
 {
 	enemy.Arrows.Add(
 		{
@@ -107,7 +108,10 @@ void EnemyCode::HitByArrow(const Transform& worldArrowTransform, int arrowIdx, E
 	enemy.State = EnemySystem::Enemy::State::Falling;
 }
 
-bool EnemyCode::IsColliding(const Line& line, const EnemySystem::Type& type, const EnemySystem::Enemy& enemy)
+bool EnemyCode::IsColliding(
+	const Line& line,
+	const EnemySystem::Type& type, const EnemySystem::Enemy& enemy,
+	Physics::CollisionDetection::Collision& hit)
 {
 	using namespace Physics;
 
@@ -150,12 +154,11 @@ bool EnemyCode::IsColliding(const Line& line, const EnemySystem::Type& type, con
 		const Float3 pb2{ AnimationUtils::Blend(v2.Point, v2.BoneIndices, v2.BoneWeights, bones) };
 		const Float3 tbNormal{ Triangle::FindNormal(pb0,pb1,pb2) };
 
-		CollisionDetection::Collision collision{};
 		if (Physics::CollisionDetection::IsLineInTriangle(
 			localBegin, localEnd,
 			pb0, pb1, pb2,
 			tbNormal,
-			collision))
+			hit))
 		{
 			return true;
 		}

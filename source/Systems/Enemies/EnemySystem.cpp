@@ -51,7 +51,9 @@ void EnemySystem::OnCollision(const Transform& arrowTransform, int arrowIdx, Ene
 	EnemyCode::HitByArrow(arrowTransform, arrowIdx, enemy);
 }
 
-EnemySystem::Enemy* EnemySystem::IsColliding(const Line& line)
+EnemySystem::Enemy* EnemySystem::IsColliding(
+	const Line& line,
+	Physics::CollisionDetection::Collision& hit)
 {
 	for (unsigned iType{ 0 }; iType < m_Enemies.Types.GetSize(); ++iType)
 	{
@@ -62,7 +64,7 @@ EnemySystem::Enemy* EnemySystem::IsColliding(const Line& line)
 			const Enemy& enemy{ type.Enemies.Get(iEnemy) };
 			if (!enemy.IsValid())
 				continue;
-			if (EnemyCode::IsColliding(line, type, enemy))
+			if (EnemyCode::IsColliding(line, type, enemy, hit))
 				return &m_Enemies.Types[iType].Enemies.Get(iEnemy);
 		}
 	}

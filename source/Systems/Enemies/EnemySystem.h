@@ -3,6 +3,7 @@
 #include <Animations\Animation.h>
 #include <Animations\Animator.h>
 #include <DataStructures\InvalidateList.h>
+#include <Physics\CollisionDetection.h>
 #include <Rendering\DrawData\VertexArray.h>
 
 namespace TowerGame
@@ -100,7 +101,8 @@ public:
 	void Render(Rendering::ConstantBuffer<Float4X4>& bones);
 
 	//Collision
-	EnemySystem::Enemy* IsColliding(const Line& line);
+	EnemySystem::Enemy* IsColliding(const Line& line,
+		Physics::CollisionDetection::Collision& hit);
 	void OnCollision(const Transform& arrowTransform, int arrowIdx, Enemy& enemy);
 
 private:
