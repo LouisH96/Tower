@@ -91,7 +91,7 @@ void Tower::AddModelsIn(StaticModelSystem::InitData& staticModelData)
 	crate.Path = L"SM_Prop_Crate_01.fbx";
 	crate.Scale = Float3{ 1.27147f };
 	crate.Instances.Add({
-		{4.109985f,3.23f,-3.210007f},
+		{4.109985f,3.10f,-3.210007f},
 		{0,-167.389f,0} });
 	crate.Instances.Add({
 		{-1.407001f,3.21f,-1.306f},
