@@ -134,12 +134,12 @@ void EnemySystem::CreateTypes()
 	desc.Scale = .01f;
 
 	//Nomad
-	desc.ModelPath = L"Chr_Nomad_Male_01.fbx";
-	desc.AnimationPath = L"Unarmed Run Forward(v25).fbx";
+	desc.ModelPath = L"M_Nomad_Male_01_(S25).fbx";
+	desc.AnimationPath = L"A_Unarmed_Run_Forward_(S25).fbx";
 	desc.Attachments.Add(
-		{ L"SM_Chr_Attach_Hair_Wild_01.fbx", "Head" },
-		{ L"SM_Chr_Attach_Ear_01.fbx", "Head" },
-		{ L"SM_Chr_Attach_Mask_04.fbx", "Head" }
+		{ L"M_Hair_Wild_01.fbx", "Head" },
+		{ L"M_Ear_01.fbx", "Head" },
+		{ L"M_Mask_04.fbx", "Head" }
 	);
 	desc.Height = 1.8f;
 	desc.Radius = .5f;
@@ -147,8 +147,8 @@ void EnemySystem::CreateTypes()
 
 	//Skeleton
 	desc.Attachments.Clear();
-	desc.ModelPath = L"Chr_Skeleton_03.fbx";
-	desc.AnimationPath = L"Zombie Running(v25).fbx";
+	desc.ModelPath = L"M_Skeleton_03_(S25).fbx";
+	desc.AnimationPath = L"A_Zombie_Running_(S25).fbx";
 	CreateType(desc);
 }
 
@@ -171,7 +171,7 @@ EnemySystem::Enemy::Enemy(const Animations::Animation& animation, const Float3& 
 
 EnemySystem::EnemiesRendering::EnemiesRendering()
 	: InputLayout{ InputLayout::FromTypes2<Vertex, RenderInstance>() }
-	, Shader{ Resources::Local(L"Enemy.hlsl") }
-	, Texture{ Resources::Local(L"Dungeons_2_Texture_01_A.png") }
+	, Shader{ Resources::Local(L"S_Character_Anim_Inst.hlsl") }
+	, Texture{ Resources::Local(L"T_Dungeons_2_01_A.png") }
 {
-}
+}  

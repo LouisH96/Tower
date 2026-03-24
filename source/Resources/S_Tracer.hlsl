@@ -1,4 +1,4 @@
-#include "Shared.hlsl"
+#include "S_Shared.hlsl"
 
 struct Vertex
 {

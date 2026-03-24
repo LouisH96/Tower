@@ -1,5 +1,5 @@
-#include "Shared.hlsl"
-#include "Shadow.hlsl"
+#include "S_Shared.hlsl"
+#include "S_Shadow.hlsl"
 
 cbuffer ModelBuffer : register(b1)
 {

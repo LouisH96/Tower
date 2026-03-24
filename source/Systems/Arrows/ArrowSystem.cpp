@@ -10,11 +10,11 @@ using namespace Rendering;
 using namespace Physics;
 
 ArrowSystem::ArrowSystem()
-	: m_Texture{ Resources::Local(L"Texture_01.png") }
+	: m_Texture{ Resources::Local(L"T_Knights_01.png") }
 {
 	//VERTICES
 	static constexpr float modelScale{ .01f };
-	const std::wstring arrowMeshPath{ Resources::Local(L"SM_Arrow_01.fbx") };
+	const std::wstring arrowMeshPath{ Resources::Local(L"M_Arrow_01.fbx") };
 	Io::Fbx::FbxClass arrowFbxModel{ arrowMeshPath, modelScale };
 	Io::Fbx::FbxClass::Geometry& arrowGeom = arrowFbxModel.GetGeometries()[0];
 	Array<V_PosNorUv> arrowVertices{ arrowGeom.Points.GetSize() };

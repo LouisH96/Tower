@@ -1,5 +1,5 @@
-#include "Shadow.hlsl"
-#include "Shared.hlsl"
+#include "S_Shadow.hlsl"
+#include "S_Shared.hlsl"
 
 struct Vertex
 {

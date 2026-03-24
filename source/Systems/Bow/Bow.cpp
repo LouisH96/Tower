@@ -30,7 +30,7 @@ Bow::Bow()
 	m_LocalTransform.Rotation = Quaternion::FromAxis({ 1,0,0 }, -17 * Constants::TO_RAD);
 
 	//BOW-MESH
-	const std::wstring meshPath{ Resources::Local(L"Rigged_Bow_Testing.fbx") };
+	const std::wstring meshPath{ Resources::Local(L"M_Bow.fbx") };
 	FbxClass fbxModel{ meshPath, .01f };
 	FbxClass::Geometry& geom = fbxModel.GetGeometries()[0];
 
@@ -52,7 +52,7 @@ Bow::Bow()
 	m_Buffers.CreateBuffers(meshData);
 
 	//TEXTURE
-	const std::wstring texturePath{ Resources::Local(L"Texture_01.png") };
+	const std::wstring texturePath{ Resources::Local(L"T_Knights_01.png") };
 	m_Texture = Texture{ texturePath };
 
 	//ANIMATION

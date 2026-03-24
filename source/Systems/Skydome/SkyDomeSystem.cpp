@@ -6,10 +6,10 @@ using namespace TowerGame;
 using namespace Rendering;
 
 SkyDomeSystem::SkyDomeSystem()
-	: m_Shader{ Resources::Local(L"SkyDome.hlsl") }
+	: m_Shader{ Resources::Local(L"S_SkyDome.hlsl") }
 	, m_InputLayout{ InputLayout::FromType<Vertex>() }
 	, m_DepthStencil{ false }
-	, m_Texture{ Resources::Local(L"SkyDome.jpg") }
+	, m_Texture{ Resources::Local(L"T_SkyDome.jpg") }
 {
 	InitVertexBuffer();
 	InitDomeBuffer();

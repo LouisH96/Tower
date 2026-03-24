@@ -14,11 +14,11 @@ using namespace TowerGame;
 using namespace Rendering;
 
 TowerGameRenderer::TowerGameRenderer()
-	: m_Shader_Entity{ Resources::Local(L"Entity.hlsl") }
-	, m_Shader_Weapon{ Resources::Local(L"Weapon.hlsl") }
-	, m_Shader_Terrain{ Resources::Local(L"Terrain.hlsl") }
-	, m_Shader_StaticMesh{ Resources::Local(L"StaticMesh.hlsl") }
-	, m_Shader_Tracer{ Resources::Local(L"Tracer.hlsl") }
+	: m_Shader_Object_Inst{ Resources::Local(L"S_Object_Inst.hlsl") }
+	, m_Shader_Weapon{ Resources::Local(L"S_Weapon.hlsl") }
+	, m_Shader_Terrain{ Resources::Local(L"S_Terrain.hlsl") }
+	, m_Shader_Object{ Resources::Local(L"S_StaticMesh.hlsl") }
+	, m_Shader_Tracer{ Resources::Local(L"S_Tracer.hlsl") }
 	, m_Il_V_PosCol{ InputLayout::FromType<V_PosCol>() }
 	, m_Il_V_PosNorUv_I_ModelMatrix{ InputLayout::FromTypes<V_PosNorUv, I_ModelMatrix>() }
 	, m_Il_V_PosNorCol{ InputLayout::FromType<V_PosNorCol>() }
@@ -43,6 +43,7 @@ void TowerGameRenderer::OnCanvasResized(const App::ResizedEvent& event)
 void TowerGameRenderer::PreRender()
 {
 	//Get
+	static constexpr Shader::Function::Flag VertexShader{ Shader::Function::Vertex };
 	const Camera& camera{ *Globals::pCamera };
 	const ShadowSystem& shadows{ SYSTEMS.Shadows };
 
@@ -59,21 +60,25 @@ void TowerGameRenderer::PreRender()
 		m_CameraMatrixPosBuffer.Update(CB_CamMatPosFor{ camera.GetPosition(), camera.GetForward(), viewProjection });
 		m_CameraMatrixPosBuffer.Activate();
 
-		//Entity
-		m_Shader_Entity.Activate<Shader::Function::Vertex>();
-		m_Il_V_PosNorUv_I_ModelMatrix.Activate();
-		m_BonesBuffer.Activate(3);
-		SYSTEMS.Arrows.Render(true);
-		SYSTEMS.Enemies
-			.Render<Shader::Function::Vertex>(m_BonesBuffer); //Render
-
+		//Terrain
 		m_Shader_Terrain.Activate<Shader::Function::Vertex>();
 		m_Il_V_PosNorCol.Activate();
 		SYSTEMS.StaticMeshes.Render();
 
-		m_Shader_StaticMesh.Activate<Shader::Function::Vertex>();
+		//Object_Instances
+		m_Shader_Object_Inst.Activate<VertexShader>();
+		m_Il_V_PosNorUv_I_ModelMatrix.Activate();
+		SYSTEMS.Arrows.Render(true);
+
+		//Objects
+		m_Shader_Object.Activate<Shader::Function::Vertex>();
 		m_Il_V_PosNorUv.Activate();
 		SYSTEMS.StaticModels.Render();
+
+		//Enemies
+		//	Contains it's own InputLayout & Shader
+		m_BonesBuffer.Activate(3);
+		SYSTEMS.Enemies.Render<VertexShader>(m_BonesBuffer);
 	}
 }
 
@@ -83,11 +88,16 @@ void TowerGameRenderer::Render()
 	const Float4X4& viewProjection{ camera.GetViewProjection() };
 
 	m_Culling_Back.Activate();
+	m_Sampler.Activate();
 
-	SYSTEMS.Skydome.Render(); //Render
+	//Skydome
+	SYSTEMS.Skydome.Render();
+
+	//Begin Shadowed
 	SYSTEMS.Shadows.BeginRender();
-
 	m_DepthStencilState_On.Activate();
+
+	//Set Camera
 	m_CameraMatrixPosBuffer.Update(CB_CamMatPosFor{ camera.GetPosition(), camera.GetForward(), viewProjection });
 	m_CameraMatrixPosBuffer.Activate();
 
@@ -96,21 +106,20 @@ void TowerGameRenderer::Render()
 	m_Il_V_PosNorCol.Activate();
 	SYSTEMS.StaticMeshes.Render();
 
-	//Entity
-	m_Sampler.Activate();
+	//Object Instances
+	m_Shader_Object_Inst.Activate();
+	m_Shader_Object_Inst.Activate();
 	m_Il_V_PosNorUv_I_ModelMatrix.Activate();
-	m_Shader_Entity.Activate();
-	m_BonesBuffer.Activate(3);
 	SYSTEMS.Arrows.Render();
-	SYSTEMS.Enemies.Render(m_BonesBuffer);
 
-	m_CameraMatrixPosBuffer.Update(CB_CamMatPosFor{ camera.GetPosition(), camera.GetForward(), viewProjection });
-	m_CameraMatrixPosBuffer.Activate();
-
-	//StaticMesh
-	m_Shader_StaticMesh.Activate();
+	//Objects
+	m_Shader_Object.Activate();
 	m_Il_V_PosNorUv.Activate();
 	SYSTEMS.StaticModels.Render();
+
+	//Enemies
+	m_BonesBuffer.Activate(3);
+	SYSTEMS.Enemies.Render(m_BonesBuffer);
 
 	//Weapon
 	const Bow& bow{ SYSTEMS.Bow };
@@ -121,10 +130,11 @@ void TowerGameRenderer::Render()
 	m_BonesBuffer.Update(bow.GetBones());
 	SYSTEMS.Bow.Render();
 
+	//End Shadowed
+	SYSTEMS.Shadows.EndRender();
+
 	//Other
 	SYSTEMS.pSimpleRenderer->Render();
-
-	SYSTEMS.Shadows.EndRender();
 
 	//---| Transparency |---
 	m_Culling_None.Activate();
