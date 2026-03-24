@@ -14,7 +14,7 @@ class EnemySystem
 public:
 	struct RenderInstance {
 		Float4X4 World;
-		unsigned BoneIdOffset;
+		unsigned BoneIdOffset{};
 
 		static const Rendering::InputLayout::Element ELEMENTS[];
 		static constexpr unsigned NR_ELEMENTS{ 2 };

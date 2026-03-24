@@ -265,9 +265,10 @@ void EnemyCode::Render(Rendering::ConstantBuffer<Float4X4>& bones, EnemySystem::
 	{
 		using Instance = EnemySystem::RenderInstance;
 
-		const unsigned nrEnemiesInInstances{ rendering.Instances.GetCapacity() };
 		EnemySystem::Type& type{ types[iType] };
 		Enemies& enemies{ type.Enemies };
+		const unsigned nrEnemiesInInstances{ rendering.Instances.GetCapacity() };
+		const unsigned boneOffsetModulo{ type.NrEnemiesInBonesBuffer * type.Animation.GetNrBones() };
 
 		//Active EnemyType resources
 		type.Vertices.Activate(0);
@@ -288,17 +289,20 @@ void EnemyCode::Render(Rendering::ConstantBuffer<Float4X4>& bones, EnemySystem::
 			//Fill InstanceBuffer
 			Instance* pInstance{ rendering.Instances.BeginUpdateData() };
 			const Instance* pInstanceBegin{ pInstance };
-			Instance* pInstanceEnd{ pInstance + nrEnemiesInInstances }; //end of instance buffer
+			const Instance* pInstanceEnd{ pInstance + nrEnemiesInInstances }; //end of instance buffer
+			Instance copyInst{};
 
 			for (; iEnemy < iEnemyEnd && pInstance < pInstanceEnd; ++iEnemy)
 			{
 				const Enemy& enemy{ type.Enemies.Get(iEnemy) };
 				if (!enemy.IsValid())
 					continue;
-				pInstance->World = enemy.World.AsMatrix();
-				pInstance->BoneIdOffset = ((pInstance - pInstanceBegin) % type.NrEnemiesInBonesBuffer) * type.Animation.GetNrBones();
-				WorldMatrix::TranslateRelativeXz(pInstance->World, -enemy.RootPos);
-				++pInstance;
+				copyInst.World = enemy.World.AsMatrix();
+				WorldMatrix::TranslateRelativeXz(copyInst.World, -enemy.RootPos);
+
+				*pInstance++ = copyInst;
+				copyInst.BoneIdOffset += type.Animation.GetNrBones();
+				copyInst.BoneIdOffset %= boneOffsetModulo;
 			}
 			rendering.Instances.EndUpdateData();
 			const unsigned iEnemyEndInInstances{ iEnemy };
