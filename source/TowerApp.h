@@ -1,7 +1,8 @@
 #pragma once
 #include "TowerGameRenderer.h"
-#include <Systems\TowerSystems.h>
-#include <Framework\Systems\Systems.h>
+#include <Framework/Systems/Systems.h>
+#include <Systems/TowerSystems.h>
+#include <Systems/Ui/PauseMenu.h>
 
 namespace TowerGame
 {
@@ -28,6 +29,8 @@ private:
 	TowerGameRenderer m_Renderer;
 	TowerSystems m_TowerSystems;
 	Systems m_Systems;
+
+	PauseMenu m_PauseMenu{};
 };
 }
 

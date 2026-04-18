@@ -29,17 +29,23 @@ void TowerApp::OnCanvasResized(const App::ResizedEvent& event)
 
 void TowerApp::EarlyUpdate()
 {
+	if (Globals::pKeyboard->IsPressed('\x1b'))
+	{
+		m_PauseMenu.Toggle();
+		return;
+	}
+
+	if (Globals::TimeScale == 0)
+		return;
+
 	m_TowerSystems.EarlyUpdate();
 	m_Systems.EarlyUpdate();
 }
 
 void TowerApp::Update()
 {
-	if (Globals::pKeyboard->IsDown_('\x1b'))
-	{
-		Globals::pWindow->SetIsDestroyed();
+	if (Globals::TimeScale == 0)
 		return;
-	}
 
 	m_TowerSystems.Update();
 	m_Systems.Update();
