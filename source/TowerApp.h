@@ -24,6 +24,7 @@ public:
 
 	TowerGameRenderer& GetRenderer() { return m_Renderer; }
 	TowerSystems& GetTowerSystems() { return m_TowerSystems; }
+	PauseMenu& GetPauseMenu() { return m_PauseMenu; }
 
 private:
 	TowerGameRenderer m_Renderer;

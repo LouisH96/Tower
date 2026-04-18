@@ -24,6 +24,7 @@
     <ClCompile Include="Systems\Arrows\Tracing\TracingSystem.cpp" />
     <ClCompile Include="Systems\Enemies\EnemyCode.cpp" />
     <ClCompile Include="Systems\Ui\PauseMenu.cpp" />
+    <ClCompile Include="Systems\Ui\Style.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\Bow\Bow.h" />
@@ -48,5 +49,6 @@
     <ClInclude Include="DataStructures\OffsetList.h" />
     <ClInclude Include="Systems\Enemies\EnemyCode.h" />
     <ClInclude Include="Systems\Ui\PauseMenu.h" />
+    <ClInclude Include="Systems\Ui\Style.h" />
   </ItemGroup>
 </Project>
